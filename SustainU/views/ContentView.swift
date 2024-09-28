@@ -1,24 +1,22 @@
-//
-//  ContentView.swift
-//  SustainU
-//
-//  Created by Herrera Alba Eduardo Jose on 19/09/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isAuthenticated = false
+    @State private var userProfile = Profile.empty
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            if isAuthenticated {
+                HomeView(userProfile: userProfile, isAuthenticated: $isAuthenticated)  // Pasa ambos argumentos
+            } else {
+                LoginView(isAuthenticated: $isAuthenticated, userProfile: $userProfile)
+            }
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
