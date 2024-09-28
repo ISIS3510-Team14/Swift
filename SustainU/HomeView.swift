@@ -184,7 +184,7 @@ struct HomeView: View {
                 .tag(1)  // Índice de la pestaña Map
 
             // Camera Tab
-            CameraView()  // La vista de la cámara ahora está asociada con esta pestaña
+            CameraViewWithHeader()  // La vista de la cámara ahora está asociada con esta pestaña
                 .tabItem {
                     Image("logoCamera") // Logo personalizado de Camera
                         .renderingMode(.template)  // Habilitar cambio de color
