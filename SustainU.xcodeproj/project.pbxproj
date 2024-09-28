@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD43FF4E2C9CF0FC0058AE09 /* SustainUApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43FF4D2C9CF0FC0058AE09 /* SustainUApp.swift */; };
-		CD43FF502C9CF0FC0058AE09 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43FF4F2C9CF0FC0058AE09 /* ContentView.swift */; };
-		CD43FF522C9CF0FE0058AE09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD43FF512C9CF0FE0058AE09 /* Assets.xcassets */; };
+		2BED14C22CA89D90003F1862 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14B92CA89D90003F1862 /* Profile.swift */; };
+		2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BA2CA89D90003F1862 /* ContentView.swift */; };
+		2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BC2CA89D90003F1862 /* GridMenuView.swift */; };
+		2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BD2CA89D90003F1862 /* LoginView.swift */; };
+		2BED14C72CA89D90003F1862 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BE2CA89D90003F1862 /* CameraView.swift */; };
+		2BED14C82CA89D90003F1862 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2BED14BF2CA89D90003F1862 /* Auth0.plist */; };
+		2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14C02CA89D90003F1862 /* HomeView.swift */; };
+		2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */; };
+		2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 2BED14CE2CA89E02003F1862 /* Auth0 */; };
+		2BED14D12CA89FD6003F1862 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2BED14D02CA89FD6003F1862 /* Assets.xcassets */; };
 		CD43FF552C9CF0FE0058AE09 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD43FF542C9CF0FE0058AE09 /* Preview Assets.xcassets */; };
 		CD43FF5F2C9CF0FE0058AE09 /* SustainUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43FF5E2C9CF0FE0058AE09 /* SustainUTests.swift */; };
 		CD43FF692C9CF0FE0058AE09 /* SustainUUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD43FF682C9CF0FE0058AE09 /* SustainUUITests.swift */; };
@@ -34,10 +41,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2BED14B92CA89D90003F1862 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		2BED14BA2CA89D90003F1862 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2BED14BC2CA89D90003F1862 /* GridMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridMenuView.swift; sourceTree = "<group>"; };
+		2BED14BD2CA89D90003F1862 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		2BED14BE2CA89D90003F1862 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		2BED14BF2CA89D90003F1862 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
+		2BED14C02CA89D90003F1862 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
+		2BED14D02CA89FD6003F1862 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../../../app/moviles/Login sustainun/Login sustainun/Assets.xcassets"; sourceTree = "<group>"; };
 		CD43FF4A2C9CF0FC0058AE09 /* SustainU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SustainU.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD43FF4D2C9CF0FC0058AE09 /* SustainUApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
-		CD43FF4F2C9CF0FC0058AE09 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		CD43FF512C9CF0FE0058AE09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD43FF542C9CF0FE0058AE09 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CD43FF5A2C9CF0FE0058AE09 /* SustainUTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SustainUTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD43FF5E2C9CF0FE0058AE09 /* SustainUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SustainUTests.swift; sourceTree = "<group>"; };
@@ -51,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,9 +108,15 @@
 		CD43FF4C2C9CF0FC0058AE09 /* SustainU */ = {
 			isa = PBXGroup;
 			children = (
-				CD43FF4D2C9CF0FC0058AE09 /* SustainUApp.swift */,
-				CD43FF4F2C9CF0FC0058AE09 /* ContentView.swift */,
-				CD43FF512C9CF0FE0058AE09 /* Assets.xcassets */,
+				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
+				2BED14BE2CA89D90003F1862 /* CameraView.swift */,
+				2BED14BA2CA89D90003F1862 /* ContentView.swift */,
+				2BED14BC2CA89D90003F1862 /* GridMenuView.swift */,
+				2BED14C02CA89D90003F1862 /* HomeView.swift */,
+				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
+				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
+				2BED14B92CA89D90003F1862 /* Profile.swift */,
+				2BED14D02CA89FD6003F1862 /* Assets.xcassets */,
 				CD43FF532C9CF0FE0058AE09 /* Preview Content */,
 			);
 			path = SustainU;
@@ -143,6 +163,9 @@
 			dependencies = (
 			);
 			name = SustainU;
+			packageProductDependencies = (
+				2BED14CE2CA89E02003F1862 /* Auth0 */,
+			);
 			productName = SustainU;
 			productReference = CD43FF4A2C9CF0FC0058AE09 /* SustainU.app */;
 			productType = "com.apple.product-type.application";
@@ -195,6 +218,7 @@
 				TargetAttributes = {
 					CD43FF492C9CF0FC0058AE09 = {
 						CreatedOnToolsVersion = 15.3;
+						LastSwiftMigration = 1530;
 					};
 					CD43FF592C9CF0FE0058AE09 = {
 						CreatedOnToolsVersion = 15.3;
@@ -215,6 +239,9 @@
 				Base,
 			);
 			mainGroup = CD43FF412C9CF0FC0058AE09;
+			packageReferences = (
+				2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */,
+			);
 			productRefGroup = CD43FF4B2C9CF0FC0058AE09 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -232,7 +259,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD43FF552C9CF0FE0058AE09 /* Preview Assets.xcassets in Resources */,
-				CD43FF522C9CF0FE0058AE09 /* Assets.xcassets in Resources */,
+				2BED14C82CA89D90003F1862 /* Auth0.plist in Resources */,
+				2BED14D12CA89FD6003F1862 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,8 +285,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD43FF502C9CF0FC0058AE09 /* ContentView.swift in Sources */,
-				CD43FF4E2C9CF0FC0058AE09 /* SustainUApp.swift in Sources */,
+				2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */,
+				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
+				2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */,
+				2BED14C22CA89D90003F1862 /* Profile.swift in Sources */,
+				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
+				2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */,
+				2BED14C72CA89D90003F1862 /* CameraView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +452,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
@@ -438,6 +472,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "subgrupo-swift.SustainU";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -448,6 +483,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
@@ -588,6 +624,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/Auth0.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2BED14CE2CA89E02003F1862 /* Auth0 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */;
+			productName = Auth0;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD43FF422C9CF0FC0058AE09 /* Project object */;
 }
