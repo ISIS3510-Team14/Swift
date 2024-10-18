@@ -4,6 +4,7 @@ import Combine
 
 struct ExpandableSearchView: View {
     @StateObject private var viewModel = ExpandableSearchViewModel()
+    @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @FocusState private var isSearchFocused: Bool
     @GestureState private var draggingOffset: CGFloat = 0
     
@@ -18,6 +19,7 @@ struct ExpandableSearchView: View {
                         onAnnotationTap: { point in
                             viewModel.selectedPoint = point
                             viewModel.isNavigatingToDetail = true
+                            collectionPointViewModel.incrementCount(for: point)
                         })
                     .edgesIgnoringSafeArea(.all)
                     .safeAreaInset(edge: .top) {
@@ -120,7 +122,9 @@ struct ExpandableSearchView: View {
                             materials: "",
                             latitude: 0,
                             longitude: 0,
-                            imageName: "default-image"
+                            imageName: "default-image",
+                            documentID: "",
+                            count: 0
                         )
                     ),
                     isActive: $viewModel.isNavigatingToDetail
