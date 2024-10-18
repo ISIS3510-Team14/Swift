@@ -32,7 +32,7 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .padding()
                     .frame(width: 220, height: 60)
-                    .background(Color.green)
+                    .background(Color("greenLogoColor"))
                     .cornerRadius(15.0)
             }
             .padding(.bottom, 20)

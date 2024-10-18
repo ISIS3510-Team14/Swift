@@ -73,6 +73,7 @@ struct ProfileView: View {
                     Text("Logout")
                         .font(.headline)
                         .fontWeight(.bold)
+                        .background(Color("redLogoColor"))
                 }
                 .foregroundColor(.white)
                 .padding()
