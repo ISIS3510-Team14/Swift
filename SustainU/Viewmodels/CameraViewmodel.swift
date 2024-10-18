@@ -1,13 +1,15 @@
 import SwiftUI
 import UIKit
 import FirebaseAnalytics
+import FirebaseFirestore
+
 
 class CameraViewmodel: ObservableObject {
     
     @Published var image: UIImage?
     @Published var responseTextBin: String = ""
     @Published var showResponsePopup: Bool = false
-    @Published var trashTypeIconDetected: TrashTypeIcon = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill")
+    @Published var trashTypeIconDetected: TrashTypeIcon = TrashTypeIcon(type: "No Item Detected", icon: "xmark.octagon.fill")
     @Published var noResponse: Bool = false
     @Published var timerCount: Int = 0
     @Published var timerActive: Bool = false
@@ -89,10 +91,28 @@ class CameraViewmodel: ObservableObject {
         }
     }
     
-    func sendScanEvent(scanTime: Int, thrashType: String) {
+    func sendScanEvent1(scanTime: Int, thrashType: String) {
             Analytics.logEvent("scan", parameters: [
                 "time": scanTime,
-                "thrash_type": thrashType
+                "trash_type": thrashType
             ])
     }
+    
+
+    func sendScanEvent(scanTime: Int, thrashType: String) {
+        let db = Firestore.firestore()
+        let data: [String: Any] = [
+            "time": scanTime,
+            "trash_type": thrashType,
+        ]
+        
+        db.collection("scans").addDocument(data: data) { error in
+            if let error = error {
+                print("Error adding document: \(error)")
+            } else {
+                print("Document added successfully")
+            }
+        }
+    }
+
 }

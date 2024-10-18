@@ -25,7 +25,7 @@ struct CameraPopupView: View {
         if error {
             self.icon = "xmark.octagon.fill"
             self.title = "Error!"
-            self.trashType = "An error ocurred :("
+            self.trashType = "No Item Detected"
             self.responseText = "Please try again"
         } else if noResponse {
             // Si es un NoResponse, configurar con valores predeterminados
