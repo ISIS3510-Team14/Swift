@@ -18,26 +18,8 @@ struct HomeView: View {
                 NavigationView {
                     ScrollView {
                         VStack {
-                            // Logo e imagen de perfil
-                            HStack {
-                                Image("logoBigger")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Spacer()
-                                AsyncImage(url: URL(string: userProfile.picture)) { image in
-                                    image
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .clipShape(Circle())
-                                } placeholder: {
-                                    Image(systemName: "person.circle.fill")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .clipShape(Circle())
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.top, 20)
+                            // Reusing the TopBarView and passing the user profile picture
+                            TopBarView(profilePictureURL: userProfile.picture)
                             
                             // Saludo al usuario con solo el primer nombre
                             let firstName = userProfile.name.components(separatedBy: " ").first ?? userProfile.name
@@ -81,6 +63,7 @@ struct HomeView: View {
                                                 .resizable()
                                                 .renderingMode(.template)
                                                 .frame(width: 40, height: 40)
+                                                .scaledToFit()
                                             Text("See green points")
                                                 .font(.headline)
                                                 .foregroundColor(.black)
@@ -176,7 +159,8 @@ struct HomeView: View {
                 .tag(0)
 
                 // Map Tab
-                ExpandableSearchView()
+                
+                ExpandableSearchView(profilePictureURL: userProfile.picture)
                     .tabItem {
                         Image("logoMap")
                             .renderingMode(.template)
@@ -185,7 +169,7 @@ struct HomeView: View {
                     .tag(1)
 
                 // Camera Tab
-                CameraViewWithHeader()
+                CameraViewWithHeader(profilePictureURL: userProfile.picture)
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
