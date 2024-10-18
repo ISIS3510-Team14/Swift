@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isAuthenticated = false
-    @State private var userProfile = Profile.empty
-
+    // Usar la instancia Singleton de LoginViewModel
+    @StateObject private var loginViewModel = LoginViewModel.shared
+    
     var body: some View {
         NavigationView {
-            if isAuthenticated {
-                HomeView(userProfile: userProfile, isAuthenticated: $isAuthenticated)  // Pasa ambos argumentos
+            if loginViewModel.isAuthenticated {
+                HomeView(userProfile: loginViewModel.userProfile, isAuthenticated: $loginViewModel.isAuthenticated)
             } else {
-                LoginView(isAuthenticated: $isAuthenticated, userProfile: $userProfile)
+                LoginView(viewModel: loginViewModel)
             }
         }
     }
