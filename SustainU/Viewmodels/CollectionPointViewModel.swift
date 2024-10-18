@@ -62,4 +62,39 @@ class CollectionPointViewModel: ObservableObject {
             }
         }
     }
+    func incrementMapCount() {
+        let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
+        
+        query.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                return
+            }
+            
+            guard let document = querySnapshot?.documents.first else {
+                print("No matching documents")
+                // If no document exists, create one
+                self.db.collection("counters").addDocument(data: [
+                    "name": "MapView",
+                    "count": 1
+                ]) { error in
+                    if let error = error {
+                        print("Error creating map count document: \(error)")
+                    } else {
+                        print("Map count document successfully created")
+                    }
+                }
+                return
+            }
+            
+            // Document exists, update the count
+            document.reference.updateData([
+                "count": FieldValue.increment(Int64(1))
+            ]) { error in
+                if let error = error {
+                    print("Error updating map count: \(error)")
+                } else {
+                    print("Map count successfully updated")
+                }
+            }}}
 }

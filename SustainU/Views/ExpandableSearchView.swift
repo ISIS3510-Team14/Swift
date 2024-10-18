@@ -5,6 +5,7 @@ struct ExpandableSearchView: View {
     @StateObject private var viewModel = ExpandableSearchViewModel()
     @FocusState private var isSearchFocused: Bool
     @GestureState private var draggingOffset: CGFloat = 0
+    @ObservedObject var collectionPointViewModel: CollectionPointViewModel
     
     let profilePictureURL: String
     
@@ -51,7 +52,10 @@ struct ExpandableSearchView: View {
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 20) {
                                 ForEach(viewModel.filteredPoints) { point in
-                                    NavigationLink(destination: CollectionPointDetailView(point: point)) {
+                                    NavigationLink(destination: CollectionPointDetailView(point: point)
+                                        .onAppear {
+                                                                                collectionPointViewModel.incrementCount(for: point)
+                                                                            }) {
                                         HStack(alignment: .top, spacing: 10) {
                                             Image("custom-pin-image")
                                                 .resizable()
@@ -74,11 +78,6 @@ struct ExpandableSearchView: View {
                                         }
                                     }
                                     .buttonStyle(PlainButtonStyle())
-                                    .onTapGesture {
-                                        viewModel.collectionPointViewModel.incrementCount(for: point)
-                                        viewModel.selectedPoint = point
-                                        viewModel.isNavigatingToDetail = true
-                                    }
                                 }
                             }
                             .padding(.top)
@@ -153,8 +152,3 @@ struct ExpandableSearchView: View {
     }
 }
 
-struct ExpandableSearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExpandableSearchView(profilePictureURL: "https://example.com/profile_picture.jpg")
-    }
-}

@@ -7,6 +7,7 @@ struct HomeView: View {
     
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
+    @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false  // Estado para mostrar la vista de perfil
 
     var body: some View {
@@ -169,14 +170,19 @@ struct HomeView: View {
                 }
                 .tag(0)
 
-                // Otras pestañas (Map, Camera, etc.)
-                ExpandableSearchView(profilePictureURL: userProfile.picture)
-                    .tabItem {
+                // Map Tab
+                
+                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: userProfile.picture)
+
+                .tabItem {
                         Image("logoMap")
                             .renderingMode(.template)
                         Text("Map")
                     }
                     .tag(1)
+                    .onAppear {
+                                            collectionPointViewModel.incrementMapCount()
+                                        }
 
                 CameraView(profilePictureURL: userProfile.picture)
                     .tabItem {
