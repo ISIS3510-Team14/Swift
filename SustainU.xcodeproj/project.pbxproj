@@ -25,6 +25,9 @@
 		A10871442CAE0F4F008312B0 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10871432CAE0F4F008312B0 /* SearchBarView.swift */; };
 		A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10871452CAE0F54008312B0 /* SearchViewController.swift */; };
 		A10871482CAE0F5D008312B0 /* ExpandableSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10871472CAE0F5D008312B0 /* ExpandableSearchView.swift */; };
+		A1381FC82CC1F7670045993C /* CollectionPointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1381FC72CC1F7670045993C /* CollectionPointViewModel.swift */; };
+		A1381FCA2CC1FB420045993C /* ExpandableSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1381FC92CC1FB420045993C /* ExpandableSearchViewModel.swift */; };
+		A1381FCC2CC203150045993C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1381FCB2CC203150045993C /* MapViewModel.swift */; };
 		A17760EA2CC0698000F10420 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17760E92CC0698000F10420 /* TopBarView.swift */; };
 		A17760EC2CC19CCA00F10420 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */; };
 		A17760EF2CC19FF600F10420 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A17760EE2CC19FF600F10420 /* FirebaseAnalytics */; };
@@ -99,6 +102,9 @@
 		A10871432CAE0F4F008312B0 /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		A10871452CAE0F54008312B0 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		A10871472CAE0F5D008312B0 /* ExpandableSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableSearchView.swift; sourceTree = "<group>"; };
+		A1381FC72CC1F7670045993C /* CollectionPointViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPointViewModel.swift; sourceTree = "<group>"; };
+		A1381FC92CC1FB420045993C /* ExpandableSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableSearchViewModel.swift; sourceTree = "<group>"; };
+		A1381FCB2CC203150045993C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		A17760E72CC027C300F10420 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		A17760E92CC0698000F10420 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -212,15 +218,21 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		CD0E4AF52CC1F11E00A220F3 /* Viewmodels */ = {
-			isa = PBXGroup;
-			children = (
-				CD0E4AFA2CC1F37700A220F3 /* CameraViewmodel.swift */,
-				2BD5A2E62CC29361009D9624 /* LoginViewModel.swift */,
-			);
-			path = Viewmodels;
-			sourceTree = "<group>";
-		};
+    
+    A1381FC62CC1F74F0045993C /* Viewmodels */ = {
+	isa = PBXGroup;
+	children = (
+		A1381FC72CC1F7670045993C /* CollectionPointViewModel.swift */,
+		A1381FC92CC1FB420045993C /* ExpandableSearchViewModel.swift */,
+		A1381FCB2CC203150045993C /* MapViewModel.swift */,
+		CD0E4AFA2CC1F37700A220F3 /* CameraViewmodel.swift */,
+		2BD5A2E62CC29361009D9624 /* LoginViewModel.swift */
+	);
+	path = Viewmodels;
+	sourceTree = "<group>";
+};
+
+
 		CD43FF412C9CF0FC0058AE09 = {
 			isa = PBXGroup;
 			children = (
@@ -244,7 +256,7 @@
 		CD43FF4C2C9CF0FC0058AE09 /* SustainU */ = {
 			isa = PBXGroup;
 			children = (
-				CD0E4AF52CC1F11E00A220F3 /* Viewmodels */,
+				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
 				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
@@ -472,6 +484,7 @@
 				2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */,
 				CD7FB28B2CA8A51600EE6601 /* RequestService.swift in Sources */,
 				2BED14C22CA89D90003F1862 /* ProfileModel.swift in Sources */,
+				A1381FCA2CC1FB420045993C /* ExpandableSearchViewModel.swift in Sources */,
 				A17760EA2CC0698000F10420 /* TopBarView.swift in Sources */,
 				A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */,
 				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
@@ -479,10 +492,12 @@
 				A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */,
 				A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */,
 				A17761202CC1AAF300F10420 /* CameraPopupView.swift in Sources */,
+				A1381FC82CC1F7670045993C /* CollectionPointViewModel.swift in Sources */,
 				2BED14C72CA89D90003F1862 /* CameraView.swift in Sources */,
 				CD7FB2892CA8A46F00EE6601 /* TrashTypeModel.swift in Sources */,
 				A10871442CAE0F4F008312B0 /* SearchBarView.swift in Sources */,
 				CD7FB2872CA8A45A00EE6601 /* RequestModel.swift in Sources */,
+				A1381FCC2CC203150045993C /* MapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

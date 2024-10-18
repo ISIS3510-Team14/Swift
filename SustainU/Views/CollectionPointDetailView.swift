@@ -7,12 +7,19 @@ struct CollectionPointDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Image
-                Image(point.imageName) // Replace with actual image or use a placeholder
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 200)
-                    .cornerRadius(12)
-                    .padding(.horizontal)
+                AsyncImage(url: URL(string: point.imageName)) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 200)
+                                        .cornerRadius(12)
+                                        .padding(.horizontal)
+                                } placeholder: {
+                                    ProgressView() // Botón de carga circular
+                                        .progressViewStyle(CircularProgressViewStyle()) // Estilo circular
+                                        .scaleEffect(2) // Escalar el indicador de carga
+                                        .padding(10)
+                                }
                
                 // Name and Location
                 VStack(alignment: .leading, spacing: 8) {
