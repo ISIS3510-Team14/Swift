@@ -7,6 +7,7 @@ struct HomeView: View {
     
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
+    @StateObject private var collectionPointViewModel = CollectionPointViewModel()
 
     var body: some View {
         ZStack {
@@ -160,13 +161,16 @@ struct HomeView: View {
 
                 // Map Tab
                 
-                ExpandableSearchView(profilePictureURL: userProfile.picture)
+                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: userProfile.picture)
                     .tabItem {
                         Image("logoMap")
                             .renderingMode(.template)
                         Text("Map")
                     }
                     .tag(1)
+                    .onAppear {
+                                            collectionPointViewModel.incrementMapCount()
+                                        }
 
                 // Camera Tab
                 CameraViewWithHeader(profilePictureURL: userProfile.picture)
