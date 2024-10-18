@@ -200,26 +200,12 @@
 			path = UIKit;
 			sourceTree = "<group>";
 		};
-		A108714F2CAE1651008312B0 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
 		A10871512CAE1683008312B0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				CD7FB2832CA8A36F00EE6601 /* Assets.xcassets */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		A1F8761C2CAE1995002ACEE6 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		CD43FF412C9CF0FC0058AE09 = {
@@ -246,17 +232,15 @@
 			isa = PBXGroup;
 			children = (
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
-				A1F8761C2CAE1995002ACEE6 /* ViewModel */,
+				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
+				A10871392CAE0EC5008312B0 /* APIConfig.swift */,
+				A17760E72CC027C300F10420 /* Location.gpx */,
 				A10871512CAE1683008312B0 /* Resources */,
-				A108714F2CAE1651008312B0 /* Utilities */,
 				A10871492CAE1387008312B0 /* Services */,
 				CD7FB2852CA8A3F000EE6601 /* Models */,
 				A108714B2CAE13FC008312B0 /* Views */,
-				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
-				A10871392CAE0EC5008312B0 /* APIConfig.swift */,
 				CD43FF532C9CF0FE0058AE09 /* Preview Content */,
-				A17760E72CC027C300F10420 /* Location.gpx */,
 			);
 			path = SustainU;
 			sourceTree = "<group>";
