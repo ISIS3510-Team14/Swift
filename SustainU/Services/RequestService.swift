@@ -3,9 +3,9 @@ import UIKit
 
 
 class RequestService {
+    
     let apiEndpoint = APIConfig.apiEndpoint
     let apiKey = APIConfig.apiKey
-    
     
      func sendRequest(prompt: String, photoBase64: String, completion: @escaping (String?) -> Void) {
                   
