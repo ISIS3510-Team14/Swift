@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Crear una instancia del ViewModel
-    @StateObject private var loginViewModel = LoginViewModel()
+    // Usar la instancia Singleton de LoginViewModel
+    @StateObject private var loginViewModel = LoginViewModel.shared
     
     var body: some View {
         NavigationView {
