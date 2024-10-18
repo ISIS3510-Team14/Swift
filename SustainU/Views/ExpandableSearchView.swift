@@ -20,7 +20,7 @@ struct ExpandableSearchView: View {
     
     let collectionPoints = [
         CollectionPoint(name: "El Bobo", location: "Between buildings C and B", materials: "Recyclables and Organic", latitude: 4.60148, longitude: -74.06450, imageName: "recycling_bins"),
-        CollectionPoint(name: "Carlos Pacheco Devia", location: "3rd and 4th flo                    or near the elevators", materials: "Organic, cardboard, glass", latitude: 4.601836, longitude: -74.065348, imageName: "recycling_bins"),
+        CollectionPoint(name: "Carlos Pacheco Devia", location: "3rd and 4th floor near the elevators", materials: "Organic, cardboard, glass", latitude: 4.601836, longitude: -74.065348, imageName: "recycling_bins"),
         CollectionPoint(name: "Mario Laserna building", location: "6th floor, next to the elevators", materials: "Organic, plastic and cardboard", latitude: 4.602814, longitude: -74.064313, imageName: "recycling_bins"),
         CollectionPoint(name: "La Gata Golosa", location: "between restrooms and basketball court", materials: "Containers, organic and plastic", latitude: 4.603397, longitude: -74.066441, imageName: "recycling_bins")
     ]
