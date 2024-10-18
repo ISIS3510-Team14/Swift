@@ -1,8 +1,9 @@
 import SwiftUI
 import MapKit
+import FirebaseFirestore
 
 struct CollectionPoint: Identifiable {
-    let id = UUID()
+    let id: UUID
     let name: String
     let location: String
     let materials: String
@@ -13,13 +14,4 @@ struct CollectionPoint: Identifiable {
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
-
-    static let `default` = CollectionPoint(
-        name: "",
-        location: "",
-        materials: "",
-        latitude: 0,
-        longitude: 0,
-        imageName: "default-image"
-    )
 }
