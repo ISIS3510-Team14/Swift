@@ -10,6 +10,7 @@ class ExpandableSearchViewModel: ObservableObject {
     @Published var isNavigatingToDetail = false
     @Published var keyboardHeight: CGFloat = 0
     @Published var isSearchFocused = false
+    @Published var isTyping = false
     
     let locationManager = LocationManager()
     let collectionPointViewModel = CollectionPointViewModel()
@@ -38,12 +39,12 @@ class ExpandableSearchViewModel: ObservableObject {
     }
     
     func calculateOffset(with draggingOffset: CGFloat) -> CGFloat {
-            if isSearchFocused {
-                return min(offset + draggingOffset, keyboardHeight - maxHeight)
-            } else {
-                return offset + draggingOffset
-            }
+        if isSearchFocused || isTyping {
+            return 0  // Move to the top when focused or typing
+        } else {
+            return offset + draggingOffset
         }
+    }
     
     func handleDragGesture(value: DragGesture.Value) {
         withAnimation(.spring()) {
@@ -60,21 +61,25 @@ class ExpandableSearchViewModel: ObservableObject {
             }
         }
         isSearchFocused = false
+        isTyping = false  // Reset typing state when dragging ends
     }
     
     func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { [weak self] notification in
             guard let self = self, let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
             self.keyboardHeight = keyboardFrame.height
-            if self.isSearchFocused {
-                withAnimation(.easeOut(duration: 0.16)) {
-                    self.offset = 0
-                }
+            withAnimation(.easeOut(duration: 0.16)) {
+                self.offset = 0
             }
         }
         
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { [weak self] _ in
             self?.keyboardHeight = 0
+            if !(self?.isTyping ?? false) {
+                withAnimation(.easeOut(duration: 0.16)) {
+                    self?.offset = self?.minHeight ?? 500
+                }
+            }
         }
     }
     

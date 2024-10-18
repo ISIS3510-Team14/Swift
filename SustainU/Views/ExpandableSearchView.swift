@@ -1,10 +1,8 @@
 import SwiftUI
 import MapKit
-import Combine
 
 struct ExpandableSearchView: View {
     @StateObject private var viewModel = ExpandableSearchViewModel()
-    @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @FocusState private var isSearchFocused: Bool
     @GestureState private var draggingOffset: CGFloat = 0
     
@@ -19,7 +17,6 @@ struct ExpandableSearchView: View {
                         onAnnotationTap: { point in
                             viewModel.selectedPoint = point
                             viewModel.isNavigatingToDetail = true
-                            collectionPointViewModel.incrementCount(for: point)
                         })
                     .edgesIgnoringSafeArea(.all)
                     .safeAreaInset(edge: .top) {
@@ -46,6 +43,10 @@ struct ExpandableSearchView: View {
                             .fontWeight(.bold)
                         
                         SearchBarView(searchText: $viewModel.searchText, focused: $isSearchFocused)
+                            .focused($isSearchFocused)
+                            .onChange(of: viewModel.searchText) { newValue in
+                                viewModel.isTyping = !newValue.isEmpty
+                            }
                         
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 20) {
@@ -73,6 +74,11 @@ struct ExpandableSearchView: View {
                                         }
                                     }
                                     .buttonStyle(PlainButtonStyle())
+                                    .onTapGesture {
+                                        viewModel.collectionPointViewModel.incrementCount(for: point)
+                                        viewModel.selectedPoint = point
+                                        viewModel.isNavigatingToDetail = true
+                                    }
                                 }
                             }
                             .padding(.top)
@@ -82,7 +88,7 @@ struct ExpandableSearchView: View {
                     .frame(maxHeight: viewModel.maxHeight)
                     .background(Color(.systemBackground))
                     .cornerRadius(15)
-                    .offset(y: max(viewModel.calculateOffset(with: draggingOffset), 0))
+                    .offset(y: viewModel.calculateOffset(with: draggingOffset))
                     .gesture(dragGesture)
                 }
                 
@@ -136,16 +142,16 @@ struct ExpandableSearchView: View {
     }
     
     private var dragGesture: some Gesture {
-            DragGesture()
-                .updating($draggingOffset) { value, state, _ in
-                    state = value.translation.height
-                }
-                .onEnded { value in
-                    viewModel.handleDragGesture(value: value)
-                    isSearchFocused = false
-                }
-        }
+        DragGesture()
+            .updating($draggingOffset) { value, state, _ in
+                state = value.translation.height
+            }
+            .onEnded { value in
+                viewModel.handleDragGesture(value: value)
+                isSearchFocused = false
+            }
     }
+}
 
 struct ExpandableSearchView_Previews: PreviewProvider {
     static var previews: some View {
