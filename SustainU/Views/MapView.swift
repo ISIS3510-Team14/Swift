@@ -2,12 +2,12 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-
 struct MapView: UIViewRepresentable {
     @ObservedObject var locationManager: LocationManager
     @Binding var userTrackingMode: MKUserTrackingMode
     var collectionPoints: [CollectionPoint]
     var onAnnotationTap: (CollectionPoint) -> Void
+    @State private var hasInitiallyZoomed: Bool = false
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -33,7 +33,7 @@ struct MapView: UIViewRepresentable {
         // Position the compass in the top-right corner
         compass.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            compass.topAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.topAnchor, constant: 10),
+            compass.topAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.topAnchor, constant: 100),
             compass.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -10),
             
             // Position the user tracking button below the compass
@@ -45,8 +45,20 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: MKMapView, context: Context) {
-        view.userTrackingMode = userTrackingMode
         updateAnnotations(from: view)
+        
+        // Center on user location only once when the view first loads
+        if !hasInitiallyZoomed, let userLocation = locationManager.userLocation {
+            zoomToUserLocation(mapView: view, userLocation: userLocation)
+            DispatchQueue.main.async {
+                self.hasInitiallyZoomed = true
+            }
+        }
+        
+        // Update tracking mode only if it's not .none
+        if userTrackingMode != .none {
+            view.setUserTrackingMode(userTrackingMode, animated: true)
+        }
     }
 
     private func updateAnnotations(from mapView: MKMapView) {
@@ -61,6 +73,11 @@ struct MapView: UIViewRepresentable {
         }
         
         mapView.addAnnotations(annotations)
+    }
+
+    private func zoomToUserLocation(mapView: MKMapView, userLocation: CLLocationCoordinate2D) {
+        let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 500, longitudinalMeters: 500)
+        mapView.setRegion(region, animated: true)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -78,25 +95,37 @@ struct MapView: UIViewRepresentable {
             guard !(annotation is MKUserLocation) else { return nil }
 
             let identifier = "CollectionPoint"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
 
             if annotationView == nil {
-                annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 annotationView?.canShowCallout = true
+               
+                let infoButton = UIButton(type: .detailDisclosure)
+                annotationView?.rightCalloutAccessoryView = infoButton
             } else {
                 annotationView?.annotation = annotation
             }
 
-            annotationView?.glyphImage = UIImage(systemName: "recycle")
-            annotationView?.markerTintColor = .green
+            // Set the custom image
+            annotationView?.image = UIImage(named: "custom-pin-image")
+           
+            // Optionally, adjust the size of the image
+            annotationView?.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
 
             return annotationView
         }
 
-        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
             guard let coordinates = view.annotation?.coordinate else { return }
             if let collectionPoint = parent.collectionPoints.first(where: { $0.coordinate.latitude == coordinates.latitude && $0.coordinate.longitude == coordinates.longitude }) {
                 parent.onAnnotationTap(collectionPoint)
+            }
+        }
+
+        func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
+            DispatchQueue.main.async {
+                self.parent.userTrackingMode = mode
             }
         }
     }
