@@ -169,7 +169,7 @@ struct HomeView: View {
                     .tag(1)
 
                 // Camera Tab
-                CameraViewWithHeader(profilePictureURL: userProfile.picture)
+                CameraView(profilePictureURL: userProfile.picture)
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
