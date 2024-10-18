@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import FirebaseAnalytics
 
 class CameraViewmodel: ObservableObject {
     
@@ -86,5 +87,12 @@ class CameraViewmodel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func sendScanEvent(scanTime: Int, thrashType: String) {
+            Analytics.logEvent("scan", parameters: [
+                "time": scanTime,
+                "thrash_type": thrashType
+            ])
     }
 }

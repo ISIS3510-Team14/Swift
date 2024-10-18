@@ -1,8 +1,6 @@
 import SwiftUI
 import UIKit
 
-
-
 struct CameraView: View {
     
     @StateObject private var viewModel = CameraViewmodel()
@@ -105,6 +103,9 @@ struct CameraView: View {
                         error: viewModel.error,
                         noResponse: viewModel.noResponse
                     )
+                    .onAppear {
+                        viewModel.sendScanEvent(scanTime: viewModel.timerCount, thrashType: viewModel.trashTypeIconDetected.type)
+                    }
                 }
             }
         }
