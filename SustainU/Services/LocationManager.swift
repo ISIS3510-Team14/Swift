@@ -7,18 +7,28 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var userLocation: CLLocationCoordinate2D?
     @Published var location: CLLocation?
     @Published var locationStatus: String = "Initializing..."
+    @Published var isUpdatingLocation = false
 
     override init() {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.distanceFilter = 50
     }
 
     func startUpdatingLocation() {
-        print("Starting location updates")
-        locationManager.startUpdatingLocation()
-    }
+            guard !isUpdatingLocation else { return }
+            print("Starting location updates")
+            isUpdatingLocation = true
+            locationManager.startUpdatingLocation()
+        }
+    func stopUpdatingLocation() {
+            guard isUpdatingLocation else { return }
+            print("Stopping location updates")
+            isUpdatingLocation = false
+            locationManager.stopUpdatingLocation()
+        }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
