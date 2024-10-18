@@ -74,7 +74,16 @@ struct CameraView: View {
                             .progressViewStyle(CircularProgressViewStyle())
                             .scaleEffect(2)
                             .padding(10)
+                            .background(Color.black.opacity(0.5))
+                            .tint(Color("greenLogoColor"))
                         Spacer()
+                        Text("Identifying waste: \(viewModel.timerCount) seconds elapsed")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .background(Color.black.opacity(0.5))
+                            .cornerRadius(10)
+                            .padding(.bottom, 20) // Posicionar el timer en la parte inferior
                     }
                     .onAppear {
                         viewModel.startTimer()
@@ -95,9 +104,9 @@ struct CameraView: View {
                 if viewModel.showResponsePopup {
                     CameraPopupView(
                         icon: viewModel.trashTypeIconDetected.icon,
-                        title: viewModel.trashTypeIconDetected.type != "Error" ? "Item Detected!" : "Could not detect an item!",
+                        title: viewModel.trashTypeIconDetected.type != "No Item Detected" ? "Item Detected!" : "Could not detect an item!",
                         trashType: viewModel.trashTypeIconDetected.type,
-                        responseText: viewModel.trashTypeIconDetected.type != "Error" ? viewModel.responseTextBin : "Could not detect an item :(",
+                        responseText: viewModel.trashTypeIconDetected.type != "No Item Detected" ? viewModel.responseTextBin : "Could not detect an item :(",
                         showResponsePopup: $viewModel.showResponsePopup,
                         image: $viewModel.image,
                         trashTypeIconDetected: $viewModel.trashTypeIconDetected,
@@ -105,10 +114,15 @@ struct CameraView: View {
                         error: viewModel.error,
                         noResponse: viewModel.noResponse
                     )
+                    .onAppear {
+                        print("sendScanEvent pre")
+                        print(viewModel.timerCount, viewModel.trashTypeIconDetected.type)
+                        viewModel.sendScanEvent(scanTime: viewModel.timerCount, thrashType: viewModel.trashTypeIconDetected.type)
+                        print("sendScanEvent pos")
+                    }
                 }
             }
         }
         .statusBar(hidden: false)
     }
 }
-

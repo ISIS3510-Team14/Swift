@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import FirebaseFirestore
 
 class CameraViewmodel: ObservableObject {
     
@@ -84,6 +85,23 @@ class CameraViewmodel: ObservableObject {
                     self.error = true
                     self.showResponsePopup = true
                 }
+            }
+        }
+    }
+    
+    
+    func sendScanEvent(scanTime: Int, thrashType: String) {
+        let db = Firestore.firestore()
+        let data: [String: Any] = [
+            "time": scanTime,
+            "trash_type": thrashType,
+        ]
+        
+        db.collection("scans").addDocument(data: data) { error in
+            if let error = error {
+                print("Error adding document: \(error)")
+            } else {
+                print("Document added successfully")
             }
         }
     }
