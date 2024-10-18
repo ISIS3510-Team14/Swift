@@ -7,10 +7,11 @@ struct HomeView: View {
     
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
+    @State private var isShowingProfile = false  // Estado para mostrar la vista de perfil
 
     var body: some View {
         ZStack {
-            // White background that extends to all edges
+            // Fondo blanco que se extiende a todos los bordes
             Color.white.edgesIgnoringSafeArea(.all)
             
             TabView(selection: $selectedTab) {
@@ -18,8 +19,31 @@ struct HomeView: View {
                 NavigationView {
                     ScrollView {
                         VStack {
-                            // Reusing the TopBarView and passing the user profile picture
-                            TopBarView(profilePictureURL: userProfile.picture)
+                            // Logo e imagen de perfil
+                            HStack {
+                                Image("logoBigger")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                Spacer()
+                                // Botón que muestra la vista de perfil
+                                Button(action: {
+                                    isShowingProfile = true  // Muestra la vista de perfil
+                                }) {
+                                    AsyncImage(url: URL(string: userProfile.picture)) { image in
+                                        image
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .clipShape(Circle())
+                                    } placeholder: {
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .clipShape(Circle())
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 20)
                             
                             // Saludo al usuario con solo el primer nombre
                             let firstName = userProfile.name.components(separatedBy: " ").first ?? userProfile.name
@@ -55,15 +79,15 @@ struct HomeView: View {
                             // Grid con las opciones
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                                    // Botones sin bordes ni fondos grises
                                     Button(action: {
-                                        selectedTab = 1 // Switch to Map tab
+                                        selectedTab = 1 // Cambiar a la pestaña del Mapa
                                     }) {
                                         VStack {
                                             Image("logoMap")
                                                 .resizable()
                                                 .renderingMode(.template)
                                                 .frame(width: 40, height: 40)
-                                                .scaledToFit()
                                             Text("See green points")
                                                 .font(.headline)
                                                 .foregroundColor(.black)
@@ -71,7 +95,7 @@ struct HomeView: View {
                                     }
 
                                     Button(action: {
-                                        selectedTab = 4 // Switch to Scoreboard tab
+                                        selectedTab = 4 // Cambiar a la pestaña de Scoreboard
                                     }) {
                                         VStack {
                                             Image("logoScoreboard")
@@ -85,7 +109,7 @@ struct HomeView: View {
                                     }
 
                                     Button(action: {
-                                        selectedTab = 3 // Switch to Recycle tab
+                                        selectedTab = 3 // Cambiar a la pestaña de Recycle
                                     }) {
                                         VStack {
                                             Image("logoRecycle")
@@ -99,7 +123,7 @@ struct HomeView: View {
                                     }
 
                                     Button(action: {
-                                        // Action for History
+                                        // Acción para History
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -123,7 +147,7 @@ struct HomeView: View {
                                 .padding(.bottom, 10)
 
                             Button(action: {
-                                selectedTab = 2 // Switch to Camera tab
+                                selectedTab = 2 // Cambiar a la pestaña de Camera
                             }) {
                                 Text("Scan")
                                     .font(.headline)
@@ -131,19 +155,6 @@ struct HomeView: View {
                                     .padding()
                                     .frame(width: 220, height: 60)
                                     .background(Color.green)
-                                    .cornerRadius(15)
-                            }
-                            .padding(.bottom, 10)
-                            
-                            Button(action: {
-                                logout()
-                            }) {
-                                Text("Log out")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 220, height: 60)
-                                    .background(Color.red)
                                     .cornerRadius(15)
                             }
                             .padding(.bottom, 40)
@@ -158,8 +169,7 @@ struct HomeView: View {
                 }
                 .tag(0)
 
-                // Map Tab
-                
+                // Otras pestañas (Map, Camera, etc.)
                 ExpandableSearchView(profilePictureURL: userProfile.picture)
                     .tabItem {
                         Image("logoMap")
@@ -168,7 +178,6 @@ struct HomeView: View {
                     }
                     .tag(1)
 
-                // Camera Tab
                 CameraView(profilePictureURL: userProfile.picture)
                     .tabItem {
                         Image("logoCamera")
@@ -177,7 +186,6 @@ struct HomeView: View {
                     }
                     .tag(2)
 
-                // Recycle Tab
                 Text("Recycle View")
                     .tabItem {
                         Image("logoRecycle")
@@ -186,7 +194,6 @@ struct HomeView: View {
                     }
                     .tag(3)
 
-                // Scoreboard Tab
                 Text("Scoreboard View")
                     .tabItem {
                         Image("logoScoreboard")
@@ -200,26 +207,10 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
-        }
-    }
-    
-    func logout() {
-        Auth0
-            .webAuth()
-            .clearSession(federated: false) { result in
-                switch result {
-                case .success:
-                    self.isAuthenticated = false
-                    print("User logged out")
-                case .failure(let error):
-                    print("Failed with: \(error)")
-                }
+            // Presentación de la vista de perfil como un modal
+            .sheet(isPresented: $isShowingProfile) {
+                ProfileView(userProfile: userProfile, isAuthenticated: $isAuthenticated)
             }
-    }
-}
-
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView(userProfile: Profile.empty, isAuthenticated: .constant(true))
+        }
     }
 }
