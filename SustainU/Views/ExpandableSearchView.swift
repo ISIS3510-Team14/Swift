@@ -1,131 +1,103 @@
 import SwiftUI
 import MapKit
 
-struct CollectionPoint: Identifiable {
-    let id = UUID()
-    let name: String
-    let location: String
-    let materials: String
-    let latitude: Double
-    let longitude: Double
-    
-    var coordinate: CLLocationCoordinate2D{
-        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-}
-
 struct ExpandableSearchView: View {
-    @StateObject private var locationManager = LocationManager()
-    @State private var searchText = ""
-    @State private var offset: CGFloat = 500 // Inicia parcialmente visible
+    @StateObject private var viewModel = ExpandableSearchViewModel()
+    @FocusState private var isSearchFocused: Bool
     @GestureState private var draggingOffset: CGFloat = 0
-    @State private var userTrackingMode: MKUserTrackingMode = .none
-    @State private var selectedPoint: CollectionPoint?
-    @State private var isNavigatingToDetail = false
+    @ObservedObject var collectionPointViewModel: CollectionPointViewModel
     
-    let maxHeight: CGFloat = UIScreen.main.bounds.height - 100
-    let minHeight: CGFloat = 500
-    
-    let collectionPoints = [
-        CollectionPoint(name: "El Bobo", location: "Between buildings C and B", materials: "Recyclables and Organic", latitude: 37.3347302, longitude: -122.0089189),
-        CollectionPoint(name: "Carlos Pacheco Devia", location: "3rd and 4th floor near the elevators", materials: "Organic, cardboard, glass", latitude: 4.601836, longitude: -74.065348),
-        CollectionPoint(name: "Mario Laserna building", location: "6th floor, next to the elevators", materials: "Organic, plastic and cardboard", latitude: 4.602814, longitude: -74.064313),
-        CollectionPoint(name: "La Gata Golosa", location: "between restrooms and basketball court", materials: "Containers, organic and plastic", latitude: 4.603397, longitude: -74.066441)
-    ]
-    
-    var filteredPoints: [CollectionPoint] {
-        if searchText.isEmpty {
-            return collectionPoints
-        } else {
-            return collectionPoints.filter { point in
-                point.name.lowercased().contains(searchText.lowercased())
-            }
-        }
-    }
+    let profilePictureURL: String
     
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
-                MapView(locationManager: locationManager,
-                        userTrackingMode: $userTrackingMode,
-                        collectionPoints: collectionPoints,
+            ZStack(alignment: .top) {
+                MapView(locationManager: viewModel.locationManager,
+                        userTrackingMode: $viewModel.userTrackingMode,
+                        collectionPoints: viewModel.collectionPointViewModel.collectionPoints,
                         onAnnotationTap: { point in
-                            self.selectedPoint = point
-                            self.isNavigatingToDetail = true
+                            viewModel.selectedPoint = point
+                            viewModel.isNavigatingToDetail = true
                         })
                     .edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: 15) {
-                    Capsule()
-                        .fill(Color.secondary)
-                        .frame(width: 60, height: 4)
-                        .padding(.top, 8)
-                    
-                    Text("Find collection points near you")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    SearchBarView(searchText: $searchText)
-                    
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 20) {
-                            ForEach(filteredPoints) { point in
-                                NavigationLink(destination: CollectionPointDetailView(point: point)) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        HStack {
-                                            Image(systemName: "mappin.circle.fill")
-                                                .foregroundColor(.green)
-                                            Text(point.name)
-                                                .font(.headline)
-                                        }
-                                        Text(point.location)
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                        Text(point.materials)
-                                            .font(.subheadline)
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                        }
-                        .padding(.top)
+                    .safeAreaInset(edge: .top) {
+                        Color.clear.frame(height: 0)
                     }
-                }
-                .padding(.horizontal)
-                .frame(maxHeight: maxHeight)
-                .background(Color(.systemBackground))
-                .cornerRadius(15)
-                .offset(y: max(self.offset + self.draggingOffset, 0))
-                .gesture(
-                    DragGesture()
-                        .updating($draggingOffset) { value, state, _ in
-                            state = value.translation.height
-                        }
-                        .onEnded { value in
-                            withAnimation(.spring()) {
-                                let dragHeight = value.translation.height
-                                let dragThreshold = self.maxHeight * 0.3
-                                if dragHeight > dragThreshold {
-                                    self.offset = self.minHeight
-                                } else if -dragHeight > dragThreshold {
-                                    self.offset = 0
-                                } else if self.offset > self.minHeight / 2 {
-                                    self.offset = self.minHeight
-                                } else {
-                                    self.offset = 0
+                
+                VStack(spacing: 0) {
+                    Color.clear
+                        .frame(height: (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
+                        .windows.first?.safeAreaInsets.top ?? 20)
+                    
+                    TopBarView(profilePictureURL: profilePictureURL)
+                    
+                    Spacer()
+                    
+                    VStack(spacing: 15) {
+                        Capsule()
+                            .fill(Color.secondary)
+                            .frame(width: 60, height: 4)
+                            .padding(.top, 8)
+                        
+                        Text("Find collection points near you")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        SearchBarView(searchText: $viewModel.searchText, focused: $isSearchFocused)
+                            .focused($isSearchFocused)
+                            .onChange(of: viewModel.searchText) { newValue in
+                                viewModel.isTyping = !newValue.isEmpty
+                            }
+                        
+                        ScrollView {
+                            LazyVStack(alignment: .leading, spacing: 20) {
+                                ForEach(viewModel.filteredPoints) { point in
+                                    NavigationLink(destination: CollectionPointDetailView(point: point)
+                                        .onAppear {
+                                                                                collectionPointViewModel.incrementCount(for: point)
+                                                                            }) {
+                                        HStack(alignment: .top, spacing: 10) {
+                                            Image("custom-pin-image")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 25, height: 25)
+                                            
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(point.name)
+                                                    .font(.headline)
+                                                    .foregroundColor(.primary)
+                                                
+                                                Text(point.location)
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.gray)
+                                                
+                                                Text(point.materials)
+                                                    .font(.subheadline)
+                                                    .foregroundColor(Color("blueLogoColor"))
+                                            }
+                                        }
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
+                            .padding(.top)
                         }
-                )
+                    }
+                    .padding(.horizontal)
+                    .frame(maxHeight: viewModel.maxHeight)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(15)
+                    .offset(y: viewModel.calculateOffset(with: draggingOffset))
+                    .gesture(dragGesture)
+                }
                 
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
                         Button(action: {
-                            locationManager.startUpdatingLocation()
-                            userTrackingMode = .follow
+                            viewModel.startUpdatingLocation()
+                            viewModel.userTrackingMode = .follow
                         }) {
                             Image(systemName: "location.fill")
                                 .padding()
@@ -139,23 +111,44 @@ struct ExpandableSearchView: View {
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
-                locationManager.startUpdatingLocation()
+                viewModel.startUpdatingLocation()
+                viewModel.setupKeyboardObservers()
+            }
+            .onDisappear {
+                viewModel.removeKeyboardObservers()
             }
             .background(
-                NavigationLink(destination: Group {
-                    if let point = selectedPoint {
-                        CollectionPointDetailView(point: point)
-                    }
-                }, isActive: $isNavigatingToDetail) {
+                NavigationLink(
+                    destination: CollectionPointDetailView(
+                        point: viewModel.selectedPoint ?? CollectionPoint(
+                            id: UUID(),
+                            name: "",
+                            location: "",
+                            materials: "",
+                            latitude: 0,
+                            longitude: 0,
+                            imageName: "default-image",
+                            documentID: "",
+                            count: 0
+                        )
+                    ),
+                    isActive: $viewModel.isNavigatingToDetail
+                ) {
                     EmptyView()
                 }
             )
         }
     }
-}
-
-struct ExpandableSearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExpandableSearchView()
+    
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .updating($draggingOffset) { value, state, _ in
+                state = value.translation.height
+            }
+            .onEnded { value in
+                viewModel.handleDragGesture(value: value)
+                isSearchFocused = false
+            }
     }
 }
+
