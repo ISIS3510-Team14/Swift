@@ -6,7 +6,8 @@ struct LoginView: View {
     var body: some View {
         VStack {
             Spacer()
-            // Mostrar la imagen al inicio de la vista
+            
+            // Logo y título
             Image("peopleCartoonLogo")
                 .resizable()
                 .scaledToFit()
@@ -24,6 +25,15 @@ struct LoginView: View {
                 .foregroundColor(.black)
                 .padding(.bottom, 40)
             
+            // Aviso en rojo cuando no hay conexión
+            if !viewModel.isConnected {
+                Text("No internet connection")
+                    .foregroundColor(.red)
+                    .font(.headline)
+                    .padding(.bottom, 10)
+            }
+            
+            // Botón de inicio de sesión
             Button(action: {
                 viewModel.authenticate()
             }) {
@@ -32,19 +42,33 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .padding()
                     .frame(width: 220, height: 60)
-                    .background(Color("greenLogoColor"))
+                    .background(viewModel.isConnected ? Color("greenLogoColor") : Color.gray)
                     .cornerRadius(15.0)
             }
+            .disabled(!viewModel.isConnected) // Desactivar el botón si no hay conexión
             .padding(.bottom, 20)
-
+            
+            // Botón de Retry si no hay conexión
+            if !viewModel.isConnected {
+                Button(action: {
+                    viewModel.authenticate() // Reintenta la autenticación
+                }) {
+                    Text("Retry")
+                        .foregroundColor(.blue)
+                }
+                .padding(.top, 10)
+            }
+            
             Spacer()
+        }
+        .onAppear {
+            viewModel.loadSession() // Cargar la sesión al aparecer
         }
     }
 }
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        // Usar la instancia Singleton en lugar de crear una nueva
         LoginView(viewModel: LoginViewModel.shared)
     }
 }
