@@ -1,21 +1,37 @@
 import SwiftUI
 import Auth0
+import Combine
 
 class LoginViewModel: ObservableObject {
-    static let shared = LoginViewModel() // Singleton
+    
+    private var cancellables = Set<AnyCancellable>()
+
+    
+    static let shared = LoginViewModel()
     
     @Published var isAuthenticated: Bool = false
     @Published var userProfile: Profile = .empty
-    @Published var isConnected: Bool = false  // Nueva propiedad para el estado de conexión
+    @Published var isConnected: Bool = false
+    @Published var showBackOnlineMessage: Bool = false // Nueva propiedad para mostrar el mensaje de "Back online"
     
-    private let connectivityManager = ConnectivityManager.shared // Suponiendo que tienes un singleton aquí
-    
+    let connectivityManager = ConnectivityManager.shared
+
     private init() {
-        // Observa los cambios de conexión
         connectivityManager.$isConnected
             .receive(on: RunLoop.main)
-            .assign(to: &$isConnected)
+            .sink { [weak self] isConnected in
+                self?.isConnected = isConnected
+                if isConnected {
+                    self?.showBackOnlineMessage = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self?.showBackOnlineMessage = false
+                    }
+                }
+            }
+            .store(in: &cancellables) // Ahora debería reconocer "cancellables"
     }
+
+
     
     func authenticate() {
         Auth0

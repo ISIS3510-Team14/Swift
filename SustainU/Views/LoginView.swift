@@ -7,7 +7,6 @@ struct LoginView: View {
         VStack {
             Spacer()
             
-            // Logo y título
             Image("peopleCartoonLogo")
                 .resizable()
                 .scaledToFit()
@@ -25,50 +24,65 @@ struct LoginView: View {
                 .foregroundColor(.black)
                 .padding(.bottom, 40)
             
-            // Aviso en rojo cuando no hay conexión
-            if !viewModel.isConnected {
+            if viewModel.isConnected {
+                Button(action: {
+                    viewModel.authenticate()
+                }) {
+                    Text("Log in / Sign up")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 220, height: 60)
+                        .background(Color("greenLogoColor"))
+                        .cornerRadius(15.0)
+                }
+            } else {
                 Text("No internet connection")
                     .foregroundColor(.red)
-                    .font(.headline)
                     .padding(.bottom, 10)
-            }
-            
-            // Botón de inicio de sesión
-            Button(action: {
-                viewModel.authenticate()
-            }) {
-                Text("Log in / Sign up")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 220, height: 60)
-                    .background(viewModel.isConnected ? Color("greenLogoColor") : Color.gray)
-                    .cornerRadius(15.0)
-            }
-            .disabled(!viewModel.isConnected) // Desactivar el botón si no hay conexión
-            .padding(.bottom, 20)
-            
-            // Botón de Retry si no hay conexión
-            if !viewModel.isConnected {
+                
                 Button(action: {
-                    viewModel.authenticate() // Reintenta la autenticación
+                    viewModel.connectivityManager.checkConnection()
                 }) {
-                    Text("Retry")
-                        .foregroundColor(.blue)
+                    Text("Retry connection")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 220, height: 60)
+                        .background(Color.red)
+                        .cornerRadius(15.0)
                 }
-                .padding(.top, 10)
+                .padding(.bottom, 20)
             }
-            
+
             Spacer()
         }
-        .onAppear {
-            viewModel.loadSession() // Cargar la sesión al aparecer
+        .onChange(of: viewModel.isConnected) { isConnected in
+            if isConnected {
+                // Ejecuta acciones cuando se recupere la conexión
+                viewModel.showBackOnlineMessage = true
+            }
         }
-    }
-}
-
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView(viewModel: LoginViewModel.shared)
+        .overlay(
+            Group {
+                if viewModel.showBackOnlineMessage {
+                    Text("Back online")
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.green)
+                        .cornerRadius(8)
+                        .transition(.opacity)
+                        .animation(.easeInOut)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                viewModel.showBackOnlineMessage = false
+                            }
+                        }
+                        .padding(.top, 20)
+                }
+            },
+            alignment: .top
+        )
     }
 }

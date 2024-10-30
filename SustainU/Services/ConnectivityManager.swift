@@ -9,19 +9,30 @@ import Network
 import Combine
 
 class ConnectivityManager: ObservableObject {
-    // Singleton instance
     static let shared = ConnectivityManager()
+    private var monitor: NWPathMonitor
+    private var queue = DispatchQueue(label: "NetworkMonitor")
     
-    // Observable property to detect connection status
-    @Published var isConnected: Bool = true
-
-    private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "NetworkMonitor")
+    @Published var isConnected: Bool = false
 
     private init() {
+        monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { path in
             DispatchQueue.main.async {
-                self.isConnected = (path.status == .satisfied)
+                self.isConnected = path.status == .satisfied
+            }
+        }
+        monitor.start(queue: queue)
+    }
+
+    // Método para re-verificar la conexión
+    func checkConnection() {
+        // Aquí podrías verificar el estado manualmente o reiniciar el monitor si es necesario.
+        monitor.cancel() // Cancela el monitor existente
+        monitor = NWPathMonitor() // Crea un nuevo monitor
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                self.isConnected = path.status == .satisfied
             }
         }
         monitor.start(queue: queue)
