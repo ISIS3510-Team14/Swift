@@ -6,7 +6,7 @@ struct LoginView: View {
     var body: some View {
         VStack {
             Spacer()
-            // Mostrar la imagen al inicio de la vista
+            
             Image("peopleCartoonLogo")
                 .resizable()
                 .scaledToFit()
@@ -24,27 +24,65 @@ struct LoginView: View {
                 .foregroundColor(.black)
                 .padding(.bottom, 40)
             
-            Button(action: {
-                viewModel.authenticate()
-            }) {
-                Text("Log in / Sign up")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 220, height: 60)
-                    .background(Color("greenLogoColor"))
-                    .cornerRadius(15.0)
+            if viewModel.isConnected {
+                Button(action: {
+                    viewModel.authenticate()
+                }) {
+                    Text("Log in / Sign up")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 220, height: 60)
+                        .background(Color("greenLogoColor"))
+                        .cornerRadius(15.0)
+                }
+            } else {
+                Text("No internet connection")
+                    .foregroundColor(.red)
+                    .padding(.bottom, 10)
+                
+                Button(action: {
+                    viewModel.connectivityManager.checkConnection()
+                }) {
+                    Text("Retry connection")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 220, height: 60)
+                        .background(Color.red)
+                        .cornerRadius(15.0)
+                }
+                .padding(.bottom, 20)
             }
-            .padding(.bottom, 20)
 
             Spacer()
         }
-    }
-}
-
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        // Usar la instancia Singleton en lugar de crear una nueva
-        LoginView(viewModel: LoginViewModel.shared)
+        .onChange(of: viewModel.isConnected) { isConnected in
+            if isConnected {
+                // Ejecuta acciones cuando se recupere la conexión
+                viewModel.showBackOnlineMessage = true
+            }
+        }
+        .overlay(
+            Group {
+                if viewModel.showBackOnlineMessage {
+                    Text("Back online")
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.green)
+                        .cornerRadius(8)
+                        .transition(.opacity)
+                        .animation(.easeInOut)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                viewModel.showBackOnlineMessage = false
+                            }
+                        }
+                        .padding(.top, 20)
+                }
+            },
+            alignment: .top
+        )
     }
 }

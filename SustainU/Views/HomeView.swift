@@ -2,7 +2,10 @@ import SwiftUI
 import Auth0
 
 struct HomeView: View {
+    
     var userProfile: Profile
+    
+    @ObservedObject private var viewModel = LoginViewModel.shared
     @Binding var isAuthenticated: Bool
     
     @State private var selectedTab: Int = 0
@@ -30,7 +33,7 @@ struct HomeView: View {
                                 Button(action: {
                                     isShowingProfile = true  // Muestra la vista de perfil
                                 }) {
-                                    AsyncImage(url: URL(string: userProfile.picture)) { image in
+                                    AsyncImage(url: URL(string: viewModel.userProfile.picture)) { image in
                                         image
                                             .resizable()
                                             .frame(width: 40, height: 40)
@@ -47,7 +50,7 @@ struct HomeView: View {
                             .padding(.top, 20)
                             
                             // Saludo al usuario con solo el primer nombre
-                            let firstName = userProfile.name.components(separatedBy: " ").first ?? userProfile.name
+                            let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
@@ -171,20 +174,18 @@ struct HomeView: View {
                 .tag(0)
 
                 // Map Tab
-                
-                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: userProfile.picture)
-
-                .tabItem {
+                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: viewModel.userProfile.picture)
+                    .tabItem {
                         Image("logoMap")
                             .renderingMode(.template)
                         Text("Map")
                     }
                     .tag(1)
                     .onAppear {
-                                            collectionPointViewModel.incrementMapCount()
-                                        }
+                        collectionPointViewModel.incrementMapCount()
+                    }
 
-                CameraView(profilePictureURL: userProfile.picture)
+                CameraView(profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
@@ -213,9 +214,11 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
+        
+            
             // Presentación de la vista de perfil como un modal
             .sheet(isPresented: $isShowingProfile) {
-                ProfileView(userProfile: userProfile, isAuthenticated: $isAuthenticated)
+                ProfileView(userProfile: viewModel.userProfile, isAuthenticated: $isAuthenticated)
             }
         }
     }
