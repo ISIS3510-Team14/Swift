@@ -14,6 +14,7 @@
 		2BD5A2EF2CD17C18009D9624 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */; };
 		2BD5A2F22CD17EAB009D9624 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 2BD5A2F12CD17EAB009D9624 /* KeychainAccess */; };
 		2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */; };
+		2BD5A2F62CD57BD3009D9624 /* LoginInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */; };
 		2BED14C22CA89D90003F1862 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14B92CA89D90003F1862 /* ProfileModel.swift */; };
 		2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BA2CA89D90003F1862 /* ContentView.swift */; };
 		2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BC2CA89D90003F1862 /* GridMenuView.swift */; };
@@ -97,6 +98,7 @@
 		2BD5A2EC2CD17889009D9624 /* ConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityManager.swift; sourceTree = "<group>"; };
 		2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInstructionsView.swift; sourceTree = "<group>"; };
 		2BED14B92CA89D90003F1862 /* ProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		2BED14BA2CA89D90003F1862 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2BED14BC2CA89D90003F1862 /* GridMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridMenuView.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 		A108714B2CAE13FC008312B0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
 				2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */,
 				2BED14BE2CA89D90003F1862 /* CameraView.swift */,
 				A177611F2CC1AAF300F10420 /* CameraPopupView.swift */,
@@ -212,8 +215,8 @@
 				A10871472CAE0F5D008312B0 /* ExpandableSearchView.swift */,
 				A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */,
 				2BED14C02CA89D90003F1862 /* HomeView.swift */,
-				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
 				A108714C2CAE15EE008312B0 /* UIKit */,
+				2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -270,12 +273,12 @@
 			isa = PBXGroup;
 			children = (
 				2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */,
-				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
 				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
 				A10871392CAE0EC5008312B0 /* APIConfig.swift */,
 				A17760E72CC027C300F10420 /* Location.gpx */,
+				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A10871512CAE1683008312B0 /* Resources */,
 				A10871492CAE1387008312B0 /* Services */,
 				CD7FB2852CA8A3F000EE6601 /* Models */,
@@ -510,6 +513,7 @@
 				A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */,
 				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
 				2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */,
+				2BD5A2F62CD57BD3009D9624 /* LoginInstructionsView.swift in Sources */,
 				A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */,
 				A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */,
 				A17761202CC1AAF300F10420 /* CameraPopupView.swift in Sources */,
