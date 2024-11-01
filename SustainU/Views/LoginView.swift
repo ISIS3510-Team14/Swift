@@ -2,7 +2,8 @@ import SwiftUI
 
 struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
-    
+    @State private var showInstructions = false  // New state variable
+
     var body: some View {
         VStack {
             Spacer()
@@ -36,6 +37,20 @@ struct LoginView: View {
                         .background(Color("greenLogoColor"))
                         .cornerRadius(15.0)
                 }
+                
+                // New "Login Instructions" link
+                Button(action: {
+                    showInstructions = true  // Show the instructions view when tapped
+                }) {
+                    Text("Login Instructions")
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
+                        .underline()
+                }
+                .padding(.top, 10)
+                .sheet(isPresented: $showInstructions) {
+                    LoginInstructionsView()  // Present the instructions view
+                }
             } else {
                 Text("No internet connection")
                     .foregroundColor(.red)
@@ -59,7 +74,6 @@ struct LoginView: View {
         }
         .onChange(of: viewModel.isConnected) { isConnected in
             if isConnected {
-                // Ejecuta acciones cuando se recupere la conexión
                 viewModel.showBackOnlineMessage = true
             }
         }
@@ -73,7 +87,7 @@ struct LoginView: View {
                         .background(Color.green)
                         .cornerRadius(8)
                         .transition(.opacity)
-                        .animation(.easeInOut)
+                        .animation(.easeInOut, value: viewModel.showBackOnlineMessage)
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                 viewModel.showBackOnlineMessage = false
