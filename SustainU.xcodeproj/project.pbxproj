@@ -10,6 +10,11 @@
 		2BD5A2E72CC29361009D9624 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2E62CC29361009D9624 /* LoginViewModel.swift */; };
 		2BD5A2E92CC2C01D009D9624 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */; };
 		2BD5A2EB2CC2C1F7009D9624 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */; };
+		2BD5A2ED2CD17889009D9624 /* ConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2EC2CD17889009D9624 /* ConnectivityManager.swift */; };
+		2BD5A2EF2CD17C18009D9624 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */; };
+		2BD5A2F22CD17EAB009D9624 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 2BD5A2F12CD17EAB009D9624 /* KeychainAccess */; };
+		2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */; };
+		2BD5A2F62CD57BD3009D9624 /* LoginInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */; };
 		2BED14C22CA89D90003F1862 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14B92CA89D90003F1862 /* ProfileModel.swift */; };
 		2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BA2CA89D90003F1862 /* ContentView.swift */; };
 		2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14BC2CA89D90003F1862 /* GridMenuView.swift */; };
@@ -93,6 +98,10 @@
 		2BD5A2E62CC29361009D9624 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		2BD5A2EC2CD17889009D9624 /* ConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityManager.swift; sourceTree = "<group>"; };
+		2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInstructionsView.swift; sourceTree = "<group>"; };
 		2BED14B92CA89D90003F1862 /* ProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		2BED14BA2CA89D90003F1862 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2BED14BC2CA89D90003F1862 /* GridMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridMenuView.swift; sourceTree = "<group>"; };
@@ -158,6 +167,7 @@
 				A17760FF2CC19FF600F10420 /* FirebaseCrashlytics in Frameworks */,
 				A17761132CC19FF600F10420 /* FirebaseMessaging in Frameworks */,
 				A17761112CC19FF600F10420 /* FirebaseMLModelDownloader in Frameworks */,
+				2BD5A2F22CD17EAB009D9624 /* KeychainAccess in Frameworks */,
 				A17761152CC19FF600F10420 /* FirebasePerformance in Frameworks */,
 				A17761012CC19FF600F10420 /* FirebaseDatabase in Frameworks */,
 				A17760FD2CC19FF600F10420 /* FirebaseCore in Frameworks */,
@@ -192,6 +202,9 @@
 				A108713D2CAE0F04008312B0 /* LocationManager.swift */,
 				A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */,
 				A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */,
+				2BD5A2EC2CD17889009D9624 /* ConnectivityManager.swift */,
+				2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */,
+				2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -199,7 +212,9 @@
 		A108714B2CAE13FC008312B0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
 				2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */,
+				2BED14C02CA89D90003F1862 /* HomeView.swift */,
 				2BED14BE2CA89D90003F1862 /* CameraView.swift */,
 				A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */,
 				A177611F2CC1AAF300F10420 /* CameraPopupView.swift */,
@@ -210,8 +225,7 @@
 				A10871432CAE0F4F008312B0 /* SearchBarView.swift */,
 				A10871472CAE0F5D008312B0 /* ExpandableSearchView.swift */,
 				A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */,
-				2BED14C02CA89D90003F1862 /* HomeView.swift */,
-				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
+				2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */,
 				A108714C2CAE15EE008312B0 /* UIKit */,
 			);
 			path = Views;
@@ -270,12 +284,12 @@
 			children = (
 				A10610082CD5BFFD00D5D553 /* Info.plist */,
 				2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */,
-				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
 				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
 				A10610002CD58F6F00D5D553 /* APIConfig.swift */,
 				A17760E72CC027C300F10420 /* Location.gpx */,
+				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A10871512CAE1683008312B0 /* Resources */,
 				A10871492CAE1387008312B0 /* Services */,
 				CD7FB2852CA8A3F000EE6601 /* Models */,
@@ -364,6 +378,7 @@
 				A17761182CC19FF600F10420 /* FirebaseStorage */,
 				A177611A2CC19FF600F10420 /* FirebaseStorageCombine-Community */,
 				A177611C2CC19FF600F10420 /* FirebaseVertexAI-Preview */,
+				2BD5A2F12CD17EAB009D9624 /* KeychainAccess */,
 			);
 			productName = SustainU;
 			productReference = CD43FF4A2C9CF0FC0058AE09 /* SustainU.app */;
@@ -441,6 +456,7 @@
 			packageReferences = (
 				2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */,
 				A17760ED2CC19D6300F10420 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				2BD5A2F02CD17EAB009D9624 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = CD43FF4B2C9CF0FC0058AE09 /* Products */;
 			projectDirPath = "";
@@ -494,8 +510,12 @@
 				A10871482CAE0F5D008312B0 /* ExpandableSearchView.swift in Sources */,
 				A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */,
 				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
+				2BD5A2ED2CD17889009D9624 /* ConnectivityManager.swift in Sources */,
+				2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */,
 				CD0E4AFB2CC1F37700A220F3 /* CameraViewmodel.swift in Sources */,
 				A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */,
+				2BD5A2EF2CD17C18009D9624 /* KeychainService.swift in Sources */,
+				A108713A2CAE0EC5008312B0 /* APIConfig.swift in Sources */,
 				A10871422CAE0F3B008312B0 /* ItemModel.swift in Sources */,
 				A108713C2CAE0EED008312B0 /* MapView.swift in Sources */,
 				2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */,
@@ -507,6 +527,7 @@
 				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
 				A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */,
 				2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */,
+				2BD5A2F62CD57BD3009D9624 /* LoginInstructionsView.swift in Sources */,
 				A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */,
 				A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */,
 				A17761202CC1AAF300F10420 /* CameraPopupView.swift in Sources */,
@@ -681,7 +702,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
-				DEVELOPMENT_TEAM = F6L8ZM8N27;
+				DEVELOPMENT_TEAM = 96WWBDJ9T7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SustainU/Info.plist;
@@ -863,6 +884,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2BD5A2F02CD17EAB009D9624 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/auth0/Auth0.swift";
@@ -882,6 +911,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2BD5A2F12CD17EAB009D9624 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2BD5A2F02CD17EAB009D9624 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
 		2BED14CE2CA89E02003F1862 /* Auth0 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */;
