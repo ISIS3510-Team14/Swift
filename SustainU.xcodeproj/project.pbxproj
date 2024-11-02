@@ -20,6 +20,7 @@
 		2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */; };
 		2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 2BED14CE2CA89E02003F1862 /* Auth0 */; };
 		A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610002CD58F6F00D5D553 /* APIConfig.swift */; };
+		A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */; };
 		A108713C2CAE0EED008312B0 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713B2CAE0EED008312B0 /* MapView.swift */; };
 		A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713D2CAE0F04008312B0 /* LocationManager.swift */; };
 		A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */; };
@@ -99,6 +100,7 @@
 		2BED14C02CA89D90003F1862 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
 		A10610002CD58F6F00D5D553 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityPopupView.swift; sourceTree = "<group>"; };
 		A108713B2CAE0EED008312B0 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A108713D2CAE0F04008312B0 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionPointDetailView.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 			children = (
 				2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */,
 				2BED14BE2CA89D90003F1862 /* CameraView.swift */,
+				A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */,
 				A177611F2CC1AAF300F10420 /* CameraPopupView.swift */,
 				2BED14BA2CA89D90003F1862 /* ContentView.swift */,
 				A17760E92CC0698000F10420 /* TopBarView.swift */,
@@ -484,6 +487,7 @@
 				A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */,
 				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
 				CD0E4AFB2CC1F37700A220F3 /* CameraViewmodel.swift in Sources */,
+				A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */,
 				A10871422CAE0F3B008312B0 /* ItemModel.swift in Sources */,
 				A108713C2CAE0EED008312B0 /* MapView.swift in Sources */,
 				2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */,

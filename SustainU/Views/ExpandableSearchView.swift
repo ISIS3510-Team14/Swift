@@ -13,7 +13,8 @@ struct ExpandableSearchView: View {
     
     var body: some View {
         NavigationView {
-            ZStack(alignment: .top) {
+            ZStack(alignment: .center) {
+                // MapView Layer
                 MapView(locationManager: viewModel.locationManager,
                        userTrackingMode: $viewModel.userTrackingMode,
                        collectionPoints: collectionPointViewModel.collectionPoints,
@@ -26,6 +27,7 @@ struct ExpandableSearchView: View {
                         Color.clear.frame(height: 0)
                     }
                 
+                // Main Content Layer
                 VStack(spacing: 0) {
                     Color.clear
                         .frame(height: (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
@@ -93,6 +95,7 @@ struct ExpandableSearchView: View {
                     .gesture(dragGesture)
                 }
                 
+                // Location Button Layer
                 VStack {
                     Spacer()
                     HStack {
@@ -109,6 +112,28 @@ struct ExpandableSearchView: View {
                         }
                         .padding()
                     }
+                }
+                
+                // Connectivity Popup Layer
+                if collectionPointViewModel.showConnectivityPopup {
+                    Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            collectionPointViewModel.showConnectivityPopup = false
+                        }
+                    
+                    VStack {
+                        Spacer()
+                        ConnectivityPopupView(
+                            showResponsePopup: $collectionPointViewModel.showConnectivityPopup,
+                            retryAction: {
+                                collectionPointViewModel.retryConnection()
+                            }
+                        )
+                        Spacer()
+                    }
+                    .transition(.scale.combined(with: .opacity))
+                    .animation(.easeInOut, value: collectionPointViewModel.showConnectivityPopup)
                 }
             }
             .navigationViewStyle(StackNavigationViewStyle())

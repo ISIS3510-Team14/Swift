@@ -1,23 +1,51 @@
 import SwiftUI
 import MapKit
 import FirebaseFirestore
+import Network
 
 class CollectionPointViewModel: ObservableObject {
     @Published var collectionPoints: [CollectionPoint] = []
     @Published var isLoading = false
+    @Published var showConnectivityPopup = false
+    @Published var isFirstLaunch = true
+    @Published var hasInternetConnection = false
     
     private var db: Firestore
     private var listener: ListenerRegistration?
+    private let monitor = NWPathMonitor()
+    private let userDefaults = UserDefaults.standard
     
     init() {
-        // Configurar la base de datos
         db = Firestore.firestore()
-        
-        // Iniciar el listener en tiempo real
-        setupRealtimeListener()
-        
-        // Cargar datos del cache primero
-        loadFromCache()
+        isFirstLaunch = !userDefaults.bool(forKey: "hasLaunchedBeforeMap")
+        setupNetworkMonitoring()
+    }
+    
+    private func setupNetworkMonitoring() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.hasInternetConnection = path.status == .satisfied
+                self?.handleConnectivityChange()
+            }
+        }
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        monitor.start(queue: queue)
+    }
+    
+    private func handleConnectivityChange() {
+        if isFirstLaunch {
+            if !hasInternetConnection {
+                showConnectivityPopup = true
+            } else {
+                setupRealtimeListener()
+            }
+        } else {
+            // No es primera vez, intentar cargar del cache primero
+            loadFromCache()
+            if hasInternetConnection {
+                setupRealtimeListener()
+            }
+        }
     }
     
     private func loadFromCache() {
@@ -45,6 +73,11 @@ class CollectionPointViewModel: ObservableObject {
                     return
                 }
                 
+                if self.isFirstLaunch {
+                    self.userDefaults.set(true, forKey: "hasLaunchedBeforeMap")
+                    self.isFirstLaunch = false
+                }
+                
                 self.processSnapshot(snapshot)
             }
     }
@@ -56,7 +89,8 @@ class CollectionPointViewModel: ObservableObject {
         }
         
         DispatchQueue.main.async {
-            self.collectionPoints = documents.compactMap { document -> CollectionPoint? in
+            // Procesar los documentos sin ordenar por ubicación si no hay conexión
+            let points = documents.compactMap { document -> CollectionPoint? in
                 let data = document.data()
                 
                 guard let name = data["name"] as? String,
@@ -80,6 +114,20 @@ class CollectionPointViewModel: ObservableObject {
                     count: count
                 )
             }
+            
+            // Si no hay conexión, mostrar los puntos en orden por defecto (alfabético)
+            if !self.hasInternetConnection {
+                self.collectionPoints = points.sorted { $0.name < $1.name }
+            } else {
+                self.collectionPoints = points
+            }
+        }
+    }
+    
+    func retryConnection() {
+        if hasInternetConnection {
+            showConnectivityPopup = false
+            setupRealtimeListener()
         }
     }
     
@@ -93,17 +141,19 @@ class CollectionPointViewModel: ObservableObject {
             }
         }
         
-        // Actualizar en Firestore
-        docRef.updateData([
-            "count": FieldValue.increment(Int64(1))
-        ]) { [weak self] error in
-            if let error = error {
-                print("Error updating document: \(error)")
-                // Revertir la actualización local si falla
-                if let self = self,
-                   let index = self.collectionPoints.firstIndex(where: { $0.id == point.id }) {
-                    DispatchQueue.main.async {
-                        self.collectionPoints[index].count -= 1
+        // Solo actualizar en Firestore si hay conexión
+        if hasInternetConnection {
+            docRef.updateData([
+                "count": FieldValue.increment(Int64(1))
+            ]) { [weak self] error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                    // Revertir la actualización local si falla
+                    if let self = self,
+                       let index = self.collectionPoints.firstIndex(where: { $0.id == point.id }) {
+                        DispatchQueue.main.async {
+                            self.collectionPoints[index].count -= 1
+                        }
                     }
                 }
             }
@@ -111,12 +161,11 @@ class CollectionPointViewModel: ObservableObject {
     }
     
     func incrementMapCount() {
-        let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
+        guard hasInternetConnection else { return }
         
-        // Intentar primero desde el cache
+        let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
         query.getDocuments(source: .cache) { [weak self] (querySnapshot, error) in
             if let error = error {
-                // Si falla el cache, intentar desde el servidor
                 self?.incrementMapCountFromServer()
                 return
             }
@@ -141,7 +190,6 @@ class CollectionPointViewModel: ObservableObject {
             if let document = querySnapshot?.documents.first {
                 self?.updateMapCount(document: document)
             } else {
-                // Crear nuevo documento si no existe
                 self?.db.collection("counters").addDocument(data: [
                     "name": "MapView",
                     "count": 1
@@ -161,7 +209,7 @@ class CollectionPointViewModel: ObservableObject {
     }
     
     deinit {
-        // Remover el listener cuando se destruye el ViewModel
         listener?.remove()
+        monitor.cancel()
     }
 }
