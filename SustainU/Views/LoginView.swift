@@ -1,8 +1,18 @@
+//
+//  LoginView.swift
+//  SustainU
+//
+//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
+//
+
 import SwiftUI
 
 struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
-    @State private var showInstructions = false  // New state variable
+    @State private var showInstructions = false
+    @State private var refreshView = false
+
+    //@State private var showHomeView = false
 
     var body: some View {
         VStack {
@@ -25,57 +35,56 @@ struct LoginView: View {
                 .foregroundColor(.black)
                 .padding(.bottom, 40)
             
-            if viewModel.isConnected {
-                Button(action: {
-                    viewModel.authenticate()
-                }) {
-                    Text("Log in / Sign up")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 220, height: 60)
-                        .background(Color("greenLogoColor"))
-                        .cornerRadius(15.0)
-                }
-                
-                // New "Login Instructions" link
-                Button(action: {
-                    showInstructions = true  // Show the instructions view when tapped
-                }) {
-                    Text("Login Instructions")
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
-                        .underline()
-                }
-                .padding(.top, 10)
-                .sheet(isPresented: $showInstructions) {
-                    LoginInstructionsView()  // Present the instructions view
-                }
-            } else {
+            // Login Button
+            Button(action: {
+                viewModel.authenticate()
+            }) {
+                Text("Log in / Sign up")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(width: 220, height: 60)
+                    .background(Color("greenLogoColor"))
+                    .cornerRadius(15.0)
+            }
+            .disabled(!viewModel.isConnected && !viewModel.hasSavedSession)
+            // Disable button only if there's no internet and no saved session
+            
+            // "Login Instructions" link
+            Button(action: {
+                showInstructions = true
+            }) {
+                Text("Login Instructions")
+                    .font(.subheadline)
+                    .foregroundColor(.blue)
+                    .underline()
+            }
+            .padding(.top, 10)
+            .sheet(isPresented: $showInstructions) {
+                LoginInstructionsView()
+            }
+            
+            // Show "No internet connection" message if not connected
+            if !viewModel.isConnected {
                 Text("No internet connection")
                     .foregroundColor(.red)
-                    .padding(.bottom, 10)
-                
-                Button(action: {
-                    viewModel.connectivityManager.checkConnection()
-                }) {
-                    Text("Retry connection")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 220, height: 60)
-                        .background(Color.red)
-                        .cornerRadius(15.0)
-                }
-                .padding(.bottom, 20)
+                    .padding(.top, 10)
             }
-
+            
             Spacer()
         }
-        .onChange(of: viewModel.isConnected) { isConnected in
-            if isConnected {
-                viewModel.showBackOnlineMessage = true
-            }
+        .onReceive(viewModel.$isConnected) { isConnected in
+                    print("LoginView: isConnected = \(isConnected)")
+                    self.refreshView.toggle()
+                }
+        .id(refreshView)
+        
+        .alert(isPresented: $viewModel.showNoSessionAlert) {
+            Alert(
+                title: Text("No Saved Session"),
+                message: Text("You need an internet connection to log in for the first time."),
+                dismissButton: .default(Text("OK"))
+            )
         }
         .overlay(
             Group {

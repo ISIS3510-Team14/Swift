@@ -1,38 +1,41 @@
+//
+//  ProfileView.swift
+//  SustainU
+//
+//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
+//
+
 import SwiftUI
 import Auth0
 
 struct ProfileView: View {
-    
-    var userProfile: Profile
+    var userProfile: UserProfile
 
-    
-    @ObservedObject private var viewModel = LoginViewModel.shared  // Usamos el LoginViewModel para acceder al perfil
-    @Binding var isAuthenticated: Bool
-    @Environment(\.presentationMode) var presentationMode  // Para cerrar la vista actual
+    @ObservedObject private var viewModel = LoginViewModel.shared
+    //@Binding var isAuthenticated: Bool
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         VStack {
-            // Botón de regreso en la esquina superior izquierda
+            // Back button in the top-left corner
             HStack {
                 Button(action: {
-                    // Acción para regresar al HomeView
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image(systemName: "arrow.backward")  // Ícono de la flecha de salida
+                    Image(systemName: "arrow.backward")
                         .font(.title)
-                        .foregroundColor(Color.green)  // Color de la flecha
+                        .foregroundColor(Color.green)
                 }
                 Spacer()
             }
             .padding(.leading, 20)
             .padding(.top, 10)
 
-            // Imagen circular con inicial del nombre o imagen de perfil
             Spacer()
-                .frame(height: 40)  // Espacio superior adicional
+                .frame(height: 40)
 
-            if let url = URL(string: viewModel.userProfile.picture), NetworkMonitor.shared.isConnected {
-                // Muestra la imagen si hay conexión
+            if let url = URL(string: viewModel.userProfile.picture), ConnectivityManager.shared.isConnected {
+                // Show the image if connected
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
@@ -50,7 +53,7 @@ struct ProfileView: View {
                         .padding()
                 }
             } else {
-                // Muestra la inicial si no hay conexión o no se encuentra la imagen
+                // Show initials if not connected
                 Circle()
                     .fill(Color.red)
                     .frame(width: 120, height: 120)
@@ -61,15 +64,15 @@ struct ProfileView: View {
             }
 
             Spacer()
-                .frame(height: 20)  // Espacio entre la imagen y los datos del usuario
+                .frame(height: 20)
 
-            // Nickname del usuario
+            // User's nickname
             Text(viewModel.userProfile.nickname)
                 .font(.title2)
                 .fontWeight(.bold)
                 .padding(.top)
 
-            // Email del usuario
+            // User's email
             Text("Email: \(viewModel.userProfile.email)")
                 .font(.subheadline)
                 .foregroundColor(.gray)
@@ -77,7 +80,7 @@ struct ProfileView: View {
 
             Spacer()
 
-            // Botón de cierre de sesión
+            // Logout button
             Button(action: {
                 logout()
             }) {
@@ -87,7 +90,6 @@ struct ProfileView: View {
                     Text("Logout")
                         .font(.headline)
                         .fontWeight(.bold)
-                        .background(Color("redLogoColor"))
                 }
                 .foregroundColor(.white)
                 .padding()
@@ -102,32 +104,32 @@ struct ProfileView: View {
     }
 
     func logout() {
-        if NetworkMonitor.shared.isConnected {
-            // Logout en línea a través de Auth0
-            Auth0
-                .webAuth()
-                .clearSession(federated: false) { result in
-                    switch result {
-                    case .success:
-                        self.viewModel.clearLocalSession()
-                        self.isAuthenticated = false
-                        print("User logged out")
-                    case .failure(let error):
-                        print("Failed with: \(error)")
+            if ConnectivityManager.shared.isConnected {
+                // Online logout via Auth0
+                Auth0
+                    .webAuth()
+                    .clearSession(federated: false) { result in
+                        switch result {
+                        case .success:
+                            DispatchQueue.main.async {
+                                self.viewModel.clearLocalSession()
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
+                            print("User logged out")
+                        case .failure(let error):
+                            print("Failed with: \(error)")
+                        }
                     }
+            } else {
+                // Offline logout
+                viewModel.clearLocalSession()
+                DispatchQueue.main.async {
+                    self.presentationMode.wrappedValue.dismiss()
                 }
-        } else {
-            // Logout sin conexión
-            viewModel.clearLocalSession()
-            self.isAuthenticated = false
-            print("Logged out locally without internet connection")
-        }
+                print("Logged out locally without internet connection")
+            }
     }
+
 }
 
 
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView(userProfile: Profile.empty, isAuthenticated: .constant(true))
-    }
-}

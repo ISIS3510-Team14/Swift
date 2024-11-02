@@ -205,6 +205,7 @@
 			children = (
 				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
 				2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */,
+				2BED14C02CA89D90003F1862 /* HomeView.swift */,
 				2BED14BE2CA89D90003F1862 /* CameraView.swift */,
 				A177611F2CC1AAF300F10420 /* CameraPopupView.swift */,
 				2BED14BA2CA89D90003F1862 /* ContentView.swift */,
@@ -214,9 +215,8 @@
 				A10871432CAE0F4F008312B0 /* SearchBarView.swift */,
 				A10871472CAE0F5D008312B0 /* ExpandableSearchView.swift */,
 				A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */,
-				2BED14C02CA89D90003F1862 /* HomeView.swift */,
-				A108714C2CAE15EE008312B0 /* UIKit */,
 				2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */,
+				A108714C2CAE15EE008312B0 /* UIKit */,
 			);
 			path = Views;
 			sourceTree = "<group>";

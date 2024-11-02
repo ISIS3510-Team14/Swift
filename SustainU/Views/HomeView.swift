@@ -3,10 +3,10 @@ import Auth0
 
 struct HomeView: View {
     
-    var userProfile: Profile
+    var userProfile: UserProfile
     
     @ObservedObject private var viewModel = LoginViewModel.shared
-    @Binding var isAuthenticated: Bool
+    //@Binding var isAuthenticated: Bool
     
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
@@ -218,8 +218,10 @@ struct HomeView: View {
             
             // Presentación de la vista de perfil como un modal
             .sheet(isPresented: $isShowingProfile) {
-                ProfileView(userProfile: viewModel.userProfile, isAuthenticated: $isAuthenticated)
+                ProfileView(userProfile: viewModel.userProfile)
             }
+            // Observe authentication state
+            
         }
     }
 }
