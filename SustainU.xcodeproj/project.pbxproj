@@ -21,6 +21,8 @@
 		2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 2BED14CE2CA89E02003F1862 /* Auth0 */; };
 		A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610002CD58F6F00D5D553 /* APIConfig.swift */; };
 		A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */; };
+		A10610052CD5BCA300D5D553 /* OfflineMapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */; };
+		A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */; };
 		A108713C2CAE0EED008312B0 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713B2CAE0EED008312B0 /* MapView.swift */; };
 		A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713D2CAE0F04008312B0 /* LocationManager.swift */; };
 		A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */; };
@@ -101,6 +103,9 @@
 		2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
 		A10610002CD58F6F00D5D553 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
 		A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityPopupView.swift; sourceTree = "<group>"; };
+		A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapManager.swift; sourceTree = "<group>"; };
+		A10610082CD5BFFD00D5D553 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMapCacheManager.swift; sourceTree = "<group>"; };
 		A108713B2CAE0EED008312B0 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A108713D2CAE0F04008312B0 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionPointDetailView.swift; sourceTree = "<group>"; };
@@ -185,6 +190,8 @@
 			children = (
 				CD7FB28A2CA8A51600EE6601 /* RequestService.swift */,
 				A108713D2CAE0F04008312B0 /* LocationManager.swift */,
+				A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */,
+				A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -261,6 +268,7 @@
 		CD43FF4C2C9CF0FC0058AE09 /* SustainU */ = {
 			isa = PBXGroup;
 			children = (
+				A10610082CD5BFFD00D5D553 /* Info.plist */,
 				2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */,
 				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
@@ -497,6 +505,7 @@
 				A17760EA2CC0698000F10420 /* TopBarView.swift in Sources */,
 				A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */,
 				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
+				A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */,
 				2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */,
 				A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */,
 				A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */,
@@ -507,6 +516,7 @@
 				A10871442CAE0F4F008312B0 /* SearchBarView.swift in Sources */,
 				CD7FB2872CA8A45A00EE6601 /* RequestModel.swift in Sources */,
 				A1381FCC2CC203150045993C /* MapViewModel.swift in Sources */,
+				A10610052CD5BCA300D5D553 /* OfflineMapManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,6 +684,8 @@
 				DEVELOPMENT_TEAM = F6L8ZM8N27;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SustainU/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need to access your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to access your location";
@@ -709,6 +721,8 @@
 				DEVELOPMENT_TEAM = 9RLS8R4G4M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SustainU/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need to access your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to access your location";

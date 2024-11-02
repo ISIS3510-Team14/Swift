@@ -8,6 +8,10 @@ struct MapView: UIViewRepresentable {
     var collectionPoints: [CollectionPoint]
     var onAnnotationTap: (CollectionPoint) -> Void
     @State private var hasInitiallyZoomed: Bool = false
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -15,6 +19,7 @@ struct MapView: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.isPitchEnabled = true
         mapView.isRotateEnabled = true
+        mapView.mapType = .standard
         
         // Add compass to the map
         let compass = MKCompassButton(mapView: mapView)
@@ -30,13 +35,11 @@ struct MapView: UIViewRepresentable {
         userTrackingButton.translatesAutoresizingMaskIntoConstraints = false
         mapView.addSubview(userTrackingButton)
         
-        // Position the compass in the top-right corner
+        // Position the compass and tracking button
         compass.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             compass.topAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.topAnchor, constant: 100),
             compass.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -10),
-            
-            // Position the user tracking button below the compass
             userTrackingButton.topAnchor.constraint(equalTo: compass.bottomAnchor, constant: 10),
             userTrackingButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -10)
         ])
@@ -47,15 +50,22 @@ struct MapView: UIViewRepresentable {
     func updateUIView(_ view: MKMapView, context: Context) {
         updateAnnotations(from: view)
         
-        // Center on user location only once when the view first loads
         if !hasInitiallyZoomed, let userLocation = locationManager.userLocation {
-            zoomToUserLocation(mapView: view, userLocation: userLocation)
+            let region = MKCoordinateRegion(
+                center: userLocation,
+                latitudinalMeters: 500,
+                longitudinalMeters: 500
+            )
+            view.setRegion(region, animated: true)
+            
+            // Cache the initial region
+            AppleMapCacheManager.shared.cacheMapRegion(region, for: view)
+            
             DispatchQueue.main.async {
                 self.hasInitiallyZoomed = true
             }
         }
         
-        // Update tracking mode only if it's not .none
         if userTrackingMode != .none {
             view.setUserTrackingMode(userTrackingMode, animated: true)
         }
@@ -78,10 +88,9 @@ struct MapView: UIViewRepresentable {
     private func zoomToUserLocation(mapView: MKMapView, userLocation: CLLocationCoordinate2D) {
         let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 500, longitudinalMeters: 500)
         mapView.setRegion(region, animated: true)
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        
+        // Cache the region when zooming
+        AppleMapCacheManager.shared.cacheMapRegion(region, for: mapView)
     }
 
     class Coordinator: NSObject, MKMapViewDelegate {
@@ -100,17 +109,18 @@ struct MapView: UIViewRepresentable {
             if annotationView == nil {
                 annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 annotationView?.canShowCallout = true
-               
+                
+                // Añadir el botón de información
                 let infoButton = UIButton(type: .detailDisclosure)
                 annotationView?.rightCalloutAccessoryView = infoButton
             } else {
                 annotationView?.annotation = annotation
             }
 
-            // Set the custom image
+            // Usar la misma imagen que en la lista
             annotationView?.image = UIImage(named: "custom-pin-image")
-           
-            // Optionally, adjust the size of the image
+            
+            // Ajustar el tamaño del pin
             annotationView?.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
 
             return annotationView
@@ -118,8 +128,13 @@ struct MapView: UIViewRepresentable {
 
         func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
             guard let coordinates = view.annotation?.coordinate else { return }
-            if let collectionPoint = parent.collectionPoints.first(where: { $0.coordinate.latitude == coordinates.latitude && $0.coordinate.longitude == coordinates.longitude }) {
-                parent.onAnnotationTap(collectionPoint)
+            if let collectionPoint = parent.collectionPoints.first(where: {
+                $0.coordinate.latitude == coordinates.latitude &&
+                $0.coordinate.longitude == coordinates.longitude
+            }) {
+                DispatchQueue.main.async {
+                    self.parent.onAnnotationTap(collectionPoint)
+                }
             }
         }
 
@@ -127,6 +142,10 @@ struct MapView: UIViewRepresentable {
             DispatchQueue.main.async {
                 self.parent.userTrackingMode = mode
             }
+        }
+        
+        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+            AppleMapCacheManager.shared.cacheMapRegion(mapView.region, for: mapView)
         }
     }
 }
