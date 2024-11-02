@@ -19,7 +19,7 @@
 		2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14C02CA89D90003F1862 /* HomeView.swift */; };
 		2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */; };
 		2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 2BED14CE2CA89E02003F1862 /* Auth0 */; };
-		A108713A2CAE0EC5008312B0 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10871392CAE0EC5008312B0 /* APIConfig.swift */; };
+		A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610002CD58F6F00D5D553 /* APIConfig.swift */; };
 		A108713C2CAE0EED008312B0 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713B2CAE0EED008312B0 /* MapView.swift */; };
 		A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713D2CAE0F04008312B0 /* LocationManager.swift */; };
 		A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */; };
@@ -98,7 +98,7 @@
 		2BED14BF2CA89D90003F1862 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
 		2BED14C02CA89D90003F1862 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
-		A10871392CAE0EC5008312B0 /* APIConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		A10610002CD58F6F00D5D553 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
 		A108713B2CAE0EED008312B0 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A108713D2CAE0F04008312B0 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionPointDetailView.swift; sourceTree = "<group>"; };
@@ -263,7 +263,7 @@
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
 				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
-				A10871392CAE0EC5008312B0 /* APIConfig.swift */,
+				A10610002CD58F6F00D5D553 /* APIConfig.swift */,
 				A17760E72CC027C300F10420 /* Location.gpx */,
 				A10871512CAE1683008312B0 /* Resources */,
 				A10871492CAE1387008312B0 /* Services */,
@@ -481,9 +481,9 @@
 				2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */,
 				A1F8761B2CAE183E002ACEE6 /* CollectionPointModel.swift in Sources */,
 				A10871482CAE0F5D008312B0 /* ExpandableSearchView.swift in Sources */,
+				A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */,
 				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
 				CD0E4AFB2CC1F37700A220F3 /* CameraViewmodel.swift in Sources */,
-				A108713A2CAE0EC5008312B0 /* APIConfig.swift in Sources */,
 				A10871422CAE0F3B008312B0 /* ItemModel.swift in Sources */,
 				A108713C2CAE0EED008312B0 /* MapView.swift in Sources */,
 				2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */,
@@ -702,7 +702,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
-				DEVELOPMENT_TEAM = F6L8ZM8N27;
+				DEVELOPMENT_TEAM = 9RLS8R4G4M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";

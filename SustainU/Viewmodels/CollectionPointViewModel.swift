@@ -2,28 +2,60 @@ import SwiftUI
 import MapKit
 import FirebaseFirestore
 
-
 class CollectionPointViewModel: ObservableObject {
     @Published var collectionPoints: [CollectionPoint] = []
+    @Published var isLoading = false
     
-    private var db = Firestore.firestore()
+    private var db: Firestore
+    private var listener: ListenerRegistration?
     
     init() {
-        fetchCollectionPoints()
+        // Configurar la base de datos
+        db = Firestore.firestore()
+        
+        // Iniciar el listener en tiempo real
+        setupRealtimeListener()
+        
+        // Cargar datos del cache primero
+        loadFromCache()
     }
     
-    func fetchCollectionPoints() {
-        db.collection("locationdb").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error getting documents: \(error)")
-                return
+    private func loadFromCache() {
+        db.collection("locationdb")
+            .getDocuments(source: .cache) { [weak self] snapshot, error in
+                if let error = error {
+                    print("Error loading from cache: \(error)")
+                    return
+                }
+                
+                self?.processSnapshot(snapshot)
             }
-            
-            guard let documents = snapshot?.documents else {
-                print("No documents found")
-                return
+    }
+    
+    private func setupRealtimeListener() {
+        isLoading = true
+        
+        listener = db.collection("locationdb")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                self.isLoading = false
+                
+                if let error = error {
+                    print("Error getting documents: \(error)")
+                    return
+                }
+                
+                self.processSnapshot(snapshot)
             }
-            
+    }
+    
+    private func processSnapshot(_ snapshot: QuerySnapshot?) {
+        guard let documents = snapshot?.documents else {
+            print("No documents found")
+            return
+        }
+        
+        DispatchQueue.main.async {
             self.collectionPoints = documents.compactMap { document -> CollectionPoint? in
                 let data = document.data()
                 
@@ -36,65 +68,100 @@ class CollectionPointViewModel: ObservableObject {
                     return nil
                 }
                 
-                let latitude = coordinates.latitude
-                let longitude = coordinates.longitude
-                
-                return CollectionPoint(id: UUID(), name: name, location: location, materials: materials, latitude: latitude, longitude: longitude, imageName: imageName, documentID: document.documentID, count: count)
+                return CollectionPoint(
+                    id: UUID(),
+                    name: name,
+                    location: location,
+                    materials: materials,
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude,
+                    imageName: imageName,
+                    documentID: document.documentID,
+                    count: count
+                )
             }
         }
     }
     
     func incrementCount(for point: CollectionPoint) {
         let docRef = db.collection("locationdb").document(point.documentID)
-        print(docRef)
         
+        // Actualización optimista local
+        if let index = self.collectionPoints.firstIndex(where: { $0.id == point.id }) {
+            DispatchQueue.main.async {
+                self.collectionPoints[index].count += 1
+            }
+        }
+        
+        // Actualizar en Firestore
         docRef.updateData([
             "count": FieldValue.increment(Int64(1))
-        ]) { error in
+        ]) { [weak self] error in
             if let error = error {
                 print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated")
-                // Update the local collection point
-                if let index = self.collectionPoints.firstIndex(where: { $0.id == point.id }) {
-                    self.collectionPoints[index].count += 1
+                // Revertir la actualización local si falla
+                if let self = self,
+                   let index = self.collectionPoints.firstIndex(where: { $0.id == point.id }) {
+                    DispatchQueue.main.async {
+                        self.collectionPoints[index].count -= 1
+                    }
                 }
             }
         }
     }
+    
     func incrementMapCount() {
         let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
         
-        query.getDocuments { (querySnapshot, error) in
+        // Intentar primero desde el cache
+        query.getDocuments(source: .cache) { [weak self] (querySnapshot, error) in
+            if let error = error {
+                // Si falla el cache, intentar desde el servidor
+                self?.incrementMapCountFromServer()
+                return
+            }
+            
+            if let document = querySnapshot?.documents.first {
+                self?.updateMapCount(document: document)
+            } else {
+                self?.incrementMapCountFromServer()
+            }
+        }
+    }
+    
+    private func incrementMapCountFromServer() {
+        let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
+        
+        query.getDocuments(source: .server) { [weak self] querySnapshot, error in
             if let error = error {
                 print("Error getting documents: \(error)")
                 return
             }
             
-            guard let document = querySnapshot?.documents.first else {
-                print("No matching documents")
-                // If no document exists, create one
-                self.db.collection("counters").addDocument(data: [
+            if let document = querySnapshot?.documents.first {
+                self?.updateMapCount(document: document)
+            } else {
+                // Crear nuevo documento si no existe
+                self?.db.collection("counters").addDocument(data: [
                     "name": "MapView",
                     "count": 1
-                ]) { error in
-                    if let error = error {
-                        print("Error creating map count document: \(error)")
-                    } else {
-                        print("Map count document successfully created")
-                    }
-                }
-                return
+                ])
             }
-            
-            // Document exists, update the count
-            document.reference.updateData([
-                "count": FieldValue.increment(Int64(1))
-            ]) { error in
-                if let error = error {
-                    print("Error updating map count: \(error)")
-                } else {
-                    print("Map count successfully updated")
-                }
-            }}}
+        }
+    }
+    
+    private func updateMapCount(document: QueryDocumentSnapshot) {
+        document.reference.updateData([
+            "count": FieldValue.increment(Int64(1))
+        ]) { error in
+            if let error = error {
+                print("Error updating map count: \(error)")
+            }
+        }
+    }
+    
+    deinit {
+        // Remover el listener cuando se destruye el ViewModel
+        listener?.remove()
+    }
 }
