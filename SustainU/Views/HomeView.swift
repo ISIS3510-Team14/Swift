@@ -1,62 +1,47 @@
+//
+//  HomeView.swift
+//  SustainU
+//
+//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
+//
+
 import SwiftUI
 import Auth0
 
 struct HomeView: View {
-    
     var userProfile: UserProfile
+
     
+    @StateObject private var connectivityManager = ConnectivityManager.shared
+
     @ObservedObject private var viewModel = LoginViewModel.shared
-    //@Binding var isAuthenticated: Bool
-    
+
     @State private var selectedTab: Int = 0
-    @State private var isShowingCameraView = false
+    @State private var isShowingProfile = false
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
-    @State private var isShowingProfile = false  // Estado para mostrar la vista de perfil
 
     var body: some View {
-        ZStack {
-            // Fondo blanco que se extiende a todos los bordes
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            TabView(selection: $selectedTab) {
-                // Home Tab
-                NavigationView {
-                    ScrollView {
-                        VStack {
-                            // Logo e imagen de perfil
-                            HStack {
-                                Image("logoBigger")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Spacer()
-                                // Botón que muestra la vista de perfil
-                                Button(action: {
-                                    isShowingProfile = true  // Muestra la vista de perfil
-                                }) {
-                                    AsyncImage(url: URL(string: viewModel.userProfile.picture)) { image in
-                                        image
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .clipShape(Circle())
-                                    } placeholder: {
-                                        Image(systemName: "person.circle.fill")
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .clipShape(Circle())
-                                    }
+            ZStack {
+                Color.white.edgesIgnoringSafeArea(.all)
+
+                TabView(selection: $selectedTab) {
+                    // Home Tab
+                    NavigationView {
+                        ScrollView {
+                            VStack {
+                                // Use the modified TopBarView
+                                TopBarView(profilePictureURL: viewModel.userProfile.picture, connectivityManager: connectivityManager) {
+                                    isShowingProfile = true
                                 }
-                            }
-                            .padding(.horizontal)
-                            .padding(.top, 20)
                             
-                            // Saludo al usuario con solo el primer nombre
+                            // Greeting with first name
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .padding(.top, 10)
-                            
-                            // Sección de puntos y días
+
+                            // Record section
                             VStack(alignment: .leading) {
                                 Text("Your record")
                                     .font(.headline)
@@ -80,12 +65,12 @@ struct HomeView: View {
                             .cornerRadius(15)
                             .padding(.horizontal)
 
-                            // Grid con las opciones
+                            // Options grid
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                                    // Botones sin bordes ni fondos grises
+                                    // Map Button
                                     Button(action: {
-                                        selectedTab = 1 // Cambiar a la pestaña del Mapa
+                                        selectedTab = 1
                                     }) {
                                         VStack {
                                             Image("logoMap")
@@ -98,8 +83,9 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // Scoreboard Button
                                     Button(action: {
-                                        selectedTab = 4 // Cambiar a la pestaña de Scoreboard
+                                        selectedTab = 4
                                     }) {
                                         VStack {
                                             Image("logoScoreboard")
@@ -112,8 +98,9 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // Recycle Button
                                     Button(action: {
-                                        selectedTab = 3 // Cambiar a la pestaña de Recycle
+                                        selectedTab = 3
                                     }) {
                                         VStack {
                                             Image("logoRecycle")
@@ -126,8 +113,9 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // History Button
                                     Button(action: {
-                                        // Acción para History
+                                        // Action for History
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -151,7 +139,7 @@ struct HomeView: View {
                                 .padding(.bottom, 10)
 
                             Button(action: {
-                                selectedTab = 2 // Cambiar a la pestaña de Camera
+                                selectedTab = 2
                             }) {
                                 Text("Scan")
                                     .font(.headline)
@@ -185,6 +173,7 @@ struct HomeView: View {
                         collectionPointViewModel.incrementMapCount()
                     }
 
+
                 CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab)
                     .tabItem {
                         Image("logoCamera")
@@ -193,6 +182,7 @@ struct HomeView: View {
                     }
                     .tag(2)
 
+                // Recycle Tab
                 Text("Recycle View")
                     .tabItem {
                         Image("logoRecycle")
@@ -201,6 +191,7 @@ struct HomeView: View {
                     }
                     .tag(3)
 
+                // Scoreboard Tab
                 Text("Scoreboard View")
                     .tabItem {
                         Image("logoScoreboard")
@@ -214,14 +205,11 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
-        
-            
-            // Presentación de la vista de perfil como un modal
+
+            // Present the ProfileView as a sheet
             .sheet(isPresented: $isShowingProfile) {
                 ProfileView(userProfile: viewModel.userProfile)
             }
-            // Observe authentication state
-            
         }
     }
 }

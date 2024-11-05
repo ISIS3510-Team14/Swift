@@ -13,12 +13,16 @@ class ConnectivityManager: ObservableObject {
         monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { path in
             let isConnected = path.status == .satisfied
-            print("ConnectivityManager: isConnected = \(isConnected)")
+            print("ConnectivityManager: pathUpdateHandler called, isConnected = \(isConnected)")
             DispatchQueue.main.async {
                 self.isConnected = isConnected
             }
         }
         monitor.start(queue: queue)
     }
-
+    deinit {
+            print("ConnectivityManager deinitialized")
+        }
+    
 }
+
