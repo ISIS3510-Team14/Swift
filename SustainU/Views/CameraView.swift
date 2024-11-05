@@ -5,6 +5,8 @@ import UIKit
 
 struct CameraView: View {
     
+    
+    @StateObject private var connectivityManager = ConnectivityManager.shared
     @StateObject private var viewModel = CameraViewmodel()
     let profilePictureURL: String
     
@@ -57,7 +59,7 @@ struct CameraView: View {
     var body: some View {
         VStack {
             // Header con la información del perfil
-            TopBarView(profilePictureURL: profilePictureURL)
+            TopBarView(profilePictureURL: profilePictureURL, connectivityManager: connectivityManager)
             
             // Contenido principal: mostrar la cámara o la imagen capturada
             ZStack {
