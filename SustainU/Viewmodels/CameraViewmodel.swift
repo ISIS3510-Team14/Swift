@@ -12,10 +12,15 @@ class CameraViewmodel: ObservableObject {
     @Published var timerCount: Int = 0
     @Published var timerActive: Bool = false
     @Published var error: Bool = false
+    @Published var showConnectivityPopup: Bool = false
     
+    @Published var networkMonitor = NetworkMonitor.shared
     
     func takePhoto(image: UIImage) {
+        
+
         self.image = image
+        
         let photoBase64 = convertImageToBase64String(img: image)
         var responseTextTrash = "Waiting for response..."
         
@@ -32,12 +37,12 @@ class CameraViewmodel: ObservableObject {
             }
         }
         
-        
         // Manejo de llegada de requests
         dispatchGroup.notify(queue: .main) {
             print(responseTextTrash)
             self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64, dispatchGroup: dispatchGroup)
         }
+        
     }
     
     private func handleTrashTypeResponse(_ responseTextTrash: String, photoBase64: String, dispatchGroup: DispatchGroup) {
@@ -62,6 +67,7 @@ class CameraViewmodel: ObservableObject {
                 
                 // Mostrar el resultado después de ambos requests
                 dispatchGroup.notify(queue: .main) {
+                    print("Llegó segundo request")
                     print(self.responseTextBin)
                     self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
                 }

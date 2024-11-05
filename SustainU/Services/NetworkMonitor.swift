@@ -1,10 +1,3 @@
-//
-//  NetworkMonitor.swift
-//  SustainU
-//
-//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
-//
-
 import Foundation
 import Network
 import Combine

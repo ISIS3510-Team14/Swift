@@ -72,6 +72,7 @@
 		CD7FB2872CA8A45A00EE6601 /* RequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7FB2862CA8A45A00EE6601 /* RequestModel.swift */; };
 		CD7FB2892CA8A46F00EE6601 /* TrashTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7FB2882CA8A46F00EE6601 /* TrashTypeModel.swift */; };
 		CD7FB28B2CA8A51600EE6601 /* RequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7FB28A2CA8A51600EE6601 /* RequestService.swift */; };
+		CDB03DC82CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB03DC72CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +136,7 @@
 		CD7FB2862CA8A45A00EE6601 /* RequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestModel.swift; sourceTree = "<group>"; };
 		CD7FB2882CA8A46F00EE6601 /* TrashTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashTypeModel.swift; sourceTree = "<group>"; };
 		CD7FB28A2CA8A51600EE6601 /* RequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestService.swift; sourceTree = "<group>"; };
+		CDB03DC72CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityCameraPopupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +205,7 @@
 		A108714B2CAE13FC008312B0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CDB03DC72CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift */,
 				2BED14BD2CA89D90003F1862 /* LoginView.swift */,
 				2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */,
 				2BED14C02CA89D90003F1862 /* HomeView.swift */,
@@ -517,6 +520,7 @@
 				A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */,
 				A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */,
 				A17761202CC1AAF300F10420 /* CameraPopupView.swift in Sources */,
+				CDB03DC82CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift in Sources */,
 				A1381FC82CC1F7670045993C /* CollectionPointViewModel.swift in Sources */,
 				2BED14C72CA89D90003F1862 /* CameraView.swift in Sources */,
 				CD7FB2892CA8A46F00EE6601 /* TrashTypeModel.swift in Sources */,
