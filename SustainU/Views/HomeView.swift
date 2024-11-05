@@ -173,8 +173,8 @@ struct HomeView: View {
                         collectionPointViewModel.incrementMapCount()
                     }
 
-                // Camera Tab
-                CameraView(profilePictureURL: viewModel.userProfile.picture)
+
+                CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab)
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
