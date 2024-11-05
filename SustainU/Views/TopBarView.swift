@@ -7,6 +7,16 @@ struct TopBarView: View {
     
     
     var body: some View {
+        
+        if !connectivityManager.isConnected {
+                        Text("No internet connection")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.top, 5)
+                            .transition(.opacity) // Smooth fade transition
+                    }
+        
+        
         HStack {
             Image("logoBigger")
                 .resizable()
@@ -15,15 +25,14 @@ struct TopBarView: View {
 
             Spacer()
 
-            // Connectivity indicator
-            Image(systemName: "circle.fill")
-                .resizable()
-                .frame(width: 15, height: 15)
-                .foregroundColor(connectivityManager.isConnected ? .green : .red)
-                .padding(.trailing, 5)
-                .onChange(of: connectivityManager.isConnected) { newValue in
-                    print("TopBarView: isConnected changed to \(newValue)")
-                }
+            Image(connectivityManager.isConnected ? "cloudConnected" : "cloudDisconnected")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing, 5)
+                            .onChange(of: connectivityManager.isConnected) {
+                                print("TopBarView: isConnected status changed.")
+                            }
+
 
             // Profile picture button
             Button(action: {
