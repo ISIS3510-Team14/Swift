@@ -25,13 +25,13 @@ struct CameraPopupView: View {
         if error {
             self.icon = "xmark.octagon.fill"
             self.title = "Error!"
-            self.trashType = "An error ocurred :("
+            self.trashType = "No Item Detected"
             self.responseText = "Please try again"
         } else if noResponse {
             // Si es un NoResponse, configurar con valores predeterminados
             self.icon = "xmark.octagon.fill"
             self.title = "Could not detect an item!"
-            self.trashType = ""
+            self.trashType = "No Item Detected"
             self.responseText = "Please try again"
         } else {
             self.icon = icon
@@ -44,9 +44,9 @@ struct CameraPopupView: View {
     var body: some View {
         VStack(spacing: 5) {
             Text(title)
-                .font(.system(size: 20, weight: .bold)) // ANTES DE REDUCIR: estaba en 24
+                .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.black)
-                .padding(.top, 5) // ANTES DE REDUCIR: no habia 5
+                .padding(.top, 5)
 
             HStack(spacing: 15) {
                 Image(systemName: icon)
@@ -56,10 +56,7 @@ struct CameraPopupView: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     Text(trashType)
-                        //.font(.system(size: 18, weight: .bold))
-                        //.font(.system(size: 18))
-                        //.font(.custom("Montserrat-VariableFont_wght", size: 18))
-                        //.font(.title2)
+         
                         .fontWeight(.semibold)
                         .foregroundColor(.black)
 

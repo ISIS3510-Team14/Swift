@@ -1,34 +1,47 @@
+//
+//  HomeView.swift
+//  SustainU
+//
+//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
+//
+
 import SwiftUI
 import Auth0
 
 struct HomeView: View {
-    var userProfile: Profile
-    @Binding var isAuthenticated: Bool
+    var userProfile: UserProfile
+
     
+    @StateObject private var connectivityManager = ConnectivityManager.shared
+
+    @ObservedObject private var viewModel = LoginViewModel.shared
+
     @State private var selectedTab: Int = 0
-    @State private var isShowingCameraView = false
+    @State private var isShowingProfile = false
+    @StateObject private var collectionPointViewModel = CollectionPointViewModel()
 
     var body: some View {
-        ZStack {
-            // White background that extends to all edges
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            TabView(selection: $selectedTab) {
-                // Home Tab
-                NavigationView {
-                    ScrollView {
-                        VStack {
-                            // Reusing the TopBarView and passing the user profile picture
-                            TopBarView(profilePictureURL: userProfile.picture)
+            ZStack {
+                Color.white.edgesIgnoringSafeArea(.all)
+
+                TabView(selection: $selectedTab) {
+                    // Home Tab
+                    NavigationView {
+                        ScrollView {
+                            VStack {
+                                // Use the modified TopBarView
+                                TopBarView(profilePictureURL: viewModel.userProfile.picture, connectivityManager: connectivityManager) {
+                                    isShowingProfile = true
+                                }
                             
-                            // Saludo al usuario con solo el primer nombre
-                            let firstName = userProfile.name.components(separatedBy: " ").first ?? userProfile.name
+                            // Greeting with first name
+                            let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .padding(.top, 10)
-                            
-                            // Sección de puntos y días
+
+                            // Record section
                             VStack(alignment: .leading) {
                                 Text("Your record")
                                     .font(.headline)
@@ -52,26 +65,27 @@ struct HomeView: View {
                             .cornerRadius(15)
                             .padding(.horizontal)
 
-                            // Grid con las opciones
+                            // Options grid
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                                    // Map Button
                                     Button(action: {
-                                        selectedTab = 1 // Switch to Map tab
+                                        selectedTab = 1
                                     }) {
                                         VStack {
                                             Image("logoMap")
                                                 .resizable()
                                                 .renderingMode(.template)
                                                 .frame(width: 40, height: 40)
-                                                .scaledToFit()
                                             Text("See green points")
                                                 .font(.headline)
                                                 .foregroundColor(.black)
                                         }
                                     }
 
+                                    // Scoreboard Button
                                     Button(action: {
-                                        selectedTab = 4 // Switch to Scoreboard tab
+                                        selectedTab = 4
                                     }) {
                                         VStack {
                                             Image("logoScoreboard")
@@ -84,8 +98,9 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // Recycle Button
                                     Button(action: {
-                                        selectedTab = 3 // Switch to Recycle tab
+                                        selectedTab = 3
                                     }) {
                                         VStack {
                                             Image("logoRecycle")
@@ -98,6 +113,7 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // History Button
                                     Button(action: {
                                         // Action for History
                                     }) {
@@ -123,27 +139,14 @@ struct HomeView: View {
                                 .padding(.bottom, 10)
 
                             Button(action: {
-                                selectedTab = 2 // Switch to Camera tab
+                                selectedTab = 2
                             }) {
                                 Text("Scan")
                                     .font(.headline)
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(width: 220, height: 60)
-                                    .background(Color.green)
-                                    .cornerRadius(15)
-                            }
-                            .padding(.bottom, 10)
-                            
-                            Button(action: {
-                                logout()
-                            }) {
-                                Text("Log out")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 220, height: 60)
-                                    .background(Color.red)
+                                    .background(Color("greenLogoColor"))
                                     .cornerRadius(15)
                             }
                             .padding(.bottom, 40)
@@ -159,17 +162,19 @@ struct HomeView: View {
                 .tag(0)
 
                 // Map Tab
-                
-                ExpandableSearchView(profilePictureURL: userProfile.picture)
+                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
                         Image("logoMap")
                             .renderingMode(.template)
                         Text("Map")
                     }
                     .tag(1)
+                    .onAppear {
+                        collectionPointViewModel.incrementMapCount()
+                    }
 
                 // Camera Tab
-                CameraView(profilePictureURL: userProfile.picture)
+                CameraView(profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
@@ -200,26 +205,11 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
-        }
-    }
-    
-    func logout() {
-        Auth0
-            .webAuth()
-            .clearSession(federated: false) { result in
-                switch result {
-                case .success:
-                    self.isAuthenticated = false
-                    print("User logged out")
-                case .failure(let error):
-                    print("Failed with: \(error)")
-                }
-            }
-    }
-}
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView(userProfile: Profile.empty, isAuthenticated: .constant(true))
+            // Present the ProfileView as a sheet
+            .sheet(isPresented: $isShowingProfile) {
+                ProfileView(userProfile: viewModel.userProfile)
+            }
+        }
     }
 }
