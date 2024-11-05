@@ -1,7 +1,14 @@
+//
+//  UserProfile.swift
+//  SustainU
+//
+//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
+//
+
 import JWTDecode
 import Foundation
 
-struct Profile: Codable {  // Conformar a Codable
+struct UserProfile: Codable {
     let id: String
     let name: String
     let nickname: String
@@ -11,9 +18,9 @@ struct Profile: Codable {  // Conformar a Codable
     let updatedAt: String
 }
 
-extension Profile {
+extension UserProfile {
     static var empty: Self {
-        return Profile(
+        return UserProfile(
             id: "",
             name: "",
             nickname: "",
@@ -38,7 +45,7 @@ extension Profile {
             return .empty
         }
 
-        return Profile(
+        return UserProfile(
             id: id,
             name: name,
             nickname: nickname,
@@ -46,6 +53,18 @@ extension Profile {
             emailVerified: String(describing: emailVerified),
             picture: picture,
             updatedAt: updatedAt
+        )
+    }
+
+    static func from(_ profileInfo: [String: Any]) -> Self {
+        return UserProfile(
+            id: profileInfo["user_id"] as? String ?? "",
+            name: profileInfo["name"] as? String ?? "",
+            nickname: profileInfo["nickname"] as? String ?? "",
+            email: profileInfo["email"] as? String ?? "",
+            emailVerified: String(describing: profileInfo["email_verified"] as? Bool ?? false),
+            picture: profileInfo["picture"] as? String ?? "",
+            updatedAt: profileInfo["updated_at"] as? String ?? ""
         )
     }
 }

@@ -5,8 +5,22 @@ import UIKit
 
 struct CameraView: View {
     
+    
+    @StateObject private var connectivityManager = ConnectivityManager.shared
     @StateObject private var viewModel = CameraViewmodel()
+    @ObservedObject private var networkMonitor = NetworkMonitor.shared // Monitoreo de red
+    @State private var showConnectivityPopup = false // Estado para el popup de conectividad
     let profilePictureURL: String
+    @Binding var selectedTab: Int // Añade selectedTab como Binding
+    @State private var showCameraPicker = true // Controla la visibilidad de CameraPicker para reiniciar
+
+    
+    // Función para reiniciar el contenido de la cámara
+    private func resetCamera() {
+        print("resetCamera")
+        viewModel.image = nil // Limpia la imagen capturada
+        viewModel.showConnectivityPopup = false // Cierra el popup de conectividad si estaba abierto
+    }
     
     struct CameraPickerView: UIViewControllerRepresentable {
         
@@ -28,9 +42,18 @@ struct CameraView: View {
             
             func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
                 if let uiImage = info[.originalImage] as? UIImage {
-                    parent.image = uiImage
-                    self.parent.viewModel.takePhoto(image: uiImage)
-                    parent.presentationMode.wrappedValue.dismiss()
+                    
+
+                    // Verifica la conectividad después de capturar la imagen
+                    if !parent.viewModel.networkMonitor.isConnected {
+                        // Muestra el popup de conectividad si no hay conexión
+                        parent.image = uiImage
+                        self.parent.viewModel.showConnectivityPopup = true
+                    } else {
+                        parent.image = uiImage
+                        self.parent.viewModel.takePhoto(image: uiImage)
+                        parent.presentationMode.wrappedValue.dismiss()
+                    }
                 }
             }
             
@@ -57,7 +80,7 @@ struct CameraView: View {
     var body: some View {
         VStack {
             // Header con la información del perfil
-            TopBarView(profilePictureURL: profilePictureURL)
+            TopBarView(profilePictureURL: profilePictureURL, connectivityManager: connectivityManager)
             
             // Contenido principal: mostrar la cámara o la imagen capturada
             ZStack {
@@ -67,29 +90,31 @@ struct CameraView: View {
                         .scaledToFit()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     
-                    // Mostrar el timer encima de la imagen capturada
-                    VStack {
-                        Spacer()
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .scaleEffect(2)
-                            .padding(10)
-                            .background(Color.black.opacity(0.5))
-                            .tint(Color("greenLogoColor"))
-                        Spacer()
-                        Text("Identifying waste: \(viewModel.timerCount) seconds elapsed")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(Color.black.opacity(0.5))
-                            .cornerRadius(10)
-                            .padding(.bottom, 20) // Posicionar el timer en la parte inferior
+                    if viewModel.networkMonitor.isConnected {
+                        // Mostrar el timer encima de la imagen capturada
+                        VStack {
+                            Spacer()
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .scaleEffect(2)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .tint(Color("greenLogoColor"))
+                            Spacer()
+                            Text("Identifying waste: \(viewModel.timerCount) seconds elapsed")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .cornerRadius(10)
+                                .padding(.bottom, 20) // Posicionar el timer en la parte inferior
+                        }
+                        .onAppear {
+                            viewModel.startTimer()
+                        }
                     }
-                    .onAppear {
-                        viewModel.startTimer()
-                    }
-                } else {
-                    // Vista de la cámara cuando no se ha capturado ninguna imagen
+
+                } else { // Mostrar el CameraPicker si está habilitado
                     CameraPickerView(image: $viewModel.image,
                                      responseTextBin: $viewModel.responseTextBin,
                                      showResponsePopup: $viewModel.showResponsePopup,
@@ -99,6 +124,8 @@ struct CameraView: View {
                     )
                     .frame(maxHeight: .infinity)
                 }
+                
+                
                 
                 // Mostrar popup cuando llega la respuesta
                 if viewModel.showResponsePopup {
@@ -121,6 +148,16 @@ struct CameraView: View {
                         print("sendScanEvent pos")
                     }
                 }
+                
+                // Mostrar el popup de conectividad cuando no hay internet
+                if viewModel.showConnectivityPopup {
+                    ConnectivityCameraPopup(showPopup: $viewModel.showConnectivityPopup, 
+                                            selectedTab: $selectedTab,
+                                            image: $viewModel.image,
+                                            onCancel: resetCamera // Llama a resetCamera al cancelar
+                    )
+                }
+                
             }
         }
         .statusBar(hidden: false)
