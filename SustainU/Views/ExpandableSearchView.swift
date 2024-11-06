@@ -14,18 +14,20 @@ struct ExpandableSearchView: View {
     var body: some View {
         NavigationView {
             ZStack(alignment: .center) {
-                // MapView Layer
-                MapView(locationManager: viewModel.locationManager,
-                       userTrackingMode: $viewModel.userTrackingMode,
-                       collectionPoints: collectionPointViewModel.collectionPoints,
-                       onAnnotationTap: { point in
-                           selectedPoint = point
-                           showingDetail = true
-                       })
-                    .edgesIgnoringSafeArea(.all)
-                    .safeAreaInset(edge: .top) {
-                        Color.clear.frame(height: 0)
+                // MapView Layer with offline popup
+                MapViewWithOfflinePopup(
+                    locationManager: viewModel.locationManager,
+                    userTrackingMode: $viewModel.userTrackingMode,
+                    collectionPoints: collectionPointViewModel.collectionPoints,
+                    onAnnotationTap: { point in
+                        selectedPoint = point
+                        showingDetail = true
                     }
+                )
+                .edgesIgnoringSafeArea(.all)
+                .safeAreaInset(edge: .top) {
+                    Color.clear.frame(height: 0)
+                }
                 
                 // Main Content Layer
                 VStack(spacing: 0) {
