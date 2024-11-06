@@ -181,9 +181,10 @@ struct HomeView: View {
                         Text("Camera")
                     }
                     .tag(2)
-
-                // Recycle Tab
-                Text("Recycle View")
+                    // Recycle Tab
+                    NavigationView {
+                        RecycleView(userProfile: viewModel.userProfile)
+                    }
                     .tabItem {
                         Image("logoRecycle")
                             .renderingMode(.template)
