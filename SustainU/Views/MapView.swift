@@ -14,9 +14,15 @@ struct MapViewWithOfflinePopup: View {
             MapView(locationManager: locationManager,
                    userTrackingMode: $userTrackingMode,
                    collectionPoints: collectionPoints,
-                   onAnnotationTap: onAnnotationTap)
+                   onAnnotationTap: onAnnotationTap,
+                   viewModel: viewModel)
+                .onTapGesture {
+                    viewModel.handleMapTap()
+                }
             
-            OfflineMapPopupView(isPresented: $viewModel.showOfflinePopup)
+            if viewModel.showOfflinePopup {
+                OfflineMapPopupView(isPresented: $viewModel.showOfflinePopup)
+            }
         }
     }
 }
@@ -26,17 +32,18 @@ struct MapView: UIViewRepresentable {
     @Binding var userTrackingMode: MKUserTrackingMode
     var collectionPoints: [CollectionPoint]
     var onAnnotationTap: (CollectionPoint) -> Void
-    @StateObject private var viewModel: MapViewModel
+    @ObservedObject var viewModel: MapViewModel
     
     init(locationManager: LocationManager,
          userTrackingMode: Binding<MKUserTrackingMode>,
          collectionPoints: [CollectionPoint],
-         onAnnotationTap: @escaping (CollectionPoint) -> Void) {
+         onAnnotationTap: @escaping (CollectionPoint) -> Void,
+         viewModel: MapViewModel) {
         self.locationManager = locationManager
         self._userTrackingMode = userTrackingMode
         self.collectionPoints = collectionPoints
         self.onAnnotationTap = onAnnotationTap
-        self._viewModel = StateObject(wrappedValue: MapViewModel(locationManager: locationManager))
+        self.viewModel = viewModel
     }
     
     func makeCoordinator() -> Coordinator {
@@ -50,6 +57,9 @@ struct MapView: UIViewRepresentable {
         mapView.isPitchEnabled = true
         mapView.isRotateEnabled = true
         mapView.mapType = .standard
+        
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleMapTap(_:)))
+        mapView.addGestureRecognizer(tapGesture)
         
         let compass = MKCompassButton(mapView: mapView)
         compass.compassVisibility = .visible
@@ -116,6 +126,10 @@ struct MapView: UIViewRepresentable {
         
         init(_ parent: MapView) {
             self.parent = parent
+        }
+        
+        @objc func handleMapTap(_ gesture: UITapGestureRecognizer) {
+            parent.viewModel.handleMapTap()
         }
         
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

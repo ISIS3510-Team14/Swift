@@ -1,6 +1,6 @@
 import SwiftUI
 import MapKit
-
+import Network
 struct ExpandableSearchView: View {
     @StateObject private var viewModel = ExpandableSearchViewModel()
     @FocusState private var isSearchFocused: Bool
@@ -8,6 +8,7 @@ struct ExpandableSearchView: View {
     @ObservedObject var collectionPointViewModel: CollectionPointViewModel
     @State private var selectedPoint: CollectionPoint?
     @State private var showingDetail = false
+    @State private var showOfflinePopup = false
     
     let profilePictureURL: String
     
@@ -116,6 +117,11 @@ struct ExpandableSearchView: View {
                     }
                 }
                 
+                // Offline Popup Layer
+                if showOfflinePopup {
+                    OfflineMapPopupView(isPresented: $showOfflinePopup)
+                }
+                
                 // Connectivity Popup Layer
                 if collectionPointViewModel.showConnectivityPopup {
                     Color.black.opacity(0.4)
@@ -143,6 +149,7 @@ struct ExpandableSearchView: View {
             .onAppear {
                 viewModel.startUpdatingLocation()
                 viewModel.setupKeyboardObservers()
+                checkInternetConnection()
             }
             .onDisappear {
                 viewModel.removeKeyboardObservers()
@@ -158,6 +165,21 @@ struct ExpandableSearchView: View {
                 ) { EmptyView() }
             )
         }
+    }
+    
+    private func checkInternetConnection() {
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "InternetCheck")
+        
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                if path.status != .satisfied {
+                    showOfflinePopup = true
+                }
+            }
+        }
+        
+        monitor.start(queue: queue)
     }
     
     private var dragGesture: some Gesture {
