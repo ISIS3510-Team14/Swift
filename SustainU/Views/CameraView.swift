@@ -5,6 +5,8 @@ import UIKit
 
 struct CameraView: View {
     
+    
+    @StateObject private var connectivityManager = ConnectivityManager.shared
     @StateObject private var viewModel = CameraViewmodel()
     @ObservedObject private var networkMonitor = NetworkMonitor.shared // Monitoreo de red
     @State private var showConnectivityPopup = false // Estado para el popup de conectividad
@@ -79,7 +81,7 @@ struct CameraView: View {
     var body: some View {
         VStack {
             // Header con la información del perfil
-            TopBarView(profilePictureURL: profilePictureURL)
+            TopBarView(profilePictureURL: profilePictureURL, connectivityManager: connectivityManager)
             
             // Contenido principal: mostrar la cámara o la imagen capturada
             ZStack {

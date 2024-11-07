@@ -6,6 +6,8 @@ struct ExpandableSearchView: View {
     @FocusState private var isSearchFocused: Bool
     @GestureState private var draggingOffset: CGFloat = 0
     @ObservedObject var collectionPointViewModel: CollectionPointViewModel
+    @StateObject private var connectivityManager = ConnectivityManager.shared
+
     
     let profilePictureURL: String
     
@@ -29,7 +31,7 @@ struct ExpandableSearchView: View {
                         .frame(height: (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
                         .windows.first?.safeAreaInsets.top ?? 20)
                     
-                    TopBarView(profilePictureURL: profilePictureURL)
+                    TopBarView(profilePictureURL: profilePictureURL, connectivityManager: connectivityManager)
                     
                     Spacer()
                     
