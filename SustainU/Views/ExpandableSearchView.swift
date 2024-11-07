@@ -1,5 +1,6 @@
 import SwiftUI
 import MapKit
+import Network
 
 struct ExpandableSearchView: View {
     @StateObject private var viewModel = ExpandableSearchViewModel()
@@ -8,6 +9,7 @@ struct ExpandableSearchView: View {
     @ObservedObject var collectionPointViewModel: CollectionPointViewModel
     @State private var selectedPoint: CollectionPoint?
     @State private var showingDetail = false
+    @State private var showOfflinePopup = false
     
     let profilePictureURL: String
     
@@ -116,31 +118,15 @@ struct ExpandableSearchView: View {
                     }
                 }
                 
-                // Connectivity Popup Layer
-                if collectionPointViewModel.showConnectivityPopup {
-                    Color.black.opacity(0.4)
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                            collectionPointViewModel.showConnectivityPopup = false
-                        }
-                    
-                    VStack {
-                        Spacer()
-                        ConnectivityPopupView(
-                            showResponsePopup: $collectionPointViewModel.showConnectivityPopup,
-                            retryAction: {
-                                collectionPointViewModel.retryConnection()
-                            }
-                        )
-                        Spacer()
-                    }
-                    .transition(.scale.combined(with: .opacity))
-                    .animation(.easeInOut, value: collectionPointViewModel.showConnectivityPopup)
+                // Offline Popup Layer
+                if showOfflinePopup {
+                    OfflineMapPopupView(isPresented: $showOfflinePopup)
                 }
             }
             .navigationViewStyle(StackNavigationViewStyle())
             .edgesIgnoringSafeArea(.all)
             .onAppear {
+                checkConnectivity()
                 viewModel.startUpdatingLocation()
                 viewModel.setupKeyboardObservers()
             }
@@ -169,5 +155,20 @@ struct ExpandableSearchView: View {
                 viewModel.handleDragGesture(value: value)
                 isSearchFocused = false
             }
+    }
+    
+    // Función para verificar la conectividad
+    private func checkConnectivity() {
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "InternetCheck")
+        
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                showOfflinePopup = path.status != .satisfied
+                monitor.cancel()
+            }
+        }
+        
+        monitor.start(queue: queue)
     }
 }
