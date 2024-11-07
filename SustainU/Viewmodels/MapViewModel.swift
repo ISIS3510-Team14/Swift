@@ -1,18 +1,37 @@
 import SwiftUI
 import MapKit
 import Combine
+import Network
 
 class MapViewModel: ObservableObject {
     @Published var userTrackingMode: MKUserTrackingMode = .none
     @Published var selectedPoint: CollectionPoint?
     @Published var isNavigatingToDetail = false
     @Published var hasInitiallyZoomed = false
+    @Published var showOfflinePopup = false
+    @Published var isOffline = false
     
     let locationManager: LocationManager
     var collectionPoints: [CollectionPoint] = []
+    private let connectivityMonitor = NWPathMonitor()
+    private var cancellables = Set<AnyCancellable>()
     
     init(locationManager: LocationManager) {
         self.locationManager = locationManager
+        setupConnectivityMonitoring()
+    }
+    
+    private func setupConnectivityMonitoring() {
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        connectivityMonitor.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.isOffline = path.status != .satisfied
+                if self?.isOffline == true {
+                    self?.showOfflinePopup = true
+                }
+            }
+        }
+        connectivityMonitor.start(queue: queue)
     }
     
     func startUpdatingLocation() {
@@ -47,5 +66,9 @@ class MapViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.hasInitiallyZoomed = true
         }
+    }
+    
+    deinit {
+        connectivityMonitor.cancel()
     }
 }

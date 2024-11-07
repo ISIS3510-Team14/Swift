@@ -27,7 +27,10 @@
 		2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14C02CA89D90003F1862 /* HomeView.swift */; };
 		2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */; };
 		2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 2BED14CE2CA89E02003F1862 /* Auth0 */; };
-		A108713A2CAE0EC5008312B0 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10871392CAE0EC5008312B0 /* APIConfig.swift */; };
+		A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610002CD58F6F00D5D553 /* APIConfig.swift */; };
+		A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */; };
+		A10610052CD5BCA300D5D553 /* OfflineMapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */; };
+		A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */; };
 		A108713C2CAE0EED008312B0 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713B2CAE0EED008312B0 /* MapView.swift */; };
 		A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713D2CAE0F04008312B0 /* LocationManager.swift */; };
 		A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */; };
@@ -65,6 +68,7 @@
 		A177611B2CC19FF600F10420 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = A177611A2CC19FF600F10420 /* FirebaseStorageCombine-Community */; };
 		A177611D2CC19FF600F10420 /* FirebaseVertexAI-Preview in Frameworks */ = {isa = PBXBuildFile; productRef = A177611C2CC19FF600F10420 /* FirebaseVertexAI-Preview */; };
 		A17761202CC1AAF300F10420 /* CameraPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A177611F2CC1AAF300F10420 /* CameraPopupView.swift */; };
+		A1EBD99E2CDC1EF000D5790C /* OfflineMapPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EBD99D2CDC1EF000D5790C /* OfflineMapPopupView.swift */; };
 		A1F8761B2CAE183E002ACEE6 /* CollectionPointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F8761A2CAE183E002ACEE6 /* CollectionPointModel.swift */; };
 		CD0E4AFB2CC1F37700A220F3 /* CameraViewmodel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E4AFA2CC1F37700A220F3 /* CameraViewmodel.swift */; };
 		CD43FF552C9CF0FE0058AE09 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD43FF542C9CF0FE0058AE09 /* Preview Assets.xcassets */; };
@@ -116,7 +120,11 @@
 		2BED14BF2CA89D90003F1862 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
 		2BED14C02CA89D90003F1862 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
-		A10871392CAE0EC5008312B0 /* APIConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		A10610002CD58F6F00D5D553 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityPopupView.swift; sourceTree = "<group>"; };
+		A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapManager.swift; sourceTree = "<group>"; };
+		A10610082CD5BFFD00D5D553 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMapCacheManager.swift; sourceTree = "<group>"; };
 		A108713B2CAE0EED008312B0 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A108713D2CAE0F04008312B0 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionPointDetailView.swift; sourceTree = "<group>"; };
@@ -131,6 +139,7 @@
 		A17760E92CC0698000F10420 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A177611F2CC1AAF300F10420 /* CameraPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPopupView.swift; sourceTree = "<group>"; };
+		A1EBD99D2CDC1EF000D5790C /* OfflineMapPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapPopupView.swift; sourceTree = "<group>"; };
 		A1F8761A2CAE183E002ACEE6 /* CollectionPointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPointModel.swift; sourceTree = "<group>"; };
 		CD0E4AFA2CC1F37700A220F3 /* CameraViewmodel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewmodel.swift; sourceTree = "<group>"; };
 		CD43FF4A2C9CF0FC0058AE09 /* SustainU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SustainU.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,6 +214,8 @@
 			children = (
 				CD7FB28A2CA8A51600EE6601 /* RequestService.swift */,
 				A108713D2CAE0F04008312B0 /* LocationManager.swift */,
+				A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */,
+				A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */,
 				2BD5A2EC2CD17889009D9624 /* ConnectivityManager.swift */,
 				2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */,
 				2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */,
@@ -223,6 +234,7 @@
 				2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */,
 				2BED14C02CA89D90003F1862 /* HomeView.swift */,
 				2BED14BE2CA89D90003F1862 /* CameraView.swift */,
+				A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */,
 				A177611F2CC1AAF300F10420 /* CameraPopupView.swift */,
 				2BED14BA2CA89D90003F1862 /* ContentView.swift */,
 				A17760E92CC0698000F10420 /* TopBarView.swift */,
@@ -230,6 +242,7 @@
 				A108713B2CAE0EED008312B0 /* MapView.swift */,
 				A10871432CAE0F4F008312B0 /* SearchBarView.swift */,
 				A10871472CAE0F5D008312B0 /* ExpandableSearchView.swift */,
+				A1EBD99D2CDC1EF000D5790C /* OfflineMapPopupView.swift */,
 				A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */,
 				2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */,
 				A108714C2CAE15EE008312B0 /* UIKit */,
@@ -290,11 +303,12 @@
 		CD43FF4C2C9CF0FC0058AE09 /* SustainU */ = {
 			isa = PBXGroup;
 			children = (
+				A10610082CD5BFFD00D5D553 /* Info.plist */,
 				2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */,
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
 				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
-				A10871392CAE0EC5008312B0 /* APIConfig.swift */,
+				A10610002CD58F6F00D5D553 /* APIConfig.swift */,
 				A17760E72CC027C300F10420 /* Location.gpx */,
 				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A10871512CAE1683008312B0 /* Resources */,
@@ -515,13 +529,14 @@
 				2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */,
 				A1F8761B2CAE183E002ACEE6 /* CollectionPointModel.swift in Sources */,
 				A10871482CAE0F5D008312B0 /* ExpandableSearchView.swift in Sources */,
+				A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */,
 				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
 				2BD5A2ED2CD17889009D9624 /* ConnectivityManager.swift in Sources */,
 				2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */,
 				CDB0C81A2CDC062B00A6210B /* DELETEME.swift in Sources */,
 				CD0E4AFB2CC1F37700A220F3 /* CameraViewmodel.swift in Sources */,
+				A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */,
 				2BD5A2EF2CD17C18009D9624 /* KeychainService.swift in Sources */,
-				A108713A2CAE0EC5008312B0 /* APIConfig.swift in Sources */,
 				A10871422CAE0F3B008312B0 /* ItemModel.swift in Sources */,
 				A108713C2CAE0EED008312B0 /* MapView.swift in Sources */,
 				2BED14C62CA89D90003F1862 /* LoginView.swift in Sources */,
@@ -531,8 +546,10 @@
 				A17760EA2CC0698000F10420 /* TopBarView.swift in Sources */,
 				A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */,
 				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
+				A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */,
 				2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */,
 				2BD5A2F62CD57BD3009D9624 /* LoginInstructionsView.swift in Sources */,
+				A1EBD99E2CDC1EF000D5790C /* OfflineMapPopupView.swift in Sources */,
 				A10871462CAE0F54008312B0 /* SearchViewController.swift in Sources */,
 				A108713E2CAE0F04008312B0 /* LocationManager.swift in Sources */,
 				A17761202CC1AAF300F10420 /* CameraPopupView.swift in Sources */,
@@ -547,6 +564,7 @@
 				2BEAA22C2CDAE7FC00315A83 /* RecycleView.swift in Sources */,
 				CD7FB2872CA8A45A00EE6601 /* RequestModel.swift in Sources */,
 				A1381FCC2CC203150045993C /* MapViewModel.swift in Sources */,
+				A10610052CD5BCA300D5D553 /* OfflineMapManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +732,8 @@
 				DEVELOPMENT_TEAM = F6L8ZM8N27;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SustainU/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need to access your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to access your location";
@@ -746,9 +766,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
-				DEVELOPMENT_TEAM = F6L8ZM8N27;
+				DEVELOPMENT_TEAM = 9RLS8R4G4M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SustainU/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need to access your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to access your location";

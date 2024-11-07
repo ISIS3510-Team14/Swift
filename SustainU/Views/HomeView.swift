@@ -7,35 +7,34 @@
 
 import SwiftUI
 import Auth0
+import Network
 
 struct HomeView: View {
     var userProfile: UserProfile
-
-    
-    @StateObject private var connectivityManager = ConnectivityManager.shared
-
     @ObservedObject private var viewModel = LoginViewModel.shared
-
     @State private var selectedTab: Int = 0
+    @State private var isShowingCameraView = false
+    @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false
-    @StateObject private var collectionPointViewModel = CollectionPointViewModel()    
-    @State private var showSavedImagesSheet = false // Estado para mostrar el sheet de imágenes
-    @State private var selectedImage: UIImage? = nil // Añade selectedImage para compartir entre vistas
-    @State private var hasTemporaryImages = false // Estado para controlar la visibilidad del botón
-
+    @State private var showOfflinePopup = false
+    
     var body: some View {
-            ZStack {
-                Color.white.edgesIgnoringSafeArea(.all)
-
-                TabView(selection: $selectedTab) {
-                    // Home Tab
-                    NavigationView {
-                        ScrollView {
-                            VStack {
-                                // Use the modified TopBarView
-                                TopBarView(profilePictureURL: viewModel.userProfile.picture, connectivityManager: connectivityManager) {
+        ZStack {
+            Color.white.edgesIgnoringSafeArea(.all)
+            
+            TabView(selection: $selectedTab) {
+                // Home Tab
+                NavigationView {
+                    ScrollView {
+                        VStack {
+                            // Nuevo TopBarView
+                            TopBarView(
+                                profilePictureURL: viewModel.userProfile.picture,
+                                connectivityManager: ConnectivityManager.shared,
+                                onProfileTap: {
                                     isShowingProfile = true
                                 }
+                            )
                             
                             // Greeting with first name
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
@@ -71,9 +70,14 @@ struct HomeView: View {
                             // Options grid
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+
+                                    // Botón del mapa modificado para verificar conexión
+                                    Button(action: {
+                                        checkInternetAndNavigateToMap()
                                     // Map Button
                                     Button(action: {
                                         selectedTab = 1
+
                                     }) {
                                         VStack {
                                             Image("logoMap")
@@ -187,17 +191,30 @@ struct HomeView: View {
                 }
 
 
-                // Map Tab
-                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: viewModel.userProfile.picture)
-                    .tabItem {
-                        Image("logoMap")
-                            .renderingMode(.template)
-                        Text("Map")
+                // Map Tab con overlay para el popup
+                ZStack {
+                    ExpandableSearchView(collectionPointViewModel: collectionPointViewModel,
+                                       profilePictureURL: viewModel.userProfile.picture)
+                    
+                    if showOfflinePopup {
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                showOfflinePopup = false
+                            }
+                        
+                        OfflineMapPopupView(isPresented: $showOfflinePopup)
                     }
-                    .tag(1)
-                    .onAppear {
-                        collectionPointViewModel.incrementMapCount()
-                    }
+                }
+                .tabItem {
+                    Image("logoMap")
+                        .renderingMode(.template)
+                    Text("Map")
+                }
+                .tag(1)
+                .onAppear {
+                    collectionPointViewModel.incrementMapCount()
+                }
 
                 CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab, selectedImage: $selectedImage)  
 
@@ -232,6 +249,30 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
+        
+            // Presentación de la vista de perfil como un modal
+            .sheet(isPresented: $isShowingProfile) {
+                ProfileView(userProfile: viewModel.userProfile)
+            }
+        }
+    }
+    
+    private func checkInternetAndNavigateToMap() {
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "InternetCheck")
+        
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                if path.status != .satisfied {
+                    showOfflinePopup = true
+                } else {
+                    selectedTab = 1
+                }
+                monitor.cancel()
+            }
+        }
+        
+        monitor.start(queue: queue)
 
             // Present the ProfileView as a sheet
             .sheet(isPresented: $isShowingProfile) {
