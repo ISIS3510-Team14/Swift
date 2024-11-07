@@ -26,15 +26,12 @@ class MapViewModel: ObservableObject {
         connectivityMonitor.pathUpdateHandler = { [weak self] path in
             DispatchQueue.main.async {
                 self?.isOffline = path.status != .satisfied
+                if self?.isOffline == true {
+                    self?.showOfflinePopup = true
+                }
             }
         }
         connectivityMonitor.start(queue: queue)
-    }
-    
-    func handleMapTap() {
-        if isOffline {
-            showOfflinePopup = true
-        }
     }
     
     func startUpdatingLocation() {

@@ -1,21 +1,18 @@
 import SwiftUI
 import Auth0
+import Network
 
 struct HomeView: View {
-    
     var userProfile: UserProfile
-    
     @ObservedObject private var viewModel = LoginViewModel.shared
-    //@Binding var isAuthenticated: Bool
-    
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
-    @State private var isShowingProfile = false  // Estado para mostrar la vista de perfil
-
+    @State private var isShowingProfile = false
+    @State private var showOfflinePopup = false
+    
     var body: some View {
         ZStack {
-            // Fondo blanco que se extiende a todos los bordes
             Color.white.edgesIgnoringSafeArea(.all)
             
             TabView(selection: $selectedTab) {
@@ -29,9 +26,8 @@ struct HomeView: View {
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                 Spacer()
-                                // Botón que muestra la vista de perfil
                                 Button(action: {
-                                    isShowingProfile = true  // Muestra la vista de perfil
+                                    isShowingProfile = true
                                 }) {
                                     AsyncImage(url: URL(string: viewModel.userProfile.picture)) { image in
                                         image
@@ -83,9 +79,9 @@ struct HomeView: View {
                             // Grid con las opciones
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                                    // Botones sin bordes ni fondos grises
+                                    // Botón del mapa modificado para verificar conexión
                                     Button(action: {
-                                        selectedTab = 1 // Cambiar a la pestaña del Mapa
+                                        checkInternetAndNavigateToMap()
                                     }) {
                                         VStack {
                                             Image("logoMap")
@@ -99,7 +95,7 @@ struct HomeView: View {
                                     }
 
                                     Button(action: {
-                                        selectedTab = 4 // Cambiar a la pestaña de Scoreboard
+                                        selectedTab = 4
                                     }) {
                                         VStack {
                                             Image("logoScoreboard")
@@ -113,7 +109,7 @@ struct HomeView: View {
                                     }
 
                                     Button(action: {
-                                        selectedTab = 3 // Cambiar a la pestaña de Recycle
+                                        selectedTab = 3
                                     }) {
                                         VStack {
                                             Image("logoRecycle")
@@ -151,7 +147,7 @@ struct HomeView: View {
                                 .padding(.bottom, 10)
 
                             Button(action: {
-                                selectedTab = 2 // Cambiar a la pestaña de Camera
+                                selectedTab = 2
                             }) {
                                 Text("Scan")
                                     .font(.headline)
@@ -173,17 +169,30 @@ struct HomeView: View {
                 }
                 .tag(0)
 
-                // Map Tab
-                ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: viewModel.userProfile.picture)
-                    .tabItem {
-                        Image("logoMap")
-                            .renderingMode(.template)
-                        Text("Map")
+                // Map Tab con overlay para el popup
+                ZStack {
+                    ExpandableSearchView(collectionPointViewModel: collectionPointViewModel,
+                                       profilePictureURL: viewModel.userProfile.picture)
+                    
+                    if showOfflinePopup {
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                showOfflinePopup = false
+                            }
+                        
+                        OfflineMapPopupView(isPresented: $showOfflinePopup)
                     }
-                    .tag(1)
-                    .onAppear {
-                        collectionPointViewModel.incrementMapCount()
-                    }
+                }
+                .tabItem {
+                    Image("logoMap")
+                        .renderingMode(.template)
+                    Text("Map")
+                }
+                .tag(1)
+                .onAppear {
+                    collectionPointViewModel.incrementMapCount()
+                }
 
                 CameraView(profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
@@ -215,13 +224,28 @@ struct HomeView: View {
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
         
-            
             // Presentación de la vista de perfil como un modal
             .sheet(isPresented: $isShowingProfile) {
                 ProfileView(userProfile: viewModel.userProfile)
             }
-            // Observe authentication state
-            
         }
+    }
+    
+    private func checkInternetAndNavigateToMap() {
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "InternetCheck")
+        
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                if path.status != .satisfied {
+                    showOfflinePopup = true
+                } else {
+                    selectedTab = 1
+                }
+                monitor.cancel()
+            }
+        }
+        
+        monitor.start(queue: queue)
     }
 }
