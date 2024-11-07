@@ -1,15 +1,9 @@
-//
-//  HomeView.swift
-//  SustainU
-//
-//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
-//
-
 import SwiftUI
 import Auth0
 import Network
 
 struct HomeView: View {
+    // MARK: - Properties
     var userProfile: UserProfile
     @ObservedObject private var viewModel = LoginViewModel.shared
     @State private var selectedTab: Int = 0
@@ -17,7 +11,12 @@ struct HomeView: View {
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false
     @State private var showOfflinePopup = false
+    @State private var hasTemporaryImages: Bool = false
+    @State private var showSavedImagesSheet = false
+    @State private var selectedImage: UIImage?
+    @ObservedObject private var connectivityManager = ConnectivityManager.shared
     
+    // MARK: - Body
     var body: some View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(.all)
@@ -27,34 +26,34 @@ struct HomeView: View {
                 NavigationView {
                     ScrollView {
                         VStack {
-                            // Nuevo TopBarView
+                            // Using TopBarView with correct parameters
                             TopBarView(
                                 profilePictureURL: viewModel.userProfile.picture,
-                                connectivityManager: ConnectivityManager.shared,
+                                connectivityManager: connectivityManager,
                                 onProfileTap: {
                                     isShowingProfile = true
                                 }
                             )
                             
-                            // Greeting with first name
+                            // Rest of the view remains the same...
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .padding(.top, 10)
-
+                            
                             // Record section
                             VStack(alignment: .leading) {
                                 Text("Your record")
                                     .font(.headline)
                                     .padding(.bottom, 2)
-
+                                
                                 HStack {
                                     VStack(alignment: .leading) {
                                         Text("68 Points")
                                             .font(.title)
                                             .fontWeight(.bold)
-
+                                        
                                         Text("99 Days")
                                             .font(.subheadline)
                                             .foregroundColor(Color("blueLogoColor"))
@@ -66,18 +65,13 @@ struct HomeView: View {
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(15)
                             .padding(.horizontal)
-
-                            // Options grid
+                            
+                            // Grid options
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-
-                                    // Botón del mapa modificado para verificar conexión
-                                    Button(action: {
-                                        checkInternetAndNavigateToMap()
                                     // Map Button
                                     Button(action: {
-                                        selectedTab = 1
-
+                                        checkInternetAndNavigateToMap()
                                     }) {
                                         VStack {
                                             Image("logoMap")
@@ -89,7 +83,7 @@ struct HomeView: View {
                                                 .foregroundColor(.black)
                                         }
                                     }
-
+                                    
                                     // Scoreboard Button
                                     Button(action: {
                                         selectedTab = 4
@@ -104,7 +98,7 @@ struct HomeView: View {
                                                 .foregroundColor(.black)
                                         }
                                     }
-
+                                    
                                     // Recycle Button
                                     Button(action: {
                                         selectedTab = 3
@@ -119,7 +113,7 @@ struct HomeView: View {
                                                 .foregroundColor(.black)
                                         }
                                     }
-
+                                    
                                     // History Button
                                     Button(action: {
                                         // Action for History
@@ -137,14 +131,15 @@ struct HomeView: View {
                                 .padding(.horizontal)
                             }
                             .padding(.top, 20)
-
+                            
                             Spacer()
-
+                            
+                            // Scan button
                             Text("Start recycling!")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 10)
-
+                            
                             Button(action: {
                                 selectedTab = 2
                             }) {
@@ -158,8 +153,7 @@ struct HomeView: View {
                             }
                             .padding(.bottom, 40)
                             
-                            
-                            // Botón para ver imágenes temporales, solo si hay imágenes guardadas
+                            // Temporary images button
                             if hasTemporaryImages && connectivityManager.isConnected {
                                 Button(action: {
                                     showSavedImagesSheet = true
@@ -186,12 +180,11 @@ struct HomeView: View {
                 .tag(0)
                 .onAppear {
                     if connectivityManager.isConnected {
-                        checkForTemporaryImages() // Verificar si hay imágenes temporales al cargar la vista
+                        checkForTemporaryImages()
                     }
                 }
-
-
-                // Map Tab con overlay para el popup
+                
+                // Map Tab
                 ZStack {
                     ExpandableSearchView(collectionPointViewModel: collectionPointViewModel,
                                        profilePictureURL: viewModel.userProfile.picture)
@@ -215,26 +208,29 @@ struct HomeView: View {
                 .onAppear {
                     collectionPointViewModel.incrementMapCount()
                 }
-
-                CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab, selectedImage: $selectedImage)  
-
+                
+                // Camera Tab
+                CameraView(profilePictureURL: viewModel.userProfile.picture,
+                          selectedTab: $selectedTab,
+                          selectedImage: $selectedImage)
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
                         Text("Camera")
                     }
                     .tag(2)
-                    // Recycle Tab
-                    NavigationView {
-                        RecycleView(userProfile: viewModel.userProfile)
-                    }
-                    .tabItem {
-                        Image("logoRecycle")
-                            .renderingMode(.template)
-                        Text("Recycle")
-                    }
-                    .tag(3)
-
+                
+                // Recycle Tab
+                NavigationView {
+                    RecycleView(userProfile: viewModel.userProfile)
+                }
+                .tabItem {
+                    Image("logoRecycle")
+                        .renderingMode(.template)
+                    Text("Recycle")
+                }
+                .tag(3)
+                
                 // Scoreboard Tab
                 Text("Scoreboard View")
                     .tabItem {
@@ -249,14 +245,17 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
-        
-            // Presentación de la vista de perfil como un modal
-            .sheet(isPresented: $isShowingProfile) {
-                ProfileView(userProfile: viewModel.userProfile)
-            }
+        }
+        // Sheets
+        .sheet(isPresented: $isShowingProfile) {
+            ProfileView(userProfile: viewModel.userProfile)
+        }
+        .sheet(isPresented: $showSavedImagesSheet) {
+            SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
         }
     }
     
+    // MARK: - Helper Methods
     private func checkInternetAndNavigateToMap() {
         let monitor = NWPathMonitor()
         let queue = DispatchQueue(label: "InternetCheck")
@@ -273,24 +272,9 @@ struct HomeView: View {
         }
         
         monitor.start(queue: queue)
-
-            // Present the ProfileView as a sheet
-            .sheet(isPresented: $isShowingProfile) {
-                ProfileView(userProfile: viewModel.userProfile)
-            }
-
-            // Sheet para mostrar las imágenes guardadas
-            .sheet(isPresented: $showSavedImagesSheet) {
-                SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
-            }
-
-
-        }
     }
     
-    // Función para verificar si hay imágenes temporales guardadas
     private func checkForTemporaryImages() {
-        print("chequeando imagenes emporales")
         let savedImages = CameraViewmodel().loadSavedImages()
         hasTemporaryImages = !savedImages.isEmpty
     }
