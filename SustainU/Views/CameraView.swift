@@ -57,7 +57,7 @@ struct CameraView: View {
     var body: some View {
         VStack {
             // Header con la información del perfil
-            TopBarView(profilePictureURL: profilePictureURL)
+            TopBarView(profilePictureURL: profilePictureURL,connectivityManager: ConnectivityManager.shared)
             
             // Contenido principal: mostrar la cámara o la imagen capturada
             ZStack {

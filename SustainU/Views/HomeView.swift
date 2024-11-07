@@ -20,30 +20,14 @@ struct HomeView: View {
                 NavigationView {
                     ScrollView {
                         VStack {
-                            // Logo e imagen de perfil
-                            HStack {
-                                Image("logoBigger")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Spacer()
-                                Button(action: {
+                            // Nuevo TopBarView
+                            TopBarView(
+                                profilePictureURL: viewModel.userProfile.picture,
+                                connectivityManager: ConnectivityManager.shared,
+                                onProfileTap: {
                                     isShowingProfile = true
-                                }) {
-                                    AsyncImage(url: URL(string: viewModel.userProfile.picture)) { image in
-                                        image
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .clipShape(Circle())
-                                    } placeholder: {
-                                        Image(systemName: "person.circle.fill")
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .clipShape(Circle())
-                                    }
                                 }
-                            }
-                            .padding(.horizontal)
-                            .padding(.top, 20)
+                            )
                             
                             // Saludo al usuario con solo el primer nombre
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name

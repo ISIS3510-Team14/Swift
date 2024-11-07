@@ -37,7 +37,8 @@ struct ExpandableSearchView: View {
                         .frame(height: (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
                             .windows.first?.safeAreaInsets.top ?? 20)
                     
-                    TopBarView(profilePictureURL: profilePictureURL)
+                    TopBarView(profilePictureURL: profilePictureURL,
+                               connectivityManager: ConnectivityManager.shared)
                     
                     Spacer()
                     

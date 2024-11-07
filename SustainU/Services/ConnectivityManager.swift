@@ -1,10 +1,3 @@
-//
-//  ConnectivityManager.swift
-//  SustainU
-//
-//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
-//
-
 import Foundation
 import Network
 import Combine
@@ -20,12 +13,15 @@ class ConnectivityManager: ObservableObject {
         monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { path in
             let isConnected = path.status == .satisfied
-            print("ConnectivityManager: isConnected = \(isConnected)")
+            print("ConnectivityManager: pathUpdateHandler called, isConnected = \(isConnected)")
             DispatchQueue.main.async {
                 self.isConnected = isConnected
             }
         }
         monitor.start(queue: queue)
     }
-
+    deinit {
+            print("ConnectivityManager deinitialized")
+        }
+    
 }
