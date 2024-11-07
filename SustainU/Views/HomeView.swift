@@ -7,11 +7,17 @@ struct HomeView: View {
     
     @ObservedObject private var viewModel = LoginViewModel.shared
     //@Binding var isAuthenticated: Bool
-    
+    @StateObject private var connectivityManager = ConnectivityManager.shared
+
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false  // Estado para mostrar la vista de perfil
+    
+    @State private var showPopup = false // Estado para mostrar el popup
+    @State private var showSavedImagesSheet = false // Estado para mostrar el sheet de imágenes
+    @State private var selectedImage: UIImage? = nil // Añade selectedImage para compartir entre vistas
+    @State private var hasTemporaryImages = false // Estado para controlar la visibilidad del botón
 
     var body: some View {
         ZStack {
@@ -162,6 +168,23 @@ struct HomeView: View {
                                     .cornerRadius(15)
                             }
                             .padding(.bottom, 40)
+                            
+                            
+                            // Botón para ver imágenes temporales, solo si hay imágenes guardadas
+                            if hasTemporaryImages && connectivityManager.isConnected {
+                                Button(action: {
+                                    showSavedImagesSheet = true
+                                }) {
+                                    Text("View temporary images")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color("greenLogoColor"))
+                                        .cornerRadius(15)
+                                        .frame(width: 320, height: 60)
+                                }
+                            }
                         }
                     }
                     .navigationBarHidden(true)
@@ -172,6 +195,12 @@ struct HomeView: View {
                     Text("Home")
                 }
                 .tag(0)
+                .onAppear {
+                    if connectivityManager.isConnected {
+                        checkForTemporaryImages() // Verificar si hay imágenes temporales al cargar la vista
+                    }
+                }
+
 
                 // Map Tab
                 ExpandableSearchView(collectionPointViewModel: collectionPointViewModel, profilePictureURL: viewModel.userProfile.picture)
@@ -185,7 +214,7 @@ struct HomeView: View {
                         collectionPointViewModel.incrementMapCount()
                     }
 
-                CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab)
+                CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab, selectedImage: $selectedImage)  
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
@@ -222,6 +251,18 @@ struct HomeView: View {
             }
             // Observe authentication state
             
+            // Sheet para mostrar las imágenes guardadas
+            .sheet(isPresented: $showSavedImagesSheet) {
+                SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
+            }
+
         }
+    }
+    
+    // Función para verificar si hay imágenes temporales guardadas
+    private func checkForTemporaryImages() {
+        print("chequeando imagenes emporales")
+        let savedImages = CameraViewmodel().loadSavedImages()
+        hasTemporaryImages = !savedImages.isEmpty
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 struct ConnectivityCameraPopup: View {
     @Binding var showPopup: Bool
     @Binding var selectedTab: Int // Añade este Binding para cambiar la pestaña,
-    @Binding var image: UIImage? // Para limpiar la imagen
+    var viewModel: CameraViewmodel // Añadimos el viewModel para acceder a la función de guardado
     var onCancel: () -> Void // Closure que se llama al cancelar
 
     var body: some View {
@@ -34,8 +34,8 @@ struct ConnectivityCameraPopup: View {
             }
 
             Button(action: {
-                // Acción para guardar la imagen para más tarde
-                // Define la lógica de guardado aquí
+                viewModel.saveImageLocally() // Llama a la función para guardar la imagen localmente
+                onCancel() // Llama a la acción de cancelar y reiniciar
             }) {
                 Text("Save Picture for Later")
                     .frame(maxWidth: .infinity)
