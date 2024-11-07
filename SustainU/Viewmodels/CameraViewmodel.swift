@@ -12,10 +12,108 @@ class CameraViewmodel: ObservableObject {
     @Published var timerCount: Int = 0
     @Published var timerActive: Bool = false
     @Published var error: Bool = false
+    @Published var showConnectivityPopup: Bool = false
     
+    @Published var networkMonitor = NetworkMonitor.shared
+    
+    struct SavedImage: Codable {
+        let fileName: String
+        let date: Date
+    }
+    
+    private let metadataFileName = "savedImages_.json"
+
+    func saveImageLocally() {
+        guard let image = image else { return }
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else { return }
+        
+        // Generar un nombre único para el archivo usando la fecha y hora actual
+        let fileName = "SavedImage_\(Date().timeIntervalSince1970).jpg"
+        
+        // Obtener la URL del directorio de documentos
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        
+        do {
+            // Guardar la imagen en el directorio de documentos
+            try imageData.write(to: fileURL)
+            print("Imagen guardada en: \(fileURL.path)")
+            
+            // Guardar los metadatos de la imagen
+            saveImageMetadata(fileName: fileName, date: Date())
+        } catch {
+            print("Error al guardar la imagen: \(error)")
+        }
+    }
+
+    private func saveImageMetadata(fileName: String, date: Date) {
+        var savedImages = loadSavedImages()
+        let newImage = SavedImage(fileName: fileName, date: date)
+        savedImages.append(newImage)
+        
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let metadataFileURL = documentsDirectory.appendingPathComponent(metadataFileName)
+        
+        do {
+            let data = try JSONEncoder().encode(savedImages)
+            try data.write(to: metadataFileURL)
+        } catch {
+            print("Error al guardar los metadatos de la imagen: \(error)")
+        }
+    }
+    
+    func loadSavedImages() -> [SavedImage] {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let metadataFileURL = documentsDirectory.appendingPathComponent(metadataFileName)
+        
+        // Verificar si el archivo de metadatos existe
+        if !FileManager.default.fileExists(atPath: metadataFileURL.path) {
+            return [] // Devuelve una lista vacía si el archivo no existe
+        }
+        
+        do {
+            let data = try Data(contentsOf: metadataFileURL)
+            let savedImages = try JSONDecoder().decode([SavedImage].self, from: data)
+            return savedImages
+        } catch {
+            print("Error al cargar los metadatos de las imágenes: \(error)")
+            return []
+        }
+    }
+    
+    // Función para eliminar una imagen y su metadata asociada
+    func deleteImageWithMetadata(fileName: String) {
+        // Eliminar el archivo de imagen
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+            print("Imagen eliminada: \(fileURL.path)")
+        } catch {
+            print("Error al eliminar la imagen: \(error)")
+        }
+        
+        // Cargar y actualizar el archivo de metadata
+        var savedImages = loadSavedImages()
+        savedImages.removeAll { $0.fileName == fileName }
+        
+        // Guardar la lista de imágenes actualizada sin la imagen eliminada
+        let metadataFileURL = documentsDirectory.appendingPathComponent(metadataFileName)
+        
+        do {
+            let data = try JSONEncoder().encode(savedImages)
+            try data.write(to: metadataFileURL)
+            print("Metadata actualizada y guardada después de eliminar la imagen.")
+        } catch {
+            print("Error al actualizar los metadatos de la imagen: \(error)")
+        }
+    }
     
     func takePhoto(image: UIImage) {
+        
         self.image = image
+        
         let photoBase64 = convertImageToBase64String(img: image)
         var responseTextTrash = "Waiting for response..."
         
@@ -23,7 +121,7 @@ class CameraViewmodel: ObservableObject {
 
         // Primer request
         let promptTrashType = "Answer for the image: Which of these types of trash is the user taking the picture holding?: \(trashTypesString). Answer only with the type."
-        
+
         dispatchGroup.enter()
         RequestService().sendRequest(prompt: promptTrashType, photoBase64: photoBase64) { response in
             DispatchQueue.main.async {
@@ -32,29 +130,56 @@ class CameraViewmodel: ObservableObject {
             }
         }
         
-        
         // Manejo de llegada de requests
         dispatchGroup.notify(queue: .main) {
+            
+            if !self.networkMonitor.isConnected {
+                print("Conexión perdida durante el primer request")
+                self.showConnectivityPopup = true
+                dispatchGroup.leave()
+                return
+            }
+            
+            print("Request 1: ")
             print(responseTextTrash)
-            self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64)
+            self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64, dispatchGroup: dispatchGroup)
         }
+        
     }
     
-    private func handleTrashTypeResponse(_ responseTextTrash: String, photoBase64: String) {
+    private func handleTrashTypeResponse(_ responseTextTrash: String, photoBase64: String, dispatchGroup: DispatchGroup) {
         var i = 0
         for trashType in trashTypes {
             if responseTextTrash.contains(trashType.type) {
+ 
                 self.trashTypeIconDetected = trashType
                 let foundTrashType = trashType.type
                 
                 // Segundo request
                 let promptBinType = "Answer for the image: What is the most appropriate bin to dispose of a \(foundTrashType) in?. Indicate if none of the present bins are appropriate. Your answer must be short: at most two short sentences."
                 
+                dispatchGroup.enter()
                 RequestService().sendRequest(prompt: promptBinType, photoBase64: photoBase64) { response in
                     DispatchQueue.main.async {
                         self.responseTextBin = response ?? "No response"
-                        self.showResponsePopup = true
+                        //self.showResponsePopup = true
+                        dispatchGroup.leave()
                     }
+                }
+                
+                // Mostrar el resultado después de ambos requests
+                dispatchGroup.notify(queue: .main) {
+                    
+                    if !self.networkMonitor.isConnected {
+                        print("Conexión perdida durante el segundo request")
+                        self.showConnectivityPopup = true
+                        dispatchGroup.leave()
+                        return
+                    }
+                    
+                    print("Request 2: ")
+                    print(self.responseTextBin)
+                    self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
                 }
                 break
             } else {
@@ -80,7 +205,7 @@ class CameraViewmodel: ObservableObject {
                 timer.invalidate()
             } else {
                 self.timerCount += 1
-                if self.timerCount >= 30 {
+                if self.timerCount >= 20 {
                     timer.invalidate()
                     self.error = true
                     self.showResponsePopup = true

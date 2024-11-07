@@ -1,3 +1,10 @@
+//
+//  HomeView.swift
+//  SustainU
+//
+//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
+//
+
 import SwiftUI
 import Auth0
 import Network
@@ -29,14 +36,14 @@ struct HomeView: View {
                                 }
                             )
                             
-                            // Saludo al usuario con solo el primer nombre
+                            // Greeting with first name
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .padding(.top, 10)
-                            
-                            // Sección de puntos y días
+
+                            // Record section
                             VStack(alignment: .leading) {
                                 Text("Your record")
                                     .font(.headline)
@@ -60,12 +67,17 @@ struct HomeView: View {
                             .cornerRadius(15)
                             .padding(.horizontal)
 
-                            // Grid con las opciones
+                            // Options grid
                             VStack(spacing: 20) {
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+
                                     // Botón del mapa modificado para verificar conexión
                                     Button(action: {
                                         checkInternetAndNavigateToMap()
+                                    // Map Button
+                                    Button(action: {
+                                        selectedTab = 1
+
                                     }) {
                                         VStack {
                                             Image("logoMap")
@@ -78,6 +90,7 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // Scoreboard Button
                                     Button(action: {
                                         selectedTab = 4
                                     }) {
@@ -92,6 +105,7 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // Recycle Button
                                     Button(action: {
                                         selectedTab = 3
                                     }) {
@@ -106,8 +120,9 @@ struct HomeView: View {
                                         }
                                     }
 
+                                    // History Button
                                     Button(action: {
-                                        // Acción para History
+                                        // Action for History
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -142,6 +157,23 @@ struct HomeView: View {
                                     .cornerRadius(15)
                             }
                             .padding(.bottom, 40)
+                            
+                            
+                            // Botón para ver imágenes temporales, solo si hay imágenes guardadas
+                            if hasTemporaryImages && connectivityManager.isConnected {
+                                Button(action: {
+                                    showSavedImagesSheet = true
+                                }) {
+                                    Text("View temporary images")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color("greenLogoColor"))
+                                        .cornerRadius(15)
+                                        .frame(width: 320, height: 60)
+                                }
+                            }
                         }
                     }
                     .navigationBarHidden(true)
@@ -152,6 +184,12 @@ struct HomeView: View {
                     Text("Home")
                 }
                 .tag(0)
+                .onAppear {
+                    if connectivityManager.isConnected {
+                        checkForTemporaryImages() // Verificar si hay imágenes temporales al cargar la vista
+                    }
+                }
+
 
                 // Map Tab con overlay para el popup
                 ZStack {
@@ -178,15 +216,18 @@ struct HomeView: View {
                     collectionPointViewModel.incrementMapCount()
                 }
 
-                CameraView(profilePictureURL: viewModel.userProfile.picture)
+                CameraView(profilePictureURL: viewModel.userProfile.picture, selectedTab: $selectedTab, selectedImage: $selectedImage)  
+
                     .tabItem {
                         Image("logoCamera")
                             .renderingMode(.template)
                         Text("Camera")
                     }
                     .tag(2)
-
-                Text("Recycle View")
+                    // Recycle Tab
+                    NavigationView {
+                        RecycleView(userProfile: viewModel.userProfile)
+                    }
                     .tabItem {
                         Image("logoRecycle")
                             .renderingMode(.template)
@@ -194,6 +235,7 @@ struct HomeView: View {
                     }
                     .tag(3)
 
+                // Scoreboard Tab
                 Text("Scoreboard View")
                     .tabItem {
                         Image("logoScoreboard")
@@ -231,5 +273,25 @@ struct HomeView: View {
         }
         
         monitor.start(queue: queue)
+
+            // Present the ProfileView as a sheet
+            .sheet(isPresented: $isShowingProfile) {
+                ProfileView(userProfile: viewModel.userProfile)
+            }
+
+            // Sheet para mostrar las imágenes guardadas
+            .sheet(isPresented: $showSavedImagesSheet) {
+                SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
+            }
+
+
+        }
+    }
+    
+    // Función para verificar si hay imágenes temporales guardadas
+    private func checkForTemporaryImages() {
+        print("chequeando imagenes emporales")
+        let savedImages = CameraViewmodel().loadSavedImages()
+        hasTemporaryImages = !savedImages.isEmpty
     }
 }

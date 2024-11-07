@@ -10,6 +10,7 @@ struct ExpandableSearchView: View {
     @State private var selectedPoint: CollectionPoint?
     @State private var showingDetail = false
     @State private var showOfflinePopup = false
+    @StateObject private var connectivityManager = ConnectivityManager.shared
     
     let profilePictureURL: String
     
