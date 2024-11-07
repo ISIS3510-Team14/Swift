@@ -13,6 +13,7 @@ struct CameraView: View {
     let profilePictureURL: String
     @Binding var selectedTab: Int // Añade selectedTab como Binding
     @State private var showCameraPicker = true // Controla la visibilidad de CameraPicker para reiniciar
+    @Binding var selectedImage: UIImage? // Añade selectedImage como Binding para recibir la imagen
 
     
     // Función para reiniciar el contenido de la cámara
@@ -90,7 +91,7 @@ struct CameraView: View {
                         .scaledToFit()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     
-                    if viewModel.networkMonitor.isConnected {
+                    if !viewModel.showConnectivityPopup {
                         // Mostrar el timer encima de la imagen capturada
                         VStack {
                             Spacer()
@@ -153,7 +154,7 @@ struct CameraView: View {
                 if viewModel.showConnectivityPopup {
                     ConnectivityCameraPopup(showPopup: $viewModel.showConnectivityPopup, 
                                             selectedTab: $selectedTab,
-                                            image: $viewModel.image,
+                                            viewModel: viewModel, // Pasar el viewModel aquí
                                             onCancel: resetCamera // Llama a resetCamera al cancelar
                     )
                 }
@@ -161,5 +162,11 @@ struct CameraView: View {
             }
         }
         .statusBar(hidden: false)
+        .onChange(of: selectedImage) { newImage in
+             if let newImage = newImage {
+                 viewModel.takePhoto(image: newImage) // Llamar a takePhoto cuando se selecciona una imagen
+                 selectedImage = nil // Limpiar selectedImage para evitar múltiples llamadas
+             }
+         }
     }
 }

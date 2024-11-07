@@ -76,6 +76,8 @@
 		CD7FB2892CA8A46F00EE6601 /* TrashTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7FB2882CA8A46F00EE6601 /* TrashTypeModel.swift */; };
 		CD7FB28B2CA8A51600EE6601 /* RequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7FB28A2CA8A51600EE6601 /* RequestService.swift */; };
 		CDB03DC82CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB03DC72CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift */; };
+		CDB0C8182CDADD0F00A6210B /* SavedImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB0C8172CDADD0F00A6210B /* SavedImagesView.swift */; };
+		CDB0C81A2CDC062B00A6210B /* DELETEME.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB0C8192CDC062B00A6210B /* DELETEME.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +145,8 @@
 		CD7FB2882CA8A46F00EE6601 /* TrashTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashTypeModel.swift; sourceTree = "<group>"; };
 		CD7FB28A2CA8A51600EE6601 /* RequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestService.swift; sourceTree = "<group>"; };
 		CDB03DC72CDA636A00BD3FFD /* ConnectivityCameraPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityCameraPopupView.swift; sourceTree = "<group>"; };
+		CDB0C8172CDADD0F00A6210B /* SavedImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedImagesView.swift; sourceTree = "<group>"; };
+		CDB0C8192CDC062B00A6210B /* DELETEME.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DELETEME.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +233,8 @@
 				A108713F2CAE0F09008312B0 /* CollectionPointDetailView.swift */,
 				2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */,
 				A108714C2CAE15EE008312B0 /* UIKit */,
+				CDB0C8172CDADD0F00A6210B /* SavedImagesView.swift */,
+				CDB0C8192CDC062B00A6210B /* DELETEME.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -512,6 +518,7 @@
 				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
 				2BD5A2ED2CD17889009D9624 /* ConnectivityManager.swift in Sources */,
 				2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */,
+				CDB0C81A2CDC062B00A6210B /* DELETEME.swift in Sources */,
 				CD0E4AFB2CC1F37700A220F3 /* CameraViewmodel.swift in Sources */,
 				2BD5A2EF2CD17C18009D9624 /* KeychainService.swift in Sources */,
 				A108713A2CAE0EC5008312B0 /* APIConfig.swift in Sources */,
@@ -534,6 +541,7 @@
 				A1381FC82CC1F7670045993C /* CollectionPointViewModel.swift in Sources */,
 				2BEAA22E2CDAE91700315A83 /* RecycleDetailView.swift in Sources */,
 				2BED14C72CA89D90003F1862 /* CameraView.swift in Sources */,
+				CDB0C8182CDADD0F00A6210B /* SavedImagesView.swift in Sources */,
 				CD7FB2892CA8A46F00EE6601 /* TrashTypeModel.swift in Sources */,
 				A10871442CAE0F4F008312B0 /* SearchBarView.swift in Sources */,
 				2BEAA22C2CDAE7FC00315A83 /* RecycleView.swift in Sources */,
