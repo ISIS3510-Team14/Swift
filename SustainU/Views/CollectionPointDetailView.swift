@@ -2,37 +2,63 @@ import SwiftUI
 
 struct CollectionPointDetailView: View {
     let point: CollectionPoint
-   
+    @StateObject private var imageLoader = ImageLoader()
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Image
-                AsyncImage(url: URL(string: point.imageName)) { image in
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(height: 200)
-                                        .cornerRadius(12)
-                                        .padding(.horizontal)
-                                } placeholder: {
-                                    ProgressView() // Botón de carga circular
-                                        .progressViewStyle(CircularProgressViewStyle()) // Estilo circular
-                                        .scaleEffect(2) // Escalar el indicador de carga
-                                        .padding(10)
-                                }
-               
+                // Image with cache
+                Group {
+                    if let uiImage = imageLoader.image {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 200)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    } else {
+                        AsyncImage(url: URL(string: point.imageName)) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 200)
+                                    .cornerRadius(12)
+                                    .padding(.horizontal)
+                            case .failure(_):
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 200)
+                                    .cornerRadius(12)
+                                    .padding(.horizontal)
+                                    .foregroundColor(.gray)
+                            case .empty:
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                                    .scaleEffect(2)
+                                    .frame(height: 200)
+                                    .padding(.horizontal)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                    }
+                }
+                
                 // Name and Location
                 VStack(alignment: .leading, spacing: 8) {
                     Text(point.name)
                         .font(.title2)
                         .fontWeight(.bold)
-                   
+                    
                     Text(point.location)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
                 .padding(.horizontal)
-               
+                
                 // Materials
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(point.materials.components(separatedBy: ", "), id: \.self) { material in
@@ -42,19 +68,100 @@ struct CollectionPointDetailView: View {
                     }
                 }
                 .padding(.horizontal)
-               
+                
                 Spacer()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: CustomBackButton())
+        .onAppear {
+            imageLoader.loadImage(from: point.imageName)
+        }
+    }
+}
+
+// Image Loader class to handle caching
+class ImageLoader: ObservableObject {
+    @Published var image: UIImage?
+    private let cache = NSCache<NSString, UIImage>()
+    private let fileManager = FileManager.default
+    
+    func loadImage(from urlString: String) {
+        let cacheKey = NSString(string: urlString)
+        
+        // First, check memory cache
+        if let cachedImage = cache.object(forKey: cacheKey) {
+            self.image = cachedImage
+            return
+        }
+        
+        // Then, check disk cache
+        if let diskCachedImage = loadImageFromDisk(for: urlString) {
+            self.image = diskCachedImage
+            // Store in memory cache
+            cache.setObject(diskCachedImage, forKey: cacheKey)
+            return
+        }
+        
+        // If not in cache, download the image
+        guard let url = URL(string: urlString) else { return }
+        
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self,
+                  let data = data,
+                  let downloadedImage = UIImage(data: data) else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                // Save to memory cache
+                self.cache.setObject(downloadedImage, forKey: cacheKey)
+                // Save to disk cache
+                self.saveImageToDisk(downloadedImage, for: urlString)
+                self.image = downloadedImage
+            }
+        }.resume()
+    }
+    
+    private func saveImageToDisk(_ image: UIImage, for urlString: String) {
+        guard let data = image.jpegData(compressionQuality: 0.8),
+              let cacheDirectory = try? FileManager.default.url(for: .cachesDirectory,
+                                                              in: .userDomainMask,
+                                                              appropriateFor: nil,
+                                                              create: true) else {
+            return
+        }
+        
+        let fileName = urlString.replacingOccurrences(of: "/", with: "_")
+        let fileURL = cacheDirectory.appendingPathComponent(fileName)
+        
+        try? data.write(to: fileURL)
+    }
+    
+    private func loadImageFromDisk(for urlString: String) -> UIImage? {
+        guard let cacheDirectory = try? FileManager.default.url(for: .cachesDirectory,
+                                                              in: .userDomainMask,
+                                                              appropriateFor: nil,
+                                                              create: false) else {
+            return nil
+        }
+        
+        let fileName = urlString.replacingOccurrences(of: "/", with: "_")
+        let fileURL = cacheDirectory.appendingPathComponent(fileName)
+        
+        guard let data = try? Data(contentsOf: fileURL),
+              let image = UIImage(data: data) else {
+            return nil
+        }
+        
+        return image
     }
 }
 
 struct CustomBackButton: View {
     @Environment(\.presentationMode) var presentationMode
-   
+    
     var body: some View {
         Button(action: {
             self.presentationMode.wrappedValue.dismiss()
@@ -64,5 +171,3 @@ struct CustomBackButton: View {
         }
     }
 }
-
-

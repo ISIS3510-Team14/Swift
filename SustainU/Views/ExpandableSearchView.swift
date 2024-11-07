@@ -1,35 +1,45 @@
 import SwiftUI
 import MapKit
+import Network
 
 struct ExpandableSearchView: View {
     @StateObject private var viewModel = ExpandableSearchViewModel()
     @FocusState private var isSearchFocused: Bool
     @GestureState private var draggingOffset: CGFloat = 0
     @ObservedObject var collectionPointViewModel: CollectionPointViewModel
+    @State private var selectedPoint: CollectionPoint?
+    @State private var showingDetail = false
+    @State private var showOfflinePopup = false
+    @StateObject private var connectivityManager = ConnectivityManager.shared
     
     let profilePictureURL: String
     
     var body: some View {
         NavigationView {
-            ZStack(alignment: .top) {
-                MapView(locationManager: viewModel.locationManager,
-                        userTrackingMode: $viewModel.userTrackingMode,
-                        collectionPoints: viewModel.collectionPointViewModel.collectionPoints,
-                        onAnnotationTap: { point in
-                            viewModel.selectedPoint = point
-                            viewModel.isNavigatingToDetail = true
-                        })
-                    .edgesIgnoringSafeArea(.all)
-                    .safeAreaInset(edge: .top) {
-                        Color.clear.frame(height: 0)
+            ZStack(alignment: .center) {
+                // MapView Layer with offline popup
+                MapViewWithOfflinePopup(
+                    locationManager: viewModel.locationManager,
+                    userTrackingMode: $viewModel.userTrackingMode,
+                    collectionPoints: collectionPointViewModel.collectionPoints,
+                    onAnnotationTap: { point in
+                        selectedPoint = point
+                        showingDetail = true
                     }
+                )
+                .edgesIgnoringSafeArea(.all)
+                .safeAreaInset(edge: .top) {
+                    Color.clear.frame(height: 0)
+                }
                 
+                // Main Content Layer
                 VStack(spacing: 0) {
                     Color.clear
                         .frame(height: (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
-                        .windows.first?.safeAreaInsets.top ?? 20)
+                            .windows.first?.safeAreaInsets.top ?? 20)
                     
-                    TopBarView(profilePictureURL: profilePictureURL)
+                    TopBarView(profilePictureURL: profilePictureURL,
+                               connectivityManager: ConnectivityManager.shared)
                     
                     Spacer()
                     
@@ -52,10 +62,11 @@ struct ExpandableSearchView: View {
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 20) {
                                 ForEach(viewModel.filteredPoints) { point in
-                                    NavigationLink(destination: CollectionPointDetailView(point: point)
-                                        .onAppear {
-                                                                                collectionPointViewModel.incrementCount(for: point)
-                                                                            }) {
+                                    Button(action: {
+                                        selectedPoint = point
+                                        showingDetail = true
+                                        collectionPointViewModel.incrementCount(for: point)
+                                    }) {
                                         HStack(alignment: .top, spacing: 10) {
                                             Image("custom-pin-image")
                                                 .resizable()
@@ -77,7 +88,6 @@ struct ExpandableSearchView: View {
                                             }
                                         }
                                     }
-                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                             .padding(.top)
@@ -91,6 +101,7 @@ struct ExpandableSearchView: View {
                     .gesture(dragGesture)
                 }
                 
+                // Location Button Layer
                 VStack {
                     Spacer()
                     HStack {
@@ -108,9 +119,16 @@ struct ExpandableSearchView: View {
                         .padding()
                     }
                 }
+                
+                // Offline Popup Layer
+                if showOfflinePopup {
+                    OfflineMapPopupView(isPresented: $showOfflinePopup)
+                }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
             .edgesIgnoringSafeArea(.all)
             .onAppear {
+                checkConnectivity()
                 viewModel.startUpdatingLocation()
                 viewModel.setupKeyboardObservers()
             }
@@ -119,23 +137,13 @@ struct ExpandableSearchView: View {
             }
             .background(
                 NavigationLink(
-                    destination: CollectionPointDetailView(
-                        point: viewModel.selectedPoint ?? CollectionPoint(
-                            id: UUID(),
-                            name: "",
-                            location: "",
-                            materials: "",
-                            latitude: 0,
-                            longitude: 0,
-                            imageName: "default-image",
-                            documentID: "",
-                            count: 0
-                        )
-                    ),
-                    isActive: $viewModel.isNavigatingToDetail
-                ) {
-                    EmptyView()
-                }
+                    destination: Group {
+                        if let point = selectedPoint {
+                            CollectionPointDetailView(point: point)
+                        }
+                    },
+                    isActive: $showingDetail
+                ) { EmptyView() }
             )
         }
     }
@@ -150,5 +158,19 @@ struct ExpandableSearchView: View {
                 isSearchFocused = false
             }
     }
+    
+    // Función para verificar la conectividad
+    private func checkConnectivity() {
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "InternetCheck")
+        
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                showOfflinePopup = path.status != .satisfied
+                monitor.cancel()
+            }
+        }
+        
+        monitor.start(queue: queue)
+    }
 }
-
