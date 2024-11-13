@@ -61,7 +61,7 @@ struct CollectionPointDetailView: View {
                 
                 // Materials
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(point.materials.components(separatedBy: ", "), id: \.self) { material in
+                    ForEach(point.info3, id: \.self) { material in
                         Text(material)
                             .font(.body)
                             .foregroundColor(Color("blueLogoColor"))

@@ -98,7 +98,8 @@ class CollectionPointViewModel: ObservableObject {
                       let materials = data["info2"] as? String,
                       let coordinates = data["loc"] as? GeoPoint,
                       let imageName = data["img"] as? String,
-                      let count = data["count"] as? Int else {
+                      let count = data["count"] as? Int,
+                      let info3 = data["info3"] as? [String] else {  // Agregar esta línea
                     return nil
                 }
                 
@@ -111,7 +112,8 @@ class CollectionPointViewModel: ObservableObject {
                     longitude: coordinates.longitude,
                     imageName: imageName,
                     documentID: document.documentID,
-                    count: count
+                    count: count,
+                    info3: info3  // Agregar esta línea
                 )
             }
             
@@ -125,7 +127,6 @@ class CollectionPointViewModel: ObservableObject {
                     return location1.distance(from: userCLLocation) < location2.distance(from: userCLLocation)
                 }
             } else {
-                // Si no hay ubicación disponible, mantener el orden original
                 self.collectionPoints = points
             }
         }
