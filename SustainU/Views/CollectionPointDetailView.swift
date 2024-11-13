@@ -4,6 +4,30 @@ struct CollectionPointDetailView: View {
     let point: CollectionPoint
     @StateObject private var imageLoader = ImageLoader()
     
+    
+    private func getRecycleDetailView(for material: String) -> RecycleDetailView {
+        if let config = RecycleTypes.configurations[material] {
+            return RecycleDetailView(
+                title: config.title,
+                iconName: config.iconName,
+                fact: config.fact,
+                trashCanImageName: config.trashCanImageName,
+                disposalInfo: config.disposalInfo,
+                extraInfo: config.extraInfo
+            )
+        } else {
+            // Caso default
+            return RecycleDetailView(
+                title: material,
+                iconName: "recycle_icon",
+                fact: "This material is recyclable",
+                trashCanImageName: "blue_trash_can",
+                disposalInfo: "Please check local recycling guidelines",
+                extraInfo: "When in doubt, consult your local recycling center"
+            )
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -61,13 +85,15 @@ struct CollectionPointDetailView: View {
                 
                 // Materials
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(point.info3, id: \.self) { material in
-                        Text(material)
-                            .font(.body)
-                            .foregroundColor(Color("blueLogoColor"))
-                    }
-                }
-                .padding(.horizontal)
+                                    ForEach(point.info3, id: \.self) { material in
+                                        NavigationLink(destination: getRecycleDetailView(for: material)) {
+                                            Text(material)
+                                                .font(.body)
+                                                .foregroundColor(Color("blueLogoColor"))
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
                 
                 Spacer()
             }

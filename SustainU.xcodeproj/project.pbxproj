@@ -41,6 +41,7 @@
 		A1381FC82CC1F7670045993C /* CollectionPointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1381FC72CC1F7670045993C /* CollectionPointViewModel.swift */; };
 		A1381FCA2CC1FB420045993C /* ExpandableSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1381FC92CC1FB420045993C /* ExpandableSearchViewModel.swift */; };
 		A1381FCC2CC203150045993C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1381FCB2CC203150045993C /* MapViewModel.swift */; };
+		A17489462CE54EDA00277641 /* RecycleTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17489452CE54ED900277641 /* RecycleTypes.swift */; };
 		A17760EA2CC0698000F10420 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17760E92CC0698000F10420 /* TopBarView.swift */; };
 		A17760EC2CC19CCA00F10420 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */; };
 		A17760EF2CC19FF600F10420 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A17760EE2CC19FF600F10420 /* FirebaseAnalytics */; };
@@ -135,6 +136,7 @@
 		A1381FC72CC1F7670045993C /* CollectionPointViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPointViewModel.swift; sourceTree = "<group>"; };
 		A1381FC92CC1FB420045993C /* ExpandableSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableSearchViewModel.swift; sourceTree = "<group>"; };
 		A1381FCB2CC203150045993C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		A17489452CE54ED900277641 /* RecycleTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecycleTypes.swift; sourceTree = "<group>"; };
 		A17760E72CC027C300F10420 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		A17760E92CC0698000F10420 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 		A108714B2CAE13FC008312B0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A17489452CE54ED900277641 /* RecycleTypes.swift */,
 				2BEAA22B2CDAE7FC00315A83 /* RecycleView.swift */,
 				2BEAA22F2CDAEB4000315A83 /* RecycleCardView.swift */,
 				2BEAA22D2CDAE91700315A83 /* RecycleDetailView.swift */,
@@ -563,6 +566,7 @@
 				A10871442CAE0F4F008312B0 /* SearchBarView.swift in Sources */,
 				2BEAA22C2CDAE7FC00315A83 /* RecycleView.swift in Sources */,
 				CD7FB2872CA8A45A00EE6601 /* RequestModel.swift in Sources */,
+				A17489462CE54EDA00277641 /* RecycleTypes.swift in Sources */,
 				A1381FCC2CC203150045993C /* MapViewModel.swift in Sources */,
 				A10610052CD5BCA300D5D553 /* OfflineMapManager.swift in Sources */,
 			);
