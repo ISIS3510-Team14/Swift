@@ -729,11 +729,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
-				DEVELOPMENT_TEAM = F6L8ZM8N27;
+				DEVELOPMENT_TEAM = 9RLS8R4G4M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SustainU/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need to access your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to access your location";
@@ -748,7 +747,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "subgrupo-swift.SustainU2727";
+				PRODUCT_BUNDLE_IDENTIFIER = "subgrupo-swift.SustainU";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -770,7 +769,6 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SustainU/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need to access your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to access your location";
@@ -785,7 +783,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "subgrupo-swift.SustainU2727";
+				PRODUCT_BUNDLE_IDENTIFIER = "subgrupo-swift.SustainU";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

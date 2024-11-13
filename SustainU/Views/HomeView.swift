@@ -207,6 +207,10 @@ struct HomeView: View {
                 .tag(1)
                 .onAppear {
                     collectionPointViewModel.incrementMapCount()
+                    if !collectionPointViewModel.isNavigatingFromMainMenu {
+                        collectionPointViewModel.incrementMapFromNavBar()
+                    }
+                    collectionPointViewModel.isNavigatingFromMainMenu = false
                 }
                 
                 // Camera Tab
@@ -265,6 +269,8 @@ struct HomeView: View {
                 if path.status != .satisfied {
                     showOfflinePopup = true
                 } else {
+                    collectionPointViewModel.isNavigatingFromMainMenu = true
+                    collectionPointViewModel.incrementMapFromMainMenu()
                     selectedTab = 1
                 }
                 monitor.cancel()
