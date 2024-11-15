@@ -17,7 +17,6 @@ class LoginViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var userProfile: UserProfile = .empty
     @Published var isConnected: Bool = false
-    @Published var showBackOnlineMessage: Bool = false
     @Published var showNoSessionAlert: Bool = false
 
     let connectivityManager = ConnectivityManager.shared
@@ -35,10 +34,6 @@ class LoginViewModel: ObservableObject {
             .sink { isConnected in
                 self.isConnected = isConnected
                 if isConnected {
-                    self.showBackOnlineMessage = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.showBackOnlineMessage = false
-                    }
                     self.refreshUserProfile()
                 }
             }
@@ -112,8 +107,8 @@ class LoginViewModel: ObservableObject {
     }
 
     func clearLocalSession() {
-        //KeychainService.deleteToken()
-        //KeychainService.deleteProfile()
+        KeychainService.deleteToken()
+        KeychainService.deleteProfile()
         self.isAuthenticated = false
         self.userProfile = .empty
     }

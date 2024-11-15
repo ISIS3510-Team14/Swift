@@ -12,6 +12,7 @@ struct CollectionPoint: Identifiable {
     let imageName: String
     let documentID: String
     var count: Int
+    let info3: [String]  // Agregar esta línea
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)

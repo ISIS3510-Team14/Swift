@@ -9,11 +9,12 @@ class CollectionPointViewModel: ObservableObject {
     @Published var showConnectivityPopup = false
     @Published var isFirstLaunch = true
     @Published var hasInternetConnection = false
-    
+    @Published var isNavigatingFromMainMenu: Bool = false
     private var db: Firestore
     private var listener: ListenerRegistration?
     private let monitor = NWPathMonitor()
     private let userDefaults = UserDefaults.standard
+    private let locationManager = LocationManager()
     
     init() {
         db = Firestore.firestore()
@@ -89,7 +90,6 @@ class CollectionPointViewModel: ObservableObject {
         }
         
         DispatchQueue.main.async {
-            // Procesar los documentos sin ordenar por ubicación si no hay conexión
             let points = documents.compactMap { document -> CollectionPoint? in
                 let data = document.data()
                 
@@ -98,7 +98,8 @@ class CollectionPointViewModel: ObservableObject {
                       let materials = data["info2"] as? String,
                       let coordinates = data["loc"] as? GeoPoint,
                       let imageName = data["img"] as? String,
-                      let count = data["count"] as? Int else {
+                      let count = data["count"] as? Int,
+                      let info3 = data["info3"] as? [String] else {  // Agregar esta línea
                     return nil
                 }
                 
@@ -111,13 +112,20 @@ class CollectionPointViewModel: ObservableObject {
                     longitude: coordinates.longitude,
                     imageName: imageName,
                     documentID: document.documentID,
-                    count: count
+                    count: count,
+                    info3: info3  // Agregar esta línea
                 )
             }
             
-            // Si no hay conexión, mostrar los puntos en orden por defecto (alfabético)
-            if !self.hasInternetConnection {
-                self.collectionPoints = points.sorted { $0.name < $1.name }
+            // Ordenar por distancia si hay ubicación disponible
+            if let userLocation = self.locationManager.location?.coordinate {
+                self.collectionPoints = points.sorted { point1, point2 in
+                    let location1 = CLLocation(latitude: point1.latitude, longitude: point1.longitude)
+                    let location2 = CLLocation(latitude: point2.latitude, longitude: point2.longitude)
+                    let userCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                    
+                    return location1.distance(from: userCLLocation) < location2.distance(from: userCLLocation)
+                }
             } else {
                 self.collectionPoints = points
             }
@@ -128,6 +136,39 @@ class CollectionPointViewModel: ObservableObject {
         if hasInternetConnection {
             showConnectivityPopup = false
             setupRealtimeListener()
+        }
+    }
+    func incrementMapFromNavBar() {
+        guard hasInternetConnection else { return }
+        
+        let documentId = "lgYlHUbaVdK2xSNsdUu2"
+        let docRef = db.collection("eventdb").document(documentId)
+        
+        docRef.updateData([
+            "NavBar": FieldValue.increment(Int64(1))
+        ]) { error in
+            if let error = error {
+                print("Error updating NavBar count: \(error)")
+            } else {
+                print("Successfully incremented NavBar count")
+            }
+        }
+    }
+
+    func incrementMapFromMainMenu() {
+        guard hasInternetConnection else { return }
+        
+        let documentId = "lgYlHUbaVdK2xSNsdUu2"
+        let docRef = db.collection("eventdb").document(documentId)
+        
+        docRef.updateData([
+            "MainMenu": FieldValue.increment(Int64(1))
+        ]) { error in
+            if let error = error {
+                print("Error updating MainMenu count: \(error)")
+            } else {
+                print("Successfully incremented MainMenu count")
+            }
         }
     }
     
@@ -163,47 +204,54 @@ class CollectionPointViewModel: ObservableObject {
     func incrementMapCount() {
         guard hasInternetConnection else { return }
         
-        let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
-        query.getDocuments(source: .cache) { [weak self] (querySnapshot, error) in
-            if let error = error {
-                self?.incrementMapCountFromServer()
-                return
-            }
-            
-            if let document = querySnapshot?.documents.first {
-                self?.updateMapCount(document: document)
-            } else {
-                self?.incrementMapCountFromServer()
-            }
-        }
-    }
-    
-    private func incrementMapCountFromServer() {
-        let query = db.collection("eventdb").whereField("name", isEqualTo: "MapView")
+        // Get current hour in 24-hour format (0-23)
+        let currentHour = Calendar.current.component(.hour, from: Date())
+        let documentId = "lgYlHUbaVdK2xSNsdUu2"
         
-        query.getDocuments(source: .server) { [weak self] querySnapshot, error in
+        // Get direct reference to the document
+        let docRef = db.collection("eventdb").document(documentId)
+        
+        // Try to get from cache first
+        docRef.getDocument(source: .cache) { [weak self] (document, error) in
             if let error = error {
-                print("Error getting documents: \(error)")
+                self?.incrementMapCountFromServer(hour: currentHour, docRef: docRef)
                 return
             }
             
-            if let document = querySnapshot?.documents.first {
-                self?.updateMapCount(document: document)
+            if let document = document {
+                self?.updateMapCount(document: document, hour: currentHour)
             } else {
-                self?.db.collection("counters").addDocument(data: [
-                    "name": "MapView",
-                    "count": 1
-                ])
+                self?.incrementMapCountFromServer(hour: currentHour, docRef: docRef)
             }
         }
     }
     
-    private func updateMapCount(document: QueryDocumentSnapshot) {
+    private func incrementMapCountFromServer(hour: Int, docRef: DocumentReference) {
+        docRef.getDocument(source: .server) { [weak self] document, error in
+            if let error = error {
+                print("Error getting document: \(error)")
+                return
+            }
+            
+            if let document = document {
+                self?.updateMapCount(document: document, hour: hour)
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+    
+    private func updateMapCount(document: DocumentSnapshot, hour: Int) {
+        // Convert hour to string to match the field name in Firestore
+        let hourField = String(hour)
+        
         document.reference.updateData([
-            "count": FieldValue.increment(Int64(1))
+            hourField: FieldValue.increment(Int64(1))
         ]) { error in
             if let error = error {
-                print("Error updating map count: \(error)")
+                print("Error updating map count for hour \(hour): \(error)")
+            } else {
+                print("Successfully incremented count for hour \(hour)")
             }
         }
     }

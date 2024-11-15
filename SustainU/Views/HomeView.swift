@@ -1,6 +1,7 @@
 import SwiftUI
 import Auth0
 import Network
+import FirebaseFirestore
 
 struct HomeView: View {
     // MARK: - Properties
@@ -207,6 +208,10 @@ struct HomeView: View {
                 .tag(1)
                 .onAppear {
                     collectionPointViewModel.incrementMapCount()
+                    if !collectionPointViewModel.isNavigatingFromMainMenu {
+                        collectionPointViewModel.incrementMapFromNavBar()
+                    }
+                    collectionPointViewModel.isNavigatingFromMainMenu = false
                 }
                 
                 // Camera Tab
@@ -245,6 +250,13 @@ struct HomeView: View {
                 UITabBar.appearance().backgroundColor = .white
                 UITabBar.appearance().unselectedItemTintColor = .gray
             }
+            .onChange(of: selectedTab) { newTab in
+                if newTab == 2 {
+                    logClickCounter(field: "scan")
+                } else if newTab == 3 {
+                    logClickCounter(field: "info")
+                }
+            }
         }
         // Sheets
         .sheet(isPresented: $isShowingProfile) {
@@ -265,6 +277,8 @@ struct HomeView: View {
                 if path.status != .satisfied {
                     showOfflinePopup = true
                 } else {
+                    collectionPointViewModel.isNavigatingFromMainMenu = true
+                    collectionPointViewModel.incrementMapFromMainMenu()
                     selectedTab = 1
                 }
                 monitor.cancel()
@@ -277,5 +291,18 @@ struct HomeView: View {
     private func checkForTemporaryImages() {
         let savedImages = CameraViewmodel().loadSavedImages()
         hasTemporaryImages = !savedImages.isEmpty
+    }
+    
+    private func logClickCounter(field: String) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("scan_info").document("counters")
+        
+        docRef.updateData([field: FieldValue.increment(Int64(1))]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
     }
 }
