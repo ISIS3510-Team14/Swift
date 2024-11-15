@@ -12,8 +12,6 @@ struct LoginView: View {
     @State private var showInstructions = false
     @State private var refreshView = false
 
-    //@State private var showHomeView = false
-
     var body: some View {
         VStack {
             Spacer()
@@ -74,10 +72,10 @@ struct LoginView: View {
             Spacer()
         }
         .onReceive(viewModel.$isConnected) { isConnected in
-                    print("LoginView: isConnected = \(isConnected)")
-                    self.refreshView.toggle()
-                }
-        .id(refreshView)
+            print("LoginView: isConnected = \(isConnected)")
+            self.refreshView.toggle()
+        }
+        .id(refreshView) // This refreshes the view when `refreshView` toggles
         
         .alert(isPresented: $viewModel.showNoSessionAlert) {
             Alert(
@@ -86,26 +84,5 @@ struct LoginView: View {
                 dismissButton: .default(Text("OK"))
             )
         }
-        .overlay(
-            Group {
-                if viewModel.showBackOnlineMessage {
-                    Text("Back online")
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.green)
-                        .cornerRadius(8)
-                        .transition(.opacity)
-                        .animation(.easeInOut, value: viewModel.showBackOnlineMessage)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                viewModel.showBackOnlineMessage = false
-                            }
-                        }
-                        .padding(.top, 20)
-                }
-            },
-            alignment: .top
-        )
     }
 }
