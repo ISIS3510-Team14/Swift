@@ -15,6 +15,8 @@
 		2BD5A2F22CD17EAB009D9624 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 2BD5A2F12CD17EAB009D9624 /* KeychainAccess */; };
 		2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */; };
 		2BD5A2F62CD57BD3009D9624 /* LoginInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */; };
+		2BE53CBDD3B24B5AE2C4ECF7 /* Pods_SustainUTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC11D544F53F073784AE671 /* Pods_SustainUTests.framework */; };
+		2BE7F0E82CE6E49800FA612B /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BE7F0E72CE6E49800FA612B /* APIConfig.swift */; };
 		2BEAA22C2CDAE7FC00315A83 /* RecycleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEAA22B2CDAE7FC00315A83 /* RecycleView.swift */; };
 		2BEAA22E2CDAE91700315A83 /* RecycleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEAA22D2CDAE91700315A83 /* RecycleDetailView.swift */; };
 		2BEAA2302CDAEB4000315A83 /* RecycleCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEAA22F2CDAEB4000315A83 /* RecycleCardView.swift */; };
@@ -27,7 +29,8 @@
 		2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14C02CA89D90003F1862 /* HomeView.swift */; };
 		2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */; };
 		2BED14CF2CA89E02003F1862 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 2BED14CE2CA89E02003F1862 /* Auth0 */; };
-		A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610002CD58F6F00D5D553 /* APIConfig.swift */; };
+		341305FAB57F03D19EE1D4F1 /* Pods_SustainU_SustainUUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2C8E2B1663826329634320 /* Pods_SustainU_SustainUUITests.framework */; };
+		3E09373141A0698026A7DAA4 /* Pods_SustainU.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012EB704E45B371946B30200 /* Pods_SustainU.framework */; };
 		A10610032CD5A90000D5D553 /* ConnectivityPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */; };
 		A10610052CD5BCA300D5D553 /* OfflineMapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */; };
 		A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10610092CD5C25D00D5D553 /* AppleMapCacheManager.swift */; };
@@ -103,6 +106,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		012EB704E45B371946B30200 /* Pods_SustainU.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SustainU.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0CECCE4FE371247027F3EFF9 /* Pods-SustainU.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SustainU.debug.xcconfig"; path = "Target Support Files/Pods-SustainU/Pods-SustainU.debug.xcconfig"; sourceTree = "<group>"; };
 		2BD5A2E62CC29361009D9624 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2BD5A2EA2CC2C1F7009D9624 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -110,6 +115,8 @@
 		2BD5A2EE2CD17C18009D9624 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		2BD5A2F32CD188A7009D9624 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		2BD5A2F52CD57BD3009D9624 /* LoginInstructionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInstructionsView.swift; sourceTree = "<group>"; };
+		2BE7F0E72CE6E49800FA612B /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		2BE7F0E92CE6E54C00FA612B /* SustainU.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SustainU.entitlements; sourceTree = "<group>"; };
 		2BEAA22B2CDAE7FC00315A83 /* RecycleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecycleView.swift; sourceTree = "<group>"; };
 		2BEAA22D2CDAE91700315A83 /* RecycleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecycleDetailView.swift; sourceTree = "<group>"; };
 		2BEAA22F2CDAEB4000315A83 /* RecycleCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecycleCardView.swift; sourceTree = "<group>"; };
@@ -121,7 +128,11 @@
 		2BED14BF2CA89D90003F1862 /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
 		2BED14C02CA89D90003F1862 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SustainUApp.swift; sourceTree = "<group>"; };
-		A10610002CD58F6F00D5D553 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		4CC11D544F53F073784AE671 /* Pods_SustainUTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SustainUTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		756BCEA0610357CF32F99E29 /* Pods-SustainUTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SustainUTests.debug.xcconfig"; path = "Target Support Files/Pods-SustainUTests/Pods-SustainUTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7DD3B9D9EAA172CD0E0A77B5 /* Pods-SustainU-SustainUUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SustainU-SustainUUITests.release.xcconfig"; path = "Target Support Files/Pods-SustainU-SustainUUITests/Pods-SustainU-SustainUUITests.release.xcconfig"; sourceTree = "<group>"; };
+		8DA8F6700411C10CA10CCC0A /* Pods-SustainU-SustainUUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SustainU-SustainUUITests.debug.xcconfig"; path = "Target Support Files/Pods-SustainU-SustainUUITests/Pods-SustainU-SustainUUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		9A2C8E2B1663826329634320 /* Pods_SustainU_SustainUUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SustainU_SustainUUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10610022CD5A90000D5D553 /* ConnectivityPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityPopupView.swift; sourceTree = "<group>"; };
 		A10610042CD5BCA300D5D553 /* OfflineMapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapManager.swift; sourceTree = "<group>"; };
 		A10610082CD5BFFD00D5D553 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +154,8 @@
 		A177611F2CC1AAF300F10420 /* CameraPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPopupView.swift; sourceTree = "<group>"; };
 		A1EBD99D2CDC1EF000D5790C /* OfflineMapPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMapPopupView.swift; sourceTree = "<group>"; };
 		A1F8761A2CAE183E002ACEE6 /* CollectionPointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPointModel.swift; sourceTree = "<group>"; };
+		BB8B064BFA49181AE0561DD2 /* Pods-SustainUTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SustainUTests.release.xcconfig"; path = "Target Support Files/Pods-SustainUTests/Pods-SustainUTests.release.xcconfig"; sourceTree = "<group>"; };
+		C447CF330946D87AC0157C34 /* Pods-SustainU.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SustainU.release.xcconfig"; path = "Target Support Files/Pods-SustainU/Pods-SustainU.release.xcconfig"; sourceTree = "<group>"; };
 		CD0E4AFA2CC1F37700A220F3 /* CameraViewmodel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewmodel.swift; sourceTree = "<group>"; };
 		CD43FF4A2C9CF0FC0058AE09 /* SustainU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SustainU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD43FF542C9CF0FE0058AE09 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -191,6 +204,7 @@
 				A17761092CC19FF600F10420 /* FirebaseFunctions in Frameworks */,
 				A17761032CC19FF600F10420 /* FirebaseDynamicLinks in Frameworks */,
 				A17761072CC19FF600F10420 /* FirebaseFirestoreCombine-Community in Frameworks */,
+				3E09373141A0698026A7DAA4 /* Pods_SustainU.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BE53CBDD3B24B5AE2C4ECF7 /* Pods_SustainUTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,12 +220,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				341305FAB57F03D19EE1D4F1 /* Pods_SustainU_SustainUUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26E1DE46A7236FD93C70765F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0CECCE4FE371247027F3EFF9 /* Pods-SustainU.debug.xcconfig */,
+				C447CF330946D87AC0157C34 /* Pods-SustainU.release.xcconfig */,
+				8DA8F6700411C10CA10CCC0A /* Pods-SustainU-SustainUUITests.debug.xcconfig */,
+				7DD3B9D9EAA172CD0E0A77B5 /* Pods-SustainU-SustainUUITests.release.xcconfig */,
+				756BCEA0610357CF32F99E29 /* Pods-SustainUTests.debug.xcconfig */,
+				BB8B064BFA49181AE0561DD2 /* Pods-SustainUTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		56FEDAA4E742CA6F50D3ED1E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				012EB704E45B371946B30200 /* Pods_SustainU.framework */,
+				9A2C8E2B1663826329634320 /* Pods_SustainU_SustainUUITests.framework */,
+				4CC11D544F53F073784AE671 /* Pods_SustainUTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A10871492CAE1387008312B0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,6 +330,8 @@
 				CD43FF5D2C9CF0FE0058AE09 /* SustainUTests */,
 				CD43FF672C9CF0FE0058AE09 /* SustainUUITests */,
 				CD43FF4B2C9CF0FC0058AE09 /* Products */,
+				26E1DE46A7236FD93C70765F /* Pods */,
+				56FEDAA4E742CA6F50D3ED1E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -306,12 +348,13 @@
 		CD43FF4C2C9CF0FC0058AE09 /* SustainU */ = {
 			isa = PBXGroup;
 			children = (
+				2BE7F0E92CE6E54C00FA612B /* SustainU.entitlements */,
+				2BE7F0E72CE6E49800FA612B /* APIConfig.swift */,
 				A10610082CD5BFFD00D5D553 /* Info.plist */,
 				2BD5A2E82CC2C01D009D9624 /* LaunchScreen.storyboard */,
 				A17760EB2CC19CCA00F10420 /* GoogleService-Info.plist */,
 				2BED14BF2CA89D90003F1862 /* Auth0.plist */,
 				2BED14CB2CA89DDB003F1862 /* SustainUApp.swift */,
-				A10610002CD58F6F00D5D553 /* APIConfig.swift */,
 				A17760E72CC027C300F10420 /* Location.gpx */,
 				A1381FC62CC1F74F0045993C /* Viewmodels */,
 				A10871512CAE1683008312B0 /* Resources */,
@@ -367,9 +410,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD43FF6E2C9CF0FE0058AE09 /* Build configuration list for PBXNativeTarget "SustainU" */;
 			buildPhases = (
+				A98952FEFE4447FEBFD0A1D1 /* [CP] Check Pods Manifest.lock */,
 				CD43FF462C9CF0FC0058AE09 /* Sources */,
 				CD43FF472C9CF0FC0058AE09 /* Frameworks */,
 				CD43FF482C9CF0FC0058AE09 /* Resources */,
+				EB93B84310EB677B71F285B2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -412,6 +457,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD43FF712C9CF0FE0058AE09 /* Build configuration list for PBXNativeTarget "SustainUTests" */;
 			buildPhases = (
+				FBE44A727A2AD73CF2B1FF64 /* [CP] Check Pods Manifest.lock */,
 				CD43FF562C9CF0FE0058AE09 /* Sources */,
 				CD43FF572C9CF0FE0058AE09 /* Frameworks */,
 				CD43FF582C9CF0FE0058AE09 /* Resources */,
@@ -430,9 +476,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD43FF742C9CF0FE0058AE09 /* Build configuration list for PBXNativeTarget "SustainUUITests" */;
 			buildPhases = (
+				98A23F59905F3BC4FABD1E33 /* [CP] Check Pods Manifest.lock */,
 				CD43FF602C9CF0FE0058AE09 /* Sources */,
 				CD43FF612C9CF0FE0058AE09 /* Frameworks */,
 				CD43FF622C9CF0FE0058AE09 /* Resources */,
+				AB0FE920803F5B6C00B88494 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -478,7 +526,7 @@
 			);
 			mainGroup = CD43FF412C9CF0FC0058AE09;
 			packageReferences = (
-				2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */,
+				2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0.swift" */,
 				A17760ED2CC19D6300F10420 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				2BD5A2F02CD17EAB009D9624 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
@@ -522,6 +570,109 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		98A23F59905F3BC4FABD1E33 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SustainU-SustainUUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A98952FEFE4447FEBFD0A1D1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SustainU-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AB0FE920803F5B6C00B88494 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SustainU-SustainUUITests/Pods-SustainU-SustainUUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SustainU-SustainUUITests/Pods-SustainU-SustainUUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SustainU-SustainUUITests/Pods-SustainU-SustainUUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB93B84310EB677B71F285B2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SustainU/Pods-SustainU-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SustainU/Pods-SustainU-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SustainU/Pods-SustainU-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FBE44A727A2AD73CF2B1FF64 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SustainUTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CD43FF462C9CF0FC0058AE09 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -532,7 +683,6 @@
 				2BED14C92CA89D90003F1862 /* HomeView.swift in Sources */,
 				A1F8761B2CAE183E002ACEE6 /* CollectionPointModel.swift in Sources */,
 				A10871482CAE0F5D008312B0 /* ExpandableSearchView.swift in Sources */,
-				A10610012CD58F6F00D5D553 /* APIConfig.swift in Sources */,
 				2BED14CC2CA89DDB003F1862 /* SustainUApp.swift in Sources */,
 				2BD5A2ED2CD17889009D9624 /* ConnectivityManager.swift in Sources */,
 				2BD5A2F42CD188A7009D9624 /* NetworkMonitor.swift in Sources */,
@@ -548,6 +698,7 @@
 				A1381FCA2CC1FB420045993C /* ExpandableSearchViewModel.swift in Sources */,
 				A17760EA2CC0698000F10420 /* TopBarView.swift in Sources */,
 				A10871402CAE0F09008312B0 /* CollectionPointDetailView.swift in Sources */,
+				2BE7F0E82CE6E49800FA612B /* APIConfig.swift in Sources */,
 				2BED14C32CA89D90003F1862 /* ContentView.swift in Sources */,
 				A106100A2CD5C25E00D5D553 /* AppleMapCacheManager.swift in Sources */,
 				2BED14C52CA89D90003F1862 /* GridMenuView.swift in Sources */,
@@ -726,14 +877,16 @@
 		};
 		CD43FF6F2C9CF0FE0058AE09 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CECCE4FE371247027F3EFF9 /* Pods-SustainU.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SustainU/SustainU.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
-				DEVELOPMENT_TEAM = 9RLS8R4G4M;
+				DEVELOPMENT_TEAM = 96WWBDJ9T7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SustainU/Info.plist;
@@ -762,14 +915,16 @@
 		};
 		CD43FF702C9CF0FE0058AE09 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C447CF330946D87AC0157C34 /* Pods-SustainU.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SustainU/SustainU.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SustainU/Preview Content\"";
-				DEVELOPMENT_TEAM = 9RLS8R4G4M;
+				DEVELOPMENT_TEAM = 96WWBDJ9T7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SustainU/Info.plist;
@@ -797,6 +952,7 @@
 		};
 		CD43FF722C9CF0FE0058AE09 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 756BCEA0610357CF32F99E29 /* Pods-SustainUTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -817,6 +973,7 @@
 		};
 		CD43FF732C9CF0FE0058AE09 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB8B064BFA49181AE0561DD2 /* Pods-SustainUTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -837,6 +994,7 @@
 		};
 		CD43FF752C9CF0FE0058AE09 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8DA8F6700411C10CA10CCC0A /* Pods-SustainU-SustainUUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -855,6 +1013,7 @@
 		};
 		CD43FF762C9CF0FE0058AE09 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7DD3B9D9EAA172CD0E0A77B5 /* Pods-SustainU-SustainUUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -921,7 +1080,7 @@
 				kind = branch;
 			};
 		};
-		2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */ = {
+		2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/auth0/Auth0.swift";
 			requirement = {
@@ -947,7 +1106,7 @@
 		};
 		2BED14CE2CA89E02003F1862 /* Auth0 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0" */;
+			package = 2BED14CD2CA89E02003F1862 /* XCRemoteSwiftPackageReference "Auth0.swift" */;
 			productName = Auth0;
 		};
 		A17760EE2CC19FF600F10420 /* FirebaseAnalytics */ = {

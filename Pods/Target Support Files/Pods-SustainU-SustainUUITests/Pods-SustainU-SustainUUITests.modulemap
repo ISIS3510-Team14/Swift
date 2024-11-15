@@ -1,0 +1,6 @@
+framework module Pods_SustainU_SustainUUITests {
+  umbrella header "Pods-SustainU-SustainUUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

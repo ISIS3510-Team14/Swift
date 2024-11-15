@@ -1,0 +1,6 @@
+framework module Pods_SustainU {
+  umbrella header "Pods-SustainU-umbrella.h"
+
+  export *
+  module * { export * }
+}
