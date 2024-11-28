@@ -16,6 +16,7 @@ struct HomeView: View {
     @State private var showSavedImagesSheet = false
     @State private var selectedImage: UIImage?
     @ObservedObject private var connectivityManager = ConnectivityManager.shared
+    @State private var isShowingHistoryView = false
     
     // MARK: - Body
     var body: some View {
@@ -36,7 +37,6 @@ struct HomeView: View {
                                 }
                             )
                             
-                            // Rest of the view remains the same...
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
@@ -116,8 +116,9 @@ struct HomeView: View {
                                     }
                                     
                                     // History Button
+                                    // History Button
                                     Button(action: {
-                                        // Action for History
+                                        navigateToHistory()
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -265,6 +266,11 @@ struct HomeView: View {
         .sheet(isPresented: $showSavedImagesSheet) {
             SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
         }
+        
+        .sheet(isPresented: $isShowingHistoryView) {
+            let _ = print("Navigating to HistoryView with email: \(userProfile.email)")
+            HistoryView(userEmail: userProfile.email)
+        }
     }
     
     // MARK: - Helper Methods
@@ -304,5 +310,8 @@ struct HomeView: View {
                 print("Document successfully updated")
             }
         }
+    }
+    private func navigateToHistory() {
+        isShowingHistoryView = true
     }
 }
