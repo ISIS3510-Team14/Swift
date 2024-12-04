@@ -7,14 +7,24 @@ struct CameraView: View {
     
     
     @StateObject private var connectivityManager = ConnectivityManager.shared
-    @StateObject private var viewModel = CameraViewmodel()
+    @StateObject private var viewModel: CameraViewmodel
     @ObservedObject private var networkMonitor = NetworkMonitor.shared // Monitoreo de red
     @State private var showConnectivityPopup = false // Estado para el popup de conectividad
     let profilePictureURL: String
     @Binding var selectedTab: Int // Añade selectedTab como Binding
     @State private var showCameraPicker = true // Controla la visibilidad de CameraPicker para reiniciar
     @Binding var selectedImage: UIImage? // Añade selectedImage como Binding para recibir la imagen
-
+    
+    var userProfile: UserProfile
+    
+    init(profilePictureURL: String, selectedTab: Binding<Int>, selectedImage: Binding<UIImage?>, userProfile: UserProfile) {
+        self.profilePictureURL = profilePictureURL
+        self._selectedTab = selectedTab
+        self._selectedImage = selectedImage
+        self.userProfile = userProfile
+        // Inicializa viewModel con el userId
+        _viewModel = StateObject(wrappedValue: CameraViewmodel(userProfile: userProfile))
+    }
     
     // Función para reiniciar el contenido de la cámara
     private func resetCamera() {
@@ -43,7 +53,6 @@ struct CameraView: View {
             
             func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
                 if let uiImage = info[.originalImage] as? UIImage {
-                    
 
                     // Verifica la conectividad después de capturar la imagen
                     if !parent.viewModel.networkMonitor.isConnected {
@@ -140,7 +149,9 @@ struct CameraView: View {
                         trashTypeIconDetected: $viewModel.trashTypeIconDetected,
                         timerActive: $viewModel.timerActive,
                         error: viewModel.error,
-                        noResponse: viewModel.noResponse
+                        noResponse: viewModel.noResponse,
+                        viewModel: viewModel,
+                        userProfile: userProfile
                     )
                     .onAppear {
                         print("sendScanEvent pre")

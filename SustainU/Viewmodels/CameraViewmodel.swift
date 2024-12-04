@@ -13,6 +13,14 @@ class CameraViewmodel: ObservableObject {
     @Published var timerActive: Bool = false
     @Published var error: Bool = false
     @Published var showConnectivityPopup: Bool = false
+    @Published var showPoints: Bool = false
+
+    var userProfile: UserProfile
+    
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
+    }
+
     
     @Published var networkMonitor = NetworkMonitor.shared
     
@@ -33,6 +41,7 @@ class CameraViewmodel: ObservableObject {
         // Obtener la URL del directorio de documentos
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
+    
         
         do {
             // Guardar la imagen en el directorio de documentos
@@ -179,6 +188,8 @@ class CameraViewmodel: ObservableObject {
                     
                     print("Request 2: ")
                     print(self.responseTextBin)
+                    // enviar assign
+                    self.assignPointsToUser()
                     self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
                 }
                 break
@@ -214,7 +225,6 @@ class CameraViewmodel: ObservableObject {
         }
     }
     
-    
     func sendScanEvent(scanTime: Int, thrashType: String) {
         let db = Firestore.firestore()
         let data: [String: Any] = [
@@ -230,4 +240,53 @@ class CameraViewmodel: ObservableObject {
             }
         }
     }
+    
+    func assignPointsToUser() {
+        
+
+        if let jsonData = try? JSONEncoder().encode(userProfile),
+           let jsonDict = try? JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+            print(jsonDict)
+        }   
+        
+        self.showPoints = true
+
+        let db = Firestore.firestore()
+        let userDocRef = db.collection("users").document(userProfile.email)
+
+        // Configurar el formato de la fecha como yyyy-MM-dd
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let currentDate = dateFormatter.string(from: Date())
+        print("Fecha actual en formato yyyy-MM-dd: \(currentDate)")
+
+        // Actualizar los puntos
+        userDocRef.getDocument { document, error in
+            if let document = document, document.exists, var data = document.data() {
+                // Actualizar el historial de puntos
+                var history = (data["points"] as? [String: Any])?["history"] as? [[String: Any]] ?? []
+                history.append(["date": currentDate, "points": 50])
+
+                // Actualizar el total de puntos
+                var totalPoints = (data["points"] as? [String: Any])?["total"] as? Int ?? 0
+                totalPoints += 50
+
+                // Escribir los cambios en Firestore
+                userDocRef.updateData([
+                    "points.history": history,
+                    "points.total": totalPoints
+                ]) { error in
+                    if let error = error {
+                        print("Error al asignar puntos: \(error)")
+                    } else {
+                        print("+50 puntos asignados exitosamente al usuario.")
+                    }
+                }
+            } else {
+                print("El documento del usuario no existe o tiene un error: \(String(describing: error))")
+            }
+        }
+    }
+
+
 }
