@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 import FirebaseFirestore
 
+
 class CameraViewmodel: ObservableObject {
     
     @Published var image: UIImage?
@@ -14,12 +15,15 @@ class CameraViewmodel: ObservableObject {
     @Published var error: Bool = false
     @Published var showConnectivityPopup: Bool = false
     @Published var showPoints: Bool = false
+    @Published var noBins: Bool = true
 
     var userProfile: UserProfile
     
     init(userProfile: UserProfile) {
         self.userProfile = userProfile
     }
+    
+    
 
     
     @Published var networkMonitor = NetworkMonitor.shared
@@ -122,6 +126,7 @@ class CameraViewmodel: ObservableObject {
     func takePhoto(image: UIImage) {
         
         showPoints = false
+        noBins = true
         
         self.image = image
         
@@ -154,6 +159,7 @@ class CameraViewmodel: ObservableObject {
             print("Request 1: ")
             print(responseTextTrash)
             self.showPoints = false
+            self.noBins = true
             self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64, dispatchGroup: dispatchGroup)
         }
         
@@ -168,7 +174,7 @@ class CameraViewmodel: ObservableObject {
                 let foundTrashType = trashType.type
                 
                 // Segundo request
-                let promptBinType = "Answer for the image: What is the most appropriate bin to dispose of a \(foundTrashType) in?. Indicate if none of the present bins are appropriate. Your answer must be short: at most two short sentences."
+                let promptBinType = "Answer for the image: What is the most appropriate bin to dispose of a \(foundTrashType) in?. If there are no bins on the image, answer 'No bins are shown'. Otherwise, your answer must be short: at most two short sentences."
                 
                 dispatchGroup.enter()
                 RequestService().sendRequest(prompt: promptBinType, photoBase64: photoBase64) { response in
@@ -191,8 +197,16 @@ class CameraViewmodel: ObservableObject {
                     
                     print("Request 2: ")
                     print(self.responseTextBin)
-                    // enviar assign
-                    self.assignPointsToUser()
+                    if self.responseTextBin.lowercased() != "No bins are shown".lowercased() &&
+                        self.responseTextBin.lowercased() != "No bins are shown.".lowercased() {
+                        self.noBins = false
+                        print("SI HAY BINS")
+                        print(Array(self.responseTextBin))
+                        
+                        // enviar assign
+                        self.assignPointsToUser()
+                    }
+                    
                     self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
                 }
                 break
@@ -284,6 +298,9 @@ class CameraViewmodel: ObservableObject {
             }
         }
     }
+    
+    
 
 
 }
+

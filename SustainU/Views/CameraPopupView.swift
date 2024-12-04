@@ -15,7 +15,6 @@ struct CameraPopupView: View {
     
     var userProfile: UserProfile
     
-    @State private var showPoints = false // Controla la animación de los puntos
     
     var error: Bool
     var noResponse: Bool
@@ -31,7 +30,6 @@ struct CameraPopupView: View {
         _trashTypeIconDetected = trashTypeIconDetected
         _timerActive = timerActive
         
-        self.showPoints = false
         self.userProfile = userProfile
         self.error = error
         self.noResponse = noResponse
@@ -57,7 +55,6 @@ struct CameraPopupView: View {
             self.title = title
             self.trashType = trashType
             self.responseText = responseText
-            self.showPoints = true
         }
     }
 
@@ -87,7 +84,7 @@ struct CameraPopupView: View {
             }
             .padding(.horizontal, 10)
 
-            if viewModel.showPoints {
+            if viewModel.showPoints && !viewModel.noBins {
                 Text("+50 points!")
                     .font(.headline)
                     .foregroundColor(Color("greenLogoColor"))
@@ -107,6 +104,7 @@ struct CameraPopupView: View {
                 trashTypeIconDetected = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill")
                 timerActive = false
                 viewModel.showPoints = false
+                viewModel.noBins = true
             }) {
                 Text("Close")
                     .foregroundColor(.white)
