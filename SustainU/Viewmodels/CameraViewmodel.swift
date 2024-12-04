@@ -212,8 +212,12 @@ class CameraViewmodel: ObservableObject {
                         print("SI HAY BINS")
                         print(Array(self.responseTextBin))
                         
-                        // enviar assign
-                        self.assignPointsToUser()
+                        self.showPoints = true
+                        
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            // enviar assign
+                            self.assignPointsToUser()
+                        }
                     }
                     
                     else {
@@ -279,45 +283,47 @@ class CameraViewmodel: ObservableObject {
     }
     
     func assignPointsToUser() {
-            
-            self.showPoints = true
+        
+        let db = Firestore.firestore()
+        let userDocRef = db.collection("users").document(self.userProfile.email)
 
-            let db = Firestore.firestore()
-            let userDocRef = db.collection("users").document(userProfile.email)
+        // Configurar el formato de la fecha como yyyy-MM-dd
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let currentDate = dateFormatter.string(from: Date())
 
-            // Configurar el formato de la fecha como yyyy-MM-dd
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let currentDate = dateFormatter.string(from: Date())
-            //print("Fecha actual en formato yyyy-MM-dd: \(currentDate)")
+        // Actualizar los puntos
+        userDocRef.getDocument { document, error in
+            if let document = document, document.exists, var data = document.data() {
+                // Actualizar el historial de puntos
+                var history = (data["points"] as? [String: Any])?["history"] as? [[String: Any]] ?? []
+                history.append(["date": currentDate, "points": 50])
 
-            // Actualizar los puntos
-            userDocRef.getDocument { document, error in
-                if let document = document, document.exists, var data = document.data() {
-                    // Actualizar el historial de puntos
-                    var history = (data["points"] as? [String: Any])?["history"] as? [[String: Any]] ?? []
-                    history.append(["date": currentDate, "points": 50])
+                // Actualizar el total de puntos
+                var totalPoints = (data["points"] as? [String: Any])?["total"] as? Int ?? 0
+                totalPoints += 50
 
-                    // Actualizar el total de puntos
-                    var totalPoints = (data["points"] as? [String: Any])?["total"] as? Int ?? 0
-                    totalPoints += 50
-
-                    // Escribir los cambios en Firestore
-                    userDocRef.updateData([
-                        "points.history": history,
-                        "points.total": totalPoints
-                    ]) { error in
+                // Escribir los cambios en Firestore
+                userDocRef.updateData([
+                    "points.history": history,
+                    "points.total": totalPoints
+                ]) { error in
+                    DispatchQueue.main.async {
                         if let error = error {
                             print("Error al asignar puntos: \(error)")
                         } else {
                             print("+50 puntos asignados exitosamente al usuario.")
                         }
                     }
-                } else {
+                }
+            } else {
+                DispatchQueue.main.async {
                     print("El documento del usuario no existe o tiene un error: \(String(describing: error))")
                 }
             }
-        }
+        }   
+        
+    }
     
     
 
