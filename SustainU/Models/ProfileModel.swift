@@ -16,6 +16,9 @@
         let emailVerified: String
         let picture: String
         let updatedAt: String
+        
+        var career: String?
+        var semester: String?
     }
 
     extension UserProfile {
