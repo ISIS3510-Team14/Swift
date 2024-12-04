@@ -148,8 +148,6 @@ struct CameraView: View {
                         image: $viewModel.image,
                         trashTypeIconDetected: $viewModel.trashTypeIconDetected,
                         timerActive: $viewModel.timerActive,
-                        error: viewModel.error,
-                        noResponse: viewModel.noResponse,
                         viewModel: viewModel,
                         userProfile: userProfile
                     )

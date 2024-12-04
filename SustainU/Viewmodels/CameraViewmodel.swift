@@ -10,6 +10,7 @@ class CameraViewmodel: ObservableObject {
     @Published var showResponsePopup: Bool = false
     @Published var trashTypeIconDetected: TrashTypeIcon = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill")
     @Published var noResponse: Bool = false
+    @Published var noResponse1: Bool = false
     @Published var timerCount: Int = 0
     @Published var timerActive: Bool = false
     @Published var error: Bool = false
@@ -122,8 +123,16 @@ class CameraViewmodel: ObservableObject {
             print("Error al actualizar los metadatos de la imagen: \(error)")
         }
     }
-    
+    func reset() {
+        showPoints = false
+        noBins = true
+        
+        noResponse = false
+        noResponse1 = false
+        error = false
+    }
     func takePhoto(image: UIImage) {
+        reset()
         
         showPoints = false
         noBins = true
@@ -207,6 +216,15 @@ class CameraViewmodel: ObservableObject {
                         self.assignPointsToUser()
                     }
                     
+                    else {
+                        self.noResponse = true
+                        print("NoResponse")
+                        print(self.noResponse)
+                        self.noResponse = true
+                        print(self.noResponse)
+
+                    }
+                    
                     self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
                 }
                 break
@@ -216,7 +234,9 @@ class CameraViewmodel: ObservableObject {
         }
         
         if i == trashTypes.count {
-            self.noResponse = true
+            print("FIN LOOP: no se encontro ninguno")
+            
+            self.noResponse1 = true
             self.showResponsePopup = true
         }
     }
