@@ -1,24 +1,25 @@
-//
-//  ProfileView.swift
-//  SustainU
-//
-//  Created by Duarte Mantilla Ernesto Jose on 29/10/24.
-//
 import SwiftUI
+import Firebase
+import FirebaseFirestore
 import Auth0
 
 struct ProfileView: View {
+    var userProfile: UserProfile
+
     @ObservedObject private var viewModel = LoginViewModel.shared
-    @State private var career: String
-    @State private var semester: String
-    
     @Environment(\.presentationMode) var presentationMode
+    @State private var career: String = ""
+    @State private var semester: String = ""
+    @State private var showAlert: Bool = false // Estado para controlar la alerta
 
+
+    // Referencia a Firestore
+    private var db = Firestore.firestore()
+
+    
     init(userProfile: UserProfile) {
-        _career = State(initialValue: userProfile.career ?? "")
-        _semester = State(initialValue: userProfile.semester ?? "")
-    }
-
+            self.userProfile = userProfile
+        }
     var body: some View {
         VStack {
             // Back button in the top-left corner
@@ -82,40 +83,32 @@ struct ProfileView: View {
                 .foregroundColor(.gray)
                 .padding(.top, 2)
 
-            // Carrera and Semester Fields
-            VStack(spacing: 20) {
-                HStack {
-                    Text("Carrera")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                    Spacer()
+            // Career input field
+            TextField("Enter your career", text: $career)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.top, 20)
+                .onAppear {
+                    // Pre-fill career if available
+                    self.career = viewModel.userProfile.career ?? ""
                 }
-                TextField("Enter your career", text: $career)
-                    .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                HStack {
-                    Text("Semestre")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                    Spacer()
+            // Semester input field
+            TextField("Enter your semester", text: $semester)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.top, 20)
+                .onAppear {
+                    // Pre-fill semester if available
+                    self.semester = viewModel.userProfile.semester ?? ""
                 }
-                TextField("Enter your semester", text: $semester)
-                    .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-            }
-            .padding(.top)
 
-            Spacer()
-
-            // Save Button
+            // Save button
             Button(action: {
                 saveProfile()
             }) {
                 HStack {
-                    Image(systemName: "checkmark.circle.fill")
+                    Image(systemName: "square.and.arrow.down.fill")
                         .font(.title2)
-                    Text("Save Changes")
+                    Text("Save Profile")
                         .font(.headline)
                         .fontWeight(.bold)
                 }
@@ -125,7 +118,7 @@ struct ProfileView: View {
                 .background(Color.green)
                 .cornerRadius(25)
             }
-            .padding(.bottom, 40)
+            .padding(.top, 30)
 
             // Logout button
             Button(action: {
@@ -148,20 +141,39 @@ struct ProfileView: View {
         }
         .padding()
         .background(Color.white)
+        .alert(isPresented: $showAlert) {
+                    Alert(
+                        title: Text("Profile Saved"),
+                        message: Text("Your profile has been updated successfully!"),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
     }
 
+    // Function to save the profile data to Firestore
     func saveProfile() {
-        // Here, you would save the updated career and semester to your backend (Firestore)
-        if ConnectivityManager.shared.isConnected {
-            // Simulate saving to Firestore (or any backend you use)
-            print("Saving Profile: \(career), \(semester)")
-            // Perform Firestore save logic here (example code)
-            // Firestore.firestore().collection("users_info").document(viewModel.userProfile.email).setData(["career": career, "semester": semester], merge: true)
-        } else {
-            // Handle offline save logic if needed
-            print("Offline, saving profile locally")
+            guard !viewModel.userProfile.email.isEmpty else {
+                print("Email is required")
+                return
+            }
+
+            // Reference to Firestore
+            let usersInfoRef = db.collection("users_info").document(viewModel.userProfile.email)
+
+            // Update the document with career and semester
+            usersInfoRef.setData([
+                "career": career,
+                "semester": semester
+            ], merge: true) { error in
+                if let error = error {
+                    print("Error updating profile: \(error)")
+                } else {
+                    print("Profile updated successfully")
+                    // Show the alert after successful save
+                    showAlert = true
+                }
+            }
         }
-    }
 
     func logout() {
         if ConnectivityManager.shared.isConnected {
