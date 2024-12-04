@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 import FirebaseFirestore
 
+
 class CameraViewmodel: ObservableObject {
     
     @Published var image: UIImage?
@@ -9,10 +10,22 @@ class CameraViewmodel: ObservableObject {
     @Published var showResponsePopup: Bool = false
     @Published var trashTypeIconDetected: TrashTypeIcon = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill")
     @Published var noResponse: Bool = false
+    @Published var noResponse1: Bool = false
     @Published var timerCount: Int = 0
     @Published var timerActive: Bool = false
     @Published var error: Bool = false
     @Published var showConnectivityPopup: Bool = false
+    @Published var showPoints: Bool = false
+    @Published var noBins: Bool = true
+
+    var userProfile: UserProfile
+    
+    init(userProfile: UserProfile) {
+        self.userProfile = userProfile
+    }
+    
+    
+
     
     @Published var networkMonitor = NetworkMonitor.shared
     
@@ -33,6 +46,7 @@ class CameraViewmodel: ObservableObject {
         // Obtener la URL del directorio de documentos
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
+    
         
         do {
             // Guardar la imagen en el directorio de documentos
@@ -109,8 +123,19 @@ class CameraViewmodel: ObservableObject {
             print("Error al actualizar los metadatos de la imagen: \(error)")
         }
     }
-    
+    func reset() {
+        showPoints = false
+        noBins = true
+        
+        noResponse = false
+        noResponse1 = false
+        error = false
+    }
     func takePhoto(image: UIImage) {
+        reset()
+        
+        showPoints = false
+        noBins = true
         
         self.image = image
         
@@ -142,6 +167,8 @@ class CameraViewmodel: ObservableObject {
             
             print("Request 1: ")
             print(responseTextTrash)
+            self.showPoints = false
+            self.noBins = true
             self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64, dispatchGroup: dispatchGroup)
         }
         
@@ -156,7 +183,7 @@ class CameraViewmodel: ObservableObject {
                 let foundTrashType = trashType.type
                 
                 // Segundo request
-                let promptBinType = "Answer for the image: What is the most appropriate bin to dispose of a \(foundTrashType) in?. Indicate if none of the present bins are appropriate. Your answer must be short: at most two short sentences."
+                let promptBinType = "Answer for the image: What is the most appropriate bin to dispose of a \(foundTrashType) in?. If there are no bins on the image, answer 'No bins are shown'. Otherwise, your answer must be short: at most two short sentences."
                 
                 dispatchGroup.enter()
                 RequestService().sendRequest(prompt: promptBinType, photoBase64: photoBase64) { response in
@@ -179,6 +206,29 @@ class CameraViewmodel: ObservableObject {
                     
                     print("Request 2: ")
                     print(self.responseTextBin)
+                    if self.responseTextBin.lowercased() != "No bins are shown".lowercased() &&
+                        self.responseTextBin.lowercased() != "No bins are shown.".lowercased() {
+                        self.noBins = false
+                        print("SI HAY BINS")
+                        print(Array(self.responseTextBin))
+                        
+                        self.showPoints = true
+                        
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            // enviar assign
+                            self.assignPointsToUser()
+                        }
+                    }
+                    
+                    else {
+                        self.noResponse = true
+                        print("NoResponse")
+                        print(self.noResponse)
+                        self.noResponse = true
+                        print(self.noResponse)
+
+                    }
+                    
                     self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
                 }
                 break
@@ -188,7 +238,9 @@ class CameraViewmodel: ObservableObject {
         }
         
         if i == trashTypes.count {
-            self.noResponse = true
+            print("FIN LOOP: no se encontro ninguno")
+            
+            self.noResponse1 = true
             self.showResponsePopup = true
         }
     }
@@ -214,7 +266,6 @@ class CameraViewmodel: ObservableObject {
         }
     }
     
-    
     func sendScanEvent(scanTime: Int, thrashType: String) {
         let db = Firestore.firestore()
         let data: [String: Any] = [
@@ -230,4 +281,52 @@ class CameraViewmodel: ObservableObject {
             }
         }
     }
+    
+    func assignPointsToUser() {
+        
+        let db = Firestore.firestore()
+        let userDocRef = db.collection("users").document(self.userProfile.email)
+
+        // Configurar el formato de la fecha como yyyy-MM-dd
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let currentDate = dateFormatter.string(from: Date())
+
+        // Actualizar los puntos
+        userDocRef.getDocument { document, error in
+            if let document = document, document.exists, var data = document.data() {
+                // Actualizar el historial de puntos
+                var history = (data["points"] as? [String: Any])?["history"] as? [[String: Any]] ?? []
+                history.append(["date": currentDate, "points": 50])
+
+                // Actualizar el total de puntos
+                var totalPoints = (data["points"] as? [String: Any])?["total"] as? Int ?? 0
+                totalPoints += 50
+
+                // Escribir los cambios en Firestore
+                userDocRef.updateData([
+                    "points.history": history,
+                    "points.total": totalPoints
+                ]) { error in
+                    DispatchQueue.main.async {
+                        if let error = error {
+                            print("Error al asignar puntos: \(error)")
+                        } else {
+                            print("+50 puntos asignados exitosamente al usuario.")
+                        }
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    print("El documento del usuario no existe o tiene un error: \(String(describing: error))")
+                }
+            }
+        }
+        
+    }
+    
+    
+
+
 }
+

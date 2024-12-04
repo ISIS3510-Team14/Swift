@@ -1,11 +1,20 @@
 import SwiftUI
 
+
 struct SavedImagesView: View {
     @State private var savedImages: [CameraViewmodel.SavedImage] = []
-    private let viewModel = CameraViewmodel()
-    @Binding var selectedImage: UIImage? // Añadir selectedImage como Binding para actualizar CameraView
-    @Binding var selectedTab: Int // Añade selectedTab como Binding
+    private let viewModel: CameraViewmodel
+    @Binding var selectedImage: UIImage? // Para actualizar CameraView
+    @Binding var selectedTab: Int // Control del tab seleccionado
     @Environment(\.presentationMode) var presentationMode // Controla la presentación del sheet
+    var userProfile: UserProfile
+    
+    init(selectedImage: Binding<UIImage?>, selectedTab: Binding<Int>, userProfile: UserProfile) {
+        self._selectedImage = selectedImage
+        self._selectedTab = selectedTab
+        self.userProfile = userProfile
+        self.viewModel = CameraViewmodel(userProfile: userProfile) // Inicializa viewModel con userProfile
+    }
 
     var body: some View {
         VStack {

@@ -9,6 +9,7 @@ struct HomeView: View {
     @ObservedObject private var viewModel = LoginViewModel.shared
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
+    @State private var isShowingScoreboardView = false
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false
     @State private var showOfflinePopup = false
@@ -16,18 +17,17 @@ struct HomeView: View {
     @State private var showSavedImagesSheet = false
     @State private var selectedImage: UIImage?
     @ObservedObject private var connectivityManager = ConnectivityManager.shared
+    @State private var isShowingHistoryView = false
+    @StateObject private var historyViewModel = HistoryViewModel()
     
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
             TabView(selection: $selectedTab) {
                 // Home Tab
                 NavigationView {
                     ScrollView {
                         VStack {
-                            // Using TopBarView with correct parameters
                             TopBarView(
                                 profilePictureURL: viewModel.userProfile.picture,
                                 connectivityManager: connectivityManager,
@@ -36,13 +36,15 @@ struct HomeView: View {
                                 }
                             )
                             
-                            // Rest of the view remains the same...
-                            let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
+
+                            let firstName = viewModel.userProfile.nickname.components(separatedBy: " ").first ?? viewModel.userProfile.nickname
+
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .padding(.top, 10)
                             
+                            // Record section
                             // Record section
                             VStack(alignment: .leading) {
                                 Text("Your record")
@@ -51,11 +53,11 @@ struct HomeView: View {
                                 
                                 HStack {
                                     VStack(alignment: .leading) {
-                                        Text("68 Points")
+                                        Text("\(historyViewModel.totalPoints) Points")
                                             .font(.title)
                                             .fontWeight(.bold)
                                         
-                                        Text("99 Days")
+                                        Text("\(historyViewModel.uniqueDaysCount) Days")
                                             .font(.subheadline)
                                             .foregroundColor(Color("blueLogoColor"))
                                     }
@@ -66,6 +68,9 @@ struct HomeView: View {
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(15)
                             .padding(.horizontal)
+                            .onAppear {
+                                historyViewModel.fetchRecyclingHistory(for: userProfile.email)
+                            }
                             
                             // Grid options
                             VStack(spacing: 20) {
@@ -117,7 +122,7 @@ struct HomeView: View {
                                     
                                     // History Button
                                     Button(action: {
-                                        // Action for History
+                                        isShowingHistoryView = true
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -217,13 +222,14 @@ struct HomeView: View {
                 // Camera Tab
                 CameraView(profilePictureURL: viewModel.userProfile.picture,
                           selectedTab: $selectedTab,
-                          selectedImage: $selectedImage)
-                    .tabItem {
-                        Image("logoCamera")
-                            .renderingMode(.template)
-                        Text("Camera")
-                    }
-                    .tag(2)
+                          selectedImage: $selectedImage,
+                          userProfile: viewModel.userProfile)
+                .tabItem {
+                    Image("logoCamera")
+                        .renderingMode(.template)
+                    Text("Camera")
+                }
+                .tag(2)
                 
                 // Recycle Tab
                 NavigationView {
@@ -237,7 +243,7 @@ struct HomeView: View {
                 .tag(3)
                 
                 // Scoreboard Tab
-                Text("Scoreboard View")
+                ScoreboardView(profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
                         Image("logoScoreboard")
                             .renderingMode(.template)
@@ -257,13 +263,19 @@ struct HomeView: View {
                     logClickCounter(field: "info")
                 }
             }
+            
+            if isShowingHistoryView {
+                HistoryView(userProfile: userProfile,
+                            selectedTab: $selectedTab,
+                            isShowingHistoryView: $isShowingHistoryView)
+                    .transition(.move(edge: .trailing))
+            }
         }
-        // Sheets
         .sheet(isPresented: $isShowingProfile) {
             ProfileView(userProfile: viewModel.userProfile)
         }
         .sheet(isPresented: $showSavedImagesSheet) {
-            SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
+            SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab, userProfile: userProfile)
         }
     }
     
@@ -289,7 +301,7 @@ struct HomeView: View {
     }
     
     private func checkForTemporaryImages() {
-        let savedImages = CameraViewmodel().loadSavedImages()
+        let savedImages = CameraViewmodel(userProfile: userProfile).loadSavedImages()
         hasTemporaryImages = !savedImages.isEmpty
     }
     
