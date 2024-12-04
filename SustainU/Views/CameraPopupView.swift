@@ -14,15 +14,12 @@ struct CameraPopupView: View {
     var viewModel: CameraViewmodel // Ahora recibe el ViewModel
     
     var userProfile: UserProfile
-    
-    
-    var error: Bool
-    var noResponse: Bool
+
 
     // Inicializador para casos predeterminados (ERROR o NoResponse)
     init(icon: String, title: String, trashType: String, responseText: String,
          showResponsePopup: Binding<Bool>, image: Binding<UIImage?>, trashTypeIconDetected: Binding<TrashTypeIcon>, timerActive: Binding<Bool>,
-         error: Bool = false, noResponse: Bool = false, viewModel: CameraViewmodel, userProfile: UserProfile) {
+         viewModel: CameraViewmodel, userProfile: UserProfile) {
         
         self.viewModel = viewModel
         _showResponsePopup = showResponsePopup
@@ -31,25 +28,32 @@ struct CameraPopupView: View {
         _timerActive = timerActive
         
         self.userProfile = userProfile
-        self.error = error
-        self.noResponse = noResponse
+
         
         print("CameraPopupView init")
         // Si es un error, configurar con valores predeterminados
-        if error {
+        if viewModel.error {
             print("error")
             self.icon = "xmark.octagon.fill"
             self.title = "Error!"
             self.trashType = "No Item Detected"
             self.responseText = "Please try again"
-        } else if noResponse {
+        } else if viewModel.noResponse && viewModel.noBins {
+            print("noResponse")
+            // Si es un NoResponse, configurar con valores predeterminados
+            self.icon = icon
+            self.title = "An item was detected"
+            self.trashType = trashType
+            self.responseText = responseText
+        } else if viewModel.noResponse1 {
             print("noResponse")
             // Si es un NoResponse, configurar con valores predeterminados
             self.icon = "xmark.octagon.fill"
             self.title = "Could not detect an item!"
             self.trashType = "No Item Detected"
             self.responseText = "Please try again"
-        } else {
+        }
+        else {
             print("else")
             self.icon = icon
             self.title = title
@@ -105,6 +109,7 @@ struct CameraPopupView: View {
                 timerActive = false
                 viewModel.showPoints = false
                 viewModel.noBins = true
+                viewModel.noResponse1 = false
             }) {
                 Text("Close")
                     .foregroundColor(.white)
