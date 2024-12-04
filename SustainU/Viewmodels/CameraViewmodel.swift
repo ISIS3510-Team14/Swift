@@ -259,42 +259,45 @@ class CameraViewmodel: ObservableObject {
     }
     
     func assignPointsToUser() {
-        
-        self.showPoints = true
+        // Usar el main thread para actualizar la UI
+        DispatchQueue.main.async {
+            self.showPoints = true
+        }
 
         let db = Firestore.firestore()
         let userDocRef = db.collection("users").document(userProfile.email)
 
-        // Configurar el formato de la fecha como yyyy-MM-dd
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let currentDate = dateFormatter.string(from: Date())
-        //print("Fecha actual en formato yyyy-MM-dd: \(currentDate)")
 
-        // Actualizar los puntos
-        userDocRef.getDocument { document, error in
+        userDocRef.getDocument { [weak self] document, error in
+            guard let self = self else { return }
+            
             if let document = document, document.exists, var data = document.data() {
-                // Actualizar el historial de puntos
                 var history = (data["points"] as? [String: Any])?["history"] as? [[String: Any]] ?? []
                 history.append(["date": currentDate, "points": 50])
 
-                // Actualizar el total de puntos
                 var totalPoints = (data["points"] as? [String: Any])?["total"] as? Int ?? 0
                 totalPoints += 50
 
-                // Escribir los cambios en Firestore
                 userDocRef.updateData([
                     "points.history": history,
                     "points.total": totalPoints
                 ]) { error in
-                    if let error = error {
-                        print("Error al asignar puntos: \(error)")
-                    } else {
-                        print("+50 puntos asignados exitosamente al usuario.")
+
+                    DispatchQueue.main.async {
+                        if let error = error {
+                            print("Error al asignar puntos: \(error)")
+                        } else {
+                            print("+50 puntos asignados exitosamente al usuario.")
+                        }
                     }
                 }
             } else {
-                print("El documento del usuario no existe o tiene un error: \(String(describing: error))")
+                DispatchQueue.main.async {
+                    print("El documento del usuario no existe o tiene un error: \(String(describing: error))")
+                }
             }
         }
     }
