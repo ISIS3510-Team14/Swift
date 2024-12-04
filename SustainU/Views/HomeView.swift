@@ -37,7 +37,7 @@ struct HomeView: View {
                                 }
                             )
                             
-                            let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
+                            let firstName = viewModel.userProfile.nickname.components(separatedBy: " ").first ?? viewModel.userProfile.nickname
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
