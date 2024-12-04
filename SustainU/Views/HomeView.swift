@@ -9,6 +9,7 @@ struct HomeView: View {
     @ObservedObject private var viewModel = LoginViewModel.shared
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
+    @State private var isShowingScoreboardView = false
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false
     @State private var showOfflinePopup = false
@@ -115,7 +116,6 @@ struct HomeView: View {
                                         }
                                     }
                                     
-                                    // History Button
                                     // History Button
                                     Button(action: {
                                         navigateToHistory()
@@ -238,7 +238,7 @@ struct HomeView: View {
                 .tag(3)
                 
                 // Scoreboard Tab
-                Text("Scoreboard View")
+                ScoreboardView(profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
                         Image("logoScoreboard")
                             .renderingMode(.template)
