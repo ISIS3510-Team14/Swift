@@ -9,6 +9,7 @@ struct HomeView: View {
     @ObservedObject private var viewModel = LoginViewModel.shared
     @State private var selectedTab: Int = 0
     @State private var isShowingCameraView = false
+    @State private var isShowingScoreboardView = false
     @StateObject private var collectionPointViewModel = CollectionPointViewModel()
     @State private var isShowingProfile = false
     @State private var showOfflinePopup = false
@@ -16,6 +17,7 @@ struct HomeView: View {
     @State private var showSavedImagesSheet = false
     @State private var selectedImage: UIImage?
     @ObservedObject private var connectivityManager = ConnectivityManager.shared
+    @State private var isShowingHistoryView = false
     
     // MARK: - Body
     var body: some View {
@@ -36,7 +38,6 @@ struct HomeView: View {
                                 }
                             )
                             
-                            // Rest of the view remains the same...
                             let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
@@ -117,7 +118,7 @@ struct HomeView: View {
                                     
                                     // History Button
                                     Button(action: {
-                                        // Action for History
+                                        navigateToHistory()
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -237,7 +238,7 @@ struct HomeView: View {
                 .tag(3)
                 
                 // Scoreboard Tab
-                Text("Scoreboard View")
+                ScoreboardView(profilePictureURL: viewModel.userProfile.picture)
                     .tabItem {
                         Image("logoScoreboard")
                             .renderingMode(.template)
@@ -264,6 +265,11 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showSavedImagesSheet) {
             SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
+        }
+        
+        .sheet(isPresented: $isShowingHistoryView) {
+            let _ = print("Navigating to HistoryView with email: \(userProfile.email)")
+            HistoryView(userEmail: userProfile.email)
         }
     }
     
@@ -304,5 +310,8 @@ struct HomeView: View {
                 print("Document successfully updated")
             }
         }
+    }
+    private func navigateToHistory() {
+        isShowingHistoryView = true
     }
 }
