@@ -121,6 +121,8 @@ class CameraViewmodel: ObservableObject {
     
     func takePhoto(image: UIImage) {
         
+        showPoints = false
+        
         self.image = image
         
         let photoBase64 = convertImageToBase64String(img: image)
@@ -151,6 +153,7 @@ class CameraViewmodel: ObservableObject {
             
             print("Request 1: ")
             print(responseTextTrash)
+            self.showPoints = false
             self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64, dispatchGroup: dispatchGroup)
         }
         
@@ -243,12 +246,6 @@ class CameraViewmodel: ObservableObject {
     
     func assignPointsToUser() {
         
-
-        if let jsonData = try? JSONEncoder().encode(userProfile),
-           let jsonDict = try? JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-            print(jsonDict)
-        }   
-        
         self.showPoints = true
 
         let db = Firestore.firestore()
@@ -258,7 +255,7 @@ class CameraViewmodel: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let currentDate = dateFormatter.string(from: Date())
-        print("Fecha actual en formato yyyy-MM-dd: \(currentDate)")
+        //print("Fecha actual en formato yyyy-MM-dd: \(currentDate)")
 
         // Actualizar los puntos
         userDocRef.getDocument { document, error in

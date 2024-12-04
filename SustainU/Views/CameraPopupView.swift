@@ -90,7 +90,13 @@ struct CameraPopupView: View {
             if viewModel.showPoints {
                 Text("+50 points!")
                     .font(.headline)
-                    .foregroundColor(.green)
+                    .foregroundColor(Color("greenLogoColor"))
+                    .padding()
+                    .transition(.scale) // Animación al mostrar los puntos
+            } else {
+                Text("No points")
+                    .font(.headline)
+                    .foregroundColor(Color("redLogoColor"))
                     .padding()
                     .transition(.scale) // Animación al mostrar los puntos
             }
@@ -100,6 +106,7 @@ struct CameraPopupView: View {
                 image = nil
                 trashTypeIconDetected = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill")
                 timerActive = false
+                viewModel.showPoints = false
             }) {
                 Text("Close")
                     .foregroundColor(.white)
