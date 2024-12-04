@@ -36,7 +36,8 @@ struct HomeView: View {
                                 }
                             )
                             
-                            let firstName = viewModel.userProfile.name.components(separatedBy: " ").first ?? viewModel.userProfile.name
+                            let firstName = viewModel.userProfile.email.components(separatedBy: "@").first ?? viewModel.userProfile.name
+                            
                             Text("Hi, \(firstName)")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
@@ -220,7 +221,8 @@ struct HomeView: View {
                 // Camera Tab
                 CameraView(profilePictureURL: viewModel.userProfile.picture,
                           selectedTab: $selectedTab,
-                          selectedImage: $selectedImage)
+                          selectedImage: $selectedImage,
+                          userProfile: viewModel.userProfile)
                 .tabItem {
                     Image("logoCamera")
                         .renderingMode(.template)
@@ -272,7 +274,7 @@ struct HomeView: View {
             ProfileView(userProfile: viewModel.userProfile)
         }
         .sheet(isPresented: $showSavedImagesSheet) {
-            SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
+            SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab, userProfile: userProfile)
         }
     }
     
@@ -298,7 +300,7 @@ struct HomeView: View {
     }
     
     private func checkForTemporaryImages() {
-        let savedImages = CameraViewmodel().loadSavedImages()
+        let savedImages = CameraViewmodel(userProfile: userProfile).loadSavedImages()
         hasTemporaryImages = !savedImages.isEmpty
     }
     
