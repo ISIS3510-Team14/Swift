@@ -218,6 +218,7 @@ struct HomeView: View {
                 
                 // Camera Tab
                 CameraView(profilePictureURL: viewModel.userProfile.picture,
+                           userEmail: viewModel.userProfile.email,
                           selectedTab: $selectedTab,
                           selectedImage: $selectedImage)
                 .tabItem {

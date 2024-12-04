@@ -5,15 +5,15 @@ struct CameraPopupView: View {
     var title: String
     var trashType: String
     var responseText: String
-    @Binding var showResponsePopup: Bool // Vinculación para manejar el cierre del popup
-    @Binding var image: UIImage? // Para limpiar la imagen
-    @Binding var trashTypeIconDetected: TrashTypeIcon // Para restaurar el tipo de residuo
-    @Binding var timerActive: Bool // Para detener el temporizador
-
+    var pointsMessage: String // New property for points message
+    @Binding var showResponsePopup: Bool
+    @Binding var image: UIImage?
+    @Binding var trashTypeIconDetected: TrashTypeIcon
+    @Binding var timerActive: Bool
     
-    // Inicializador para casos predeterminados (ERROR o NoResponse)
     init(icon: String, title: String, trashType: String, responseText: String,
-         showResponsePopup: Binding<Bool>, image: Binding<UIImage?>, trashTypeIconDetected: Binding<TrashTypeIcon>, timerActive: Binding<Bool>,
+         showResponsePopup: Binding<Bool>, image: Binding<UIImage?>,
+         trashTypeIconDetected: Binding<TrashTypeIcon>, timerActive: Binding<Bool>,
          error: Bool = false, noResponse: Bool = false) {
         
         _showResponsePopup = showResponsePopup
@@ -21,23 +21,24 @@ struct CameraPopupView: View {
         _trashTypeIconDetected = trashTypeIconDetected
         _timerActive = timerActive
         
-        // Si es un error, configurar con valores predeterminados
         if error {
             self.icon = "xmark.octagon.fill"
             self.title = "Error!"
             self.trashType = "No Item Detected"
             self.responseText = "Please try again"
+            self.pointsMessage = "No points gained"
         } else if noResponse {
-            // Si es un NoResponse, configurar con valores predeterminados
             self.icon = "xmark.octagon.fill"
             self.title = "Could not detect an item!"
             self.trashType = "No Item Detected"
             self.responseText = "Please try again"
+            self.pointsMessage = "No points gained"
         } else {
             self.icon = icon
             self.title = title
             self.trashType = trashType
             self.responseText = responseText
+            self.pointsMessage = "+50 points"
         }
     }
     
@@ -56,22 +57,26 @@ struct CameraPopupView: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     Text(trashType)
-         
                         .fontWeight(.semibold)
                         .foregroundColor(.black)
 
                     Text(responseText)
                         .font(.body)
                         .foregroundColor(.gray)
+                        
+                    Text(pointsMessage) // Added points message
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(pointsMessage == "No points gained" ? .red : .green)
+                        .padding(.top, 2)
                 }
             }
             .padding(.horizontal, 10)
 
             Button(action: {
-                showResponsePopup = false // Cerrar el popup
+                showResponsePopup = false
                 image = nil
-                trashTypeIconDetected = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill") // Restaurar el valor predeterminado
-                timerActive = false // Detener el timer
+                trashTypeIconDetected = TrashTypeIcon(type: "Error", icon: "xmark.octagon.fill")
+                timerActive = false
             }) {
                 Text("Close")
                     .foregroundColor(.white)

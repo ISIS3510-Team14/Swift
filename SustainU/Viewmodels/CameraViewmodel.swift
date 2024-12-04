@@ -3,7 +3,6 @@ import UIKit
 import FirebaseFirestore
 
 class CameraViewmodel: ObservableObject {
-    
     @Published var image: UIImage?
     @Published var responseTextBin: String = ""
     @Published var showResponsePopup: Bool = false
@@ -15,6 +14,7 @@ class CameraViewmodel: ObservableObject {
     @Published var showConnectivityPopup: Bool = false
     
     @Published var networkMonitor = NetworkMonitor.shared
+    private let db = Firestore.firestore()
     
     struct SavedImage: Codable {
         let fileName: String
@@ -27,19 +27,13 @@ class CameraViewmodel: ObservableObject {
         guard let image = image else { return }
         guard let imageData = image.jpegData(compressionQuality: 1.0) else { return }
         
-        // Generar un nombre único para el archivo usando la fecha y hora actual
         let fileName = "SavedImage_\(Date().timeIntervalSince1970).jpg"
-        
-        // Obtener la URL del directorio de documentos
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
         do {
-            // Guardar la imagen en el directorio de documentos
             try imageData.write(to: fileURL)
             print("Imagen guardada en: \(fileURL.path)")
-            
-            // Guardar los metadatos de la imagen
             saveImageMetadata(fileName: fileName, date: Date())
         } catch {
             print("Error al guardar la imagen: \(error)")
@@ -66,9 +60,8 @@ class CameraViewmodel: ObservableObject {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let metadataFileURL = documentsDirectory.appendingPathComponent(metadataFileName)
         
-        // Verificar si el archivo de metadatos existe
         if !FileManager.default.fileExists(atPath: metadataFileURL.path) {
-            return [] // Devuelve una lista vacía si el archivo no existe
+            return []
         }
         
         do {
@@ -81,9 +74,7 @@ class CameraViewmodel: ObservableObject {
         }
     }
     
-    // Función para eliminar una imagen y su metadata asociada
     func deleteImageWithMetadata(fileName: String) {
-        // Eliminar el archivo de imagen
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
@@ -94,13 +85,10 @@ class CameraViewmodel: ObservableObject {
             print("Error al eliminar la imagen: \(error)")
         }
         
-        // Cargar y actualizar el archivo de metadata
         var savedImages = loadSavedImages()
         savedImages.removeAll { $0.fileName == fileName }
         
-        // Guardar la lista de imágenes actualizada sin la imagen eliminada
         let metadataFileURL = documentsDirectory.appendingPathComponent(metadataFileName)
-        
         do {
             let data = try JSONEncoder().encode(savedImages)
             try data.write(to: metadataFileURL)
@@ -110,16 +98,81 @@ class CameraViewmodel: ObservableObject {
         }
     }
     
+    private func updateUserPoints(userEmail: String) {
+        let docRef = db.collection("users").document(userEmail)
+        
+        // Get current date in yyyy-mm-dd format
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let currentDate = dateFormatter.string(from: Date())
+        
+        // Create new history entry
+        let newHistoryEntry: [String: Any] = [
+            "date": currentDate,
+            "points": 50
+        ]
+        
+        docRef.getDocument { [weak self] snapshot, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error getting document: \(error)")
+                return
+            }
+            
+            if let document = snapshot, document.exists {
+                // Document exists, update it
+                var currentTotal = 0
+                var history: [[String: Any]] = []
+                
+                if let points = document.data()?["points"] as? [String: Any] {
+                    currentTotal = points["total"] as? Int ?? 0
+                    history = points["history"] as? [[String: Any]] ?? []
+                }
+                
+                // Add new history entry and update total
+                history.append(newHistoryEntry)
+                let newTotal = currentTotal + 50
+                
+                let updateData: [String: Any] = [
+                    "points.total": newTotal,
+                    "points.history": history
+                ]
+                
+                docRef.updateData(updateData) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                    } else {
+                        print("Document successfully updated")
+                    }
+                }
+            } else {
+                // Document doesn't exist, create it
+                let initialData: [String: Any] = [
+                    "points": [
+                        "total": 50,
+                        "history": [newHistoryEntry]
+                    ],
+                    "user_id": userEmail
+                ]
+                
+                docRef.setData(initialData) { error in
+                    if let error = error {
+                        print("Error creating document: \(error)")
+                    } else {
+                        print("Document successfully created")
+                    }
+                }
+            }
+        }
+    }
+    
     func takePhoto(image: UIImage) {
-        
         self.image = image
-        
         let photoBase64 = convertImageToBase64String(img: image)
         var responseTextTrash = "Waiting for response..."
         
         let dispatchGroup = DispatchGroup()
-
-        // Primer request
         let promptTrashType = "Answer for the image: Which of these types of trash is the user taking the picture holding?: \(trashTypesString). Answer only with the type."
 
         dispatchGroup.enter()
@@ -130,9 +183,7 @@ class CameraViewmodel: ObservableObject {
             }
         }
         
-        // Manejo de llegada de requests
         dispatchGroup.notify(queue: .main) {
-            
             if !self.networkMonitor.isConnected {
                 print("Conexión perdida durante el primer request")
                 self.showConnectivityPopup = true
@@ -144,32 +195,26 @@ class CameraViewmodel: ObservableObject {
             print(responseTextTrash)
             self.handleTrashTypeResponse(responseTextTrash, photoBase64: photoBase64, dispatchGroup: dispatchGroup)
         }
-        
     }
     
     private func handleTrashTypeResponse(_ responseTextTrash: String, photoBase64: String, dispatchGroup: DispatchGroup) {
         var i = 0
         for trashType in trashTypes {
             if responseTextTrash.contains(trashType.type) {
- 
                 self.trashTypeIconDetected = trashType
                 let foundTrashType = trashType.type
                 
-                // Segundo request
                 let promptBinType = "Answer for the image: What is the most appropriate bin to dispose of a \(foundTrashType) in?. Indicate if none of the present bins are appropriate. Your answer must be short: at most two short sentences."
                 
                 dispatchGroup.enter()
                 RequestService().sendRequest(prompt: promptBinType, photoBase64: photoBase64) { response in
                     DispatchQueue.main.async {
                         self.responseTextBin = response ?? "No response"
-                        //self.showResponsePopup = true
                         dispatchGroup.leave()
                     }
                 }
                 
-                // Mostrar el resultado después de ambos requests
                 dispatchGroup.notify(queue: .main) {
-                    
                     if !self.networkMonitor.isConnected {
                         print("Conexión perdida durante el segundo request")
                         self.showConnectivityPopup = true
@@ -179,7 +224,7 @@ class CameraViewmodel: ObservableObject {
                     
                     print("Request 2: ")
                     print(self.responseTextBin)
-                    self.showResponsePopup = true // Mostrar el popup cuando llega la segunda respuesta
+                    self.showResponsePopup = true
                 }
                 break
             } else {
@@ -214,19 +259,19 @@ class CameraViewmodel: ObservableObject {
         }
     }
     
-    
-    func sendScanEvent(scanTime: Int, thrashType: String) {
-        let db = Firestore.firestore()
-        let data: [String: Any] = [
+    func sendScanEvent(scanTime: Int, thrashType: String, userEmail: String) {
+        let scanData: [String: Any] = [
             "time": scanTime,
             "trash_type": thrashType,
         ]
         
-        db.collection("scans").addDocument(data: data) { error in
+        db.collection("scans").addDocument(data: scanData) { [weak self] error in
             if let error = error {
-                print("Error adding document: \(error)")
+                print("Error adding scan document: \(error)")
             } else {
-                print("Document added successfully")
+                print("Scan document added successfully")
+                // After successful scan, update user points
+                self?.updateUserPoints(userEmail: userEmail)
             }
         }
     }
