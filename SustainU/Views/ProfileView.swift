@@ -1,25 +1,19 @@
 import SwiftUI
 import Firebase
-import FirebaseFirestore
 import Auth0
+
 
 struct ProfileView: View {
     var userProfile: UserProfile
-
     @ObservedObject private var viewModel = LoginViewModel.shared
     @Environment(\.presentationMode) var presentationMode
     @State private var career: String = ""
     @State private var semester: String = ""
-    @State private var showAlert: Bool = false // Estado para controlar la alerta
+    @State private var showAlert: Bool = false
+    @State private var isDataLoaded: Bool = false // Estado para saber si los datos ya están cargados
+    // Reference to Firestore
+    let db = Firestore.firestore()
 
-
-    // Referencia a Firestore
-    private var db = Firestore.firestore()
-
-    
-    init(userProfile: UserProfile) {
-            self.userProfile = userProfile
-        }
     var body: some View {
         VStack {
             // Back button in the top-left corner
@@ -40,7 +34,6 @@ struct ProfileView: View {
                 .frame(height: 40)
 
             if let url = URL(string: viewModel.userProfile.picture), ConnectivityManager.shared.isConnected {
-                // Show the image if connected
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
@@ -58,7 +51,6 @@ struct ProfileView: View {
                         .padding()
                 }
             } else {
-                // Show initials if not connected
                 Circle()
                     .fill(Color.red)
                     .frame(width: 120, height: 120)
@@ -71,56 +63,40 @@ struct ProfileView: View {
             Spacer()
                 .frame(height: 20)
 
-            // User's nickname
             Text(viewModel.userProfile.nickname)
                 .font(.title2)
                 .fontWeight(.bold)
                 .padding(.top)
 
-            // User's email
             Text("Email: \(viewModel.userProfile.email)")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.top, 2)
 
-            // Career input field
-            TextField("Enter your career", text: $career)
+            // Form to edit career and semester
+            TextField("Enter Career", text: $career)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.top, 20)
-                .onAppear {
-                    // Pre-fill career if available
-                    self.career = viewModel.userProfile.career ?? ""
-                }
+                .padding(.top)
+                .padding(.horizontal)
 
-            // Semester input field
-            TextField("Enter your semester", text: $semester)
+            TextField("Enter Semester", text: $semester)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.top, 20)
-                .onAppear {
-                    // Pre-fill semester if available
-                    self.semester = viewModel.userProfile.semester ?? ""
-                }
+                .padding(.top)
+                .padding(.horizontal)
 
-            // Save button
             Button(action: {
                 saveProfile()
             }) {
-                HStack {
-                    Image(systemName: "square.and.arrow.down.fill")
-                        .font(.title2)
-                    Text("Save Profile")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                }
-                .foregroundColor(.white)
-                .padding()
-                .frame(width: 220, height: 50)
-                .background(Color.green)
-                .cornerRadius(25)
+                Text("Save Profile")
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.green)
+                    .cornerRadius(10)
+                    .padding(.top)
             }
-            .padding(.top, 30)
 
-            // Logout button
             Button(action: {
                 logout()
             }) {
@@ -142,38 +118,84 @@ struct ProfileView: View {
         .padding()
         .background(Color.white)
         .alert(isPresented: $showAlert) {
-                    Alert(
-                        title: Text("Profile Saved"),
-                        message: Text("Your profile has been updated successfully!"),
-                        dismissButton: .default(Text("OK"))
-                    )
-                }
+            Alert(
+                title: Text("Profile Saved"),
+                message: Text("Your profile has been updated successfully!"),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+        .onAppear {
+            loadProfileData()
+        }
     }
 
-    // Function to save the profile data to Firestore
-    func saveProfile() {
-            guard !viewModel.userProfile.email.isEmpty else {
-                print("Email is required")
+    func loadProfileData() {
+        // Check if data exists in UserDefaults first
+        if let savedCareer = UserDefaults.standard.string(forKey: "career"),
+           let savedSemester = UserDefaults.standard.string(forKey: "semester") {
+            career = savedCareer
+            semester = savedSemester
+        } else {
+            // If no data in UserDefaults, load from Firebase
+            fetchProfileFromFirebase()
+        }
+    }
+
+    func fetchProfileFromFirebase() {
+        guard !viewModel.userProfile.email.isEmpty else {
+            print("Email is empty")
+            return
+        }
+
+        let usersInfoRef = db.collection("users_info").document(viewModel.userProfile.email)
+        usersInfoRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error getting document: \(error)")
                 return
             }
 
-            // Reference to Firestore
-            let usersInfoRef = db.collection("users_info").document(viewModel.userProfile.email)
-
-            // Update the document with career and semester
-            usersInfoRef.setData([
-                "career": career,
-                "semester": semester
-            ], merge: true) { error in
-                if let error = error {
-                    print("Error updating profile: \(error)")
-                } else {
-                    print("Profile updated successfully")
-                    // Show the alert after successful save
-                    showAlert = true
+            if let document = document, document.exists {
+                if let data = document.data() {
+                    self.career = data["career"] as? String ?? ""
+                    self.semester = data["semester"] as? String ?? ""
+                    // Save fetched data to UserDefaults for persistence
+                    UserDefaults.standard.set(self.career, forKey: "career")
+                    UserDefaults.standard.set(self.semester, forKey: "semester")
+                    self.isDataLoaded = true
                 }
+            } else {
+                print("No profile data found in Firebase")
             }
         }
+    }
+
+
+    func saveProfile() {
+        guard !viewModel.userProfile.email.isEmpty else {
+            print("Email is required")
+            return
+        }
+
+        // Reference to Firestore
+        let usersInfoRef = db.collection("users_info").document(viewModel.userProfile.email)
+
+        // Update the document with career and semester
+        usersInfoRef.setData([
+            "career": career,
+            "semester": semester
+        ], merge: true) { error in
+            if let error = error {
+                print("Error updating profile: \(error)")
+            } else {
+                print("Profile updated successfully")
+                // Save data to UserDefaults for persistence
+                UserDefaults.standard.set(self.career, forKey: "career")
+                UserDefaults.standard.set(self.semester, forKey: "semester")
+                // Show the alert after successful save
+                showAlert = true
+            }
+        }
+    }
 
     func logout() {
         if ConnectivityManager.shared.isConnected {
