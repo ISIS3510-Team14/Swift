@@ -18,18 +18,16 @@ struct HomeView: View {
     @State private var selectedImage: UIImage?
     @ObservedObject private var connectivityManager = ConnectivityManager.shared
     @State private var isShowingHistoryView = false
+    @StateObject private var historyViewModel = HistoryViewModel()
     
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
             TabView(selection: $selectedTab) {
                 // Home Tab
                 NavigationView {
                     ScrollView {
                         VStack {
-                            // Using TopBarView with correct parameters
                             TopBarView(
                                 profilePictureURL: viewModel.userProfile.picture,
                                 connectivityManager: connectivityManager,
@@ -45,6 +43,7 @@ struct HomeView: View {
                                 .padding(.top, 10)
                             
                             // Record section
+                            // Record section
                             VStack(alignment: .leading) {
                                 Text("Your record")
                                     .font(.headline)
@@ -52,11 +51,11 @@ struct HomeView: View {
                                 
                                 HStack {
                                     VStack(alignment: .leading) {
-                                        Text("68 Points")
+                                        Text("\(historyViewModel.totalPoints) Points")
                                             .font(.title)
                                             .fontWeight(.bold)
                                         
-                                        Text("99 Days")
+                                        Text("\(historyViewModel.uniqueDaysCount) Days")
                                             .font(.subheadline)
                                             .foregroundColor(Color("blueLogoColor"))
                                     }
@@ -67,6 +66,9 @@ struct HomeView: View {
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(15)
                             .padding(.horizontal)
+                            .onAppear {
+                                historyViewModel.fetchRecyclingHistory(for: userProfile.email)
+                            }
                             
                             // Grid options
                             VStack(spacing: 20) {
@@ -118,7 +120,7 @@ struct HomeView: View {
                                     
                                     // History Button
                                     Button(action: {
-                                        navigateToHistory()
+                                        isShowingHistoryView = true
                                     }) {
                                         VStack {
                                             Image(systemName: "calendar")
@@ -219,12 +221,12 @@ struct HomeView: View {
                 CameraView(profilePictureURL: viewModel.userProfile.picture,
                           selectedTab: $selectedTab,
                           selectedImage: $selectedImage)
-                    .tabItem {
-                        Image("logoCamera")
-                            .renderingMode(.template)
-                        Text("Camera")
-                    }
-                    .tag(2)
+                .tabItem {
+                    Image("logoCamera")
+                        .renderingMode(.template)
+                    Text("Camera")
+                }
+                .tag(2)
                 
                 // Recycle Tab
                 NavigationView {
@@ -258,18 +260,19 @@ struct HomeView: View {
                     logClickCounter(field: "info")
                 }
             }
+            
+            if isShowingHistoryView {
+                HistoryView(userProfile: userProfile,
+                            selectedTab: $selectedTab,
+                            isShowingHistoryView: $isShowingHistoryView)
+                    .transition(.move(edge: .trailing))
+            }
         }
-        // Sheets
         .sheet(isPresented: $isShowingProfile) {
             ProfileView(userProfile: viewModel.userProfile)
         }
         .sheet(isPresented: $showSavedImagesSheet) {
             SavedImagesView(selectedImage: $selectedImage, selectedTab: $selectedTab)
-        }
-        
-        .sheet(isPresented: $isShowingHistoryView) {
-            let _ = print("Navigating to HistoryView with email: \(userProfile.email)")
-            HistoryView(userEmail: userProfile.email)
         }
     }
     
@@ -310,8 +313,5 @@ struct HomeView: View {
                 print("Document successfully updated")
             }
         }
-    }
-    private func navigateToHistory() {
-        isShowingHistoryView = true
     }
 }
