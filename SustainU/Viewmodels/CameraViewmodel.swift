@@ -321,7 +321,7 @@ class CameraViewmodel: ObservableObject {
                     print("El documento del usuario no existe o tiene un error: \(String(describing: error))")
                 }
             }
-        }   
+        }
         
     }
     

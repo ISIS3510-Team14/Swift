@@ -6,8 +6,8 @@ struct ScoreboardView: View {
     @State private var users: [User] = []
     @State private var searchText = ""
     let profilePictureURL: String
-    @StateObject private var connectivityManager = ConnectivityManager.shared
     @State private var showOfflinePopup = false // Estado del popup
+    @StateObject private var connectivityManager = ConnectivityManager.shared
 
 
     struct User: Identifiable {
@@ -96,16 +96,12 @@ struct ScoreboardView: View {
     }
     
     func calculateStreak(from history: [[String: Any]]) -> Int {
-        print("Calculando racha con el historial: \(history)")
         
-        // Extraer y convertir las fechas a Date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let sortedDates = history.compactMap { $0["date"] as? String }
             .compactMap { dateFormatter.date(from: $0) }
             .sorted(by: >) // Ordenar de la fecha más reciente a la más antigua
-        
-        print("Fechas ordenadas: \(sortedDates)")
         
         guard !sortedDates.isEmpty else {
             print("No hay fechas en el historial")
@@ -186,14 +182,8 @@ class ImageCacheManager {
     func getImage(for key: String) -> UIImage? {
         // Buscar en la memoria
         if let cachedImage = cache.object(forKey: key as NSString) {
+            //print("CACHEEE")
             return cachedImage
-        }
-
-        // Buscar en el almacenamiento local
-        let filePath = cacheDirectory.appendingPathComponent(key)
-        if let localImage = UIImage(contentsOfFile: filePath.path) {
-            cache.setObject(localImage, forKey: key as NSString) // Guardar en la memoria
-            return localImage
         }
 
         return nil
@@ -203,11 +193,7 @@ class ImageCacheManager {
         // Guardar en la memoria
         cache.setObject(image, forKey: key as NSString)
 
-        // Guardar en el almacenamiento local
-        let filePath = cacheDirectory.appendingPathComponent(key)
-        if let imageData = image.pngData() {
-            try? imageData.write(to: filePath)
-        }
+
     }
 }
 
@@ -216,6 +202,8 @@ struct CachedAsyncImage: View {
     let url: String
     let cacheKey: String
     @State private var image: UIImage?
+    @StateObject private var connectivityManager = ConnectivityManager.shared
+
 
     var body: some View {
         Group {
@@ -235,8 +223,10 @@ struct CachedAsyncImage: View {
     private func loadImage() {
         if let cachedImage = ImageCacheManager.shared.getImage(for: cacheKey) {
             self.image = cachedImage
-        } else {
+        } else if connectivityManager.isConnected {
             downloadImage()
+        } else { // ayudaa
+            self.image = UIImage(named: "pp")
         }
     }
 
